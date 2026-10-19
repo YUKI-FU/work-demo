@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "c2c-preview",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd /tmp/c2c-serve && exec python3 -m http.server 8090"],
+      "port": 8090
+    }
+  ]
+}

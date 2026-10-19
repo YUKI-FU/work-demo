@@ -328,6 +328,85 @@
       margin-top: 8px;
     }
 
+    /* 多账户平铺 */
+    .payment-item.multi {
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .payment-item.multi .head {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .payment-item.multi .head .info {
+      flex: 1;
+    }
+
+    .account-list {
+      width: 100%;
+      margin-top: 10px;
+      padding-left: 44px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+
+    .account-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .account-row .acct {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #1a1a1a;
+    }
+
+    .account-row .copy {
+      color: #4cd964;
+      font-size: 12px;
+      cursor: pointer;
+      padding: 2px 8px;
+      border: 1px solid #b7eec3;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .account-row .copy:active {
+      background: #f0fff4;
+    }
+
+    .account-more {
+      padding: 6px 0 2px;
+      font-size: 13px;
+      color: #4cd964;
+      cursor: pointer;
+    }
+
+    .account-more .arrow {
+      display: inline-block;
+      transition: transform 0.2s;
+    }
+
+    .account-list.collapsed .account-extra {
+      display: none;
+    }
+
+    .account-list.collapsed .account-more .arrow {
+      transform: rotate(180deg);
+    }
+
+    .account-count {
+      font-size: 12px;
+      color: #999;
+      padding-left: 44px;
+      margin-top: 4px;
+    }
+
     /* 商家信息 */
     .merchant-section {
       padding: 16px;
@@ -459,6 +538,7 @@
     <button onclick="showDemo('unconfigured')">未配置状态</button>
     <button onclick="showDemo('configured')">已配置状态</button>
     <button onclick="showDemo('mixed')">混合状态</button>
+    <button onclick="showDemo('multiAccount')">多账户</button>
   </div>
 
   <div class="demo-title" id="demoTitle">问题对比：原设计 vs 优化后</div>
@@ -793,6 +873,113 @@
     </div>
   </div>
 
+  <!-- 多账户平铺 + 折叠 -->
+  <div id="multiAccountView" style="display:none;">
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="time">9:21</span>
+        <span class="icons">●●● ▂▄▆█ 92</span>
+      </div>
+
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <div class="title">
+          <div class="icon">C</div>
+          <div>
+            <div class="title-text">买入USDT</div>
+            <div class="subtitle">参考单价 $6.70</div>
+          </div>
+        </div>
+        <span class="timer">00:35秒</span>
+      </div>
+
+      <div class="content">
+        <div class="card">
+          <div class="amount-tabs">
+            <span class="amount-tab">按金额</span>
+            <span class="amount-tab active">按数量</span>
+          </div>
+          <div class="amount-display">
+            <div class="amount-row">
+              <span class="amount-value">100.00</span>
+              <span class="amount-unit">USDT</span>
+              <span class="amount-max">最大</span>
+            </div>
+          </div>
+          <div class="amount-info">我将支付 670.00 CNY</div>
+        </div>
+
+        <div class="payment-card">
+          <div class="section-title">支付方式</div>
+
+          <!-- 微信支付，多账户 -->
+          <div class="payment-item multi selected">
+            <div class="head" onclick="selectPaymentByHead(this)">
+              <div class="icon" style="background:#1aad19;">W</div>
+              <div class="info">
+                <div class="name">微信支付</div>
+              </div>
+              <div class="check">✓</div>
+            </div>
+            <div class="account-list collapsed">
+              <div class="account-row">
+                <span class="acct">138****8888</span>
+                <span class="copy" onclick="copyAcct(this)">复制</span>
+              </div>
+              <div class="account-row account-extra">
+                <span class="acct">139****9999</span>
+                <span class="copy" onclick="copyAcct(this)">复制</span>
+              </div>
+              <div class="account-row account-extra">
+                <span class="acct">wxid_abc123xyz</span>
+                <span class="copy" onclick="copyAcct(this)">复制</span>
+              </div>
+              <div class="account-more" onclick="toggleAccounts(this)">
+                <span class="txt">展开全部 3 个账户</span> <span class="arrow">⌄</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 支付宝，已配置未选中 -->
+          <div class="payment-item" onclick="selectPayment(this)">
+            <div class="icon" style="background:#1677ff;">A</div>
+            <div class="info">
+              <div class="name">支付宝</div>
+              <div class="desc">已绑定 · zhangsan@email.com</div>
+            </div>
+            <div class="check"></div>
+          </div>
+
+          <div class="payment-tip">商家支持：微信、支付宝</div>
+        </div>
+
+        <div class="merchant-section">
+          <div class="section-title">商家信息</div>
+          <div class="merchant-row">
+            <span class="label">付款时间</span>
+            <span class="value">15分钟</span>
+          </div>
+          <div class="merchant-row">
+            <span class="label">商家名称</span>
+            <span class="value">C2商家 ›</span>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          交易提醒: 必须使用本人实名账号转账。转账时请不要备注任何信息，请不要设置延迟到账。黑钱绕道，发现必报警。
+        </div>
+      </div>
+
+      <div class="bottom-area">
+        <div class="disclaimer">
+          如果您同意使用C2C功能进行C2C交易，即表示您接受相应交易法律条款
+          <a href="#">免责声明</a>
+        </div>
+        <button class="submit-btn active">0手续费买入 USDT</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     function showDemo(type) {
       document.querySelectorAll('.demo-nav button').forEach(function(btn) {
@@ -804,6 +991,7 @@
       document.getElementById('unconfiguredView').style.display = 'none';
       document.getElementById('configuredView').style.display = 'none';
       document.getElementById('mixedView').style.display = 'none';
+      document.getElementById('multiAccountView').style.display = 'none';
 
       if (type === 'compare') {
         document.getElementById('demoTitle').textContent = '问题对比：原设计 vs 优化后';
@@ -817,6 +1005,9 @@
       } else if (type === 'mixed') {
         document.getElementById('demoTitle').textContent = '混合状态 - 部分已配置，部分未配置';
         document.getElementById('mixedView').style.display = 'block';
+      } else if (type === 'multiAccount') {
+        document.getElementById('demoTitle').textContent = '多账户平铺 - 商家绑定多个账户，可折叠';
+        document.getElementById('multiAccountView').style.display = 'block';
       }
     }
 
@@ -828,6 +1019,28 @@
       });
       el.classList.add('selected');
       el.querySelector('.check').innerHTML = '✓';
+    }
+
+    function selectPaymentByHead(head) {
+      selectPayment(head.parentElement);
+    }
+
+    function toggleAccounts(moreEl) {
+      event.stopPropagation();
+      var list = moreEl.parentElement;
+      list.classList.toggle('collapsed');
+      var txt = moreEl.querySelector('.txt');
+      var n = list.querySelectorAll('.account-row').length;
+      txt.textContent = list.classList.contains('collapsed')
+        ? '展开全部 ' + n + ' 个账户'
+        : '收起';
+    }
+
+    function copyAcct(el) {
+      event.stopPropagation();
+      var text = el.parentElement.querySelector('.acct').textContent;
+      el.textContent = '已复制';
+      setTimeout(function() { el.textContent = '复制'; }, 1200);
     }
   </script>
 </body>
