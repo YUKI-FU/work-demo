@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C2C 广告管理 - 字段统一方案</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .demo-nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px;
+      background: #fff;
+      margin-bottom: 20px;
+      border-radius: 12px;
+    }
+    .demo-nav button {
+      padding: 10px 24px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      background: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .demo-nav button.active {
+      background: #4cd964;
+      border-color: #4cd964;
+      color: #fff;
+    }
+
+    .demo-title {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+
+    /* ===== Web 端样式 ===== */
+    .web-view {
+      background: #1a1a2e;
+      border-radius: 12px;
+      padding: 24px;
+      overflow-x: auto;
+    }
+    .web-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .web-title {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .web-btn-publish {
+      background: #4cd964;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* 筛选栏 */
+    .web-filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .web-filter {
+      background: #2a2a4a;
+      border: 1px solid #3a3a5a;
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: #ccc;
+      font-size: 13px;
+      min-width: 120px;
+    }
+
+    /* 批量操作 */
+    .web-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #3a3a5a;
+    }
+    .web-actions label {
+      color: #999;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .web-actions .action-btn {
+      background: none;
+      border: 1px solid #4a4a6a;
+      color: #ccc;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .web-actions .action-btn.danger {
+      color: #ff6b6b;
+      border-color: #ff6b6b;
+    }
+
+    /* 表格 */
+    .web-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .web-table th {
+      text-align: left;
+      color: #888;
+      font-weight: normal;
+      padding: 12px 8px;
+      border-bottom: 1px solid #3a3a5a;
+      white-space: nowrap;
+    }
+    .web-table td {
+      color: #eee;
+      padding: 14px 8px;
+      border-bottom: 1px solid #2a2a4a;
+      vertical-align: middle;
+    }
+    .web-table tr:hover td {
+      background: #2a2a4a;
+    }
+
+    /* 类型标签 */
+    .type-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .type-tag.buy {
+      background: rgba(76, 217, 100, 0.15);
+      color: #4cd964;
+    }
+    .type-tag.sell {
+      background: rgba(255, 107, 107, 0.15);
+      color: #ff6b6b;
+    }
+
+    /* 进度条 */
+    .progress-cell {
+      min-width: 120px;
+    }
+    .progress-bar {
+      height: 6px;
+      background: #3a3a5a;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #4cd964;
+      border-radius: 3px;
+    }
+    .progress-text {
+      font-size: 11px;
+      color: #888;
+    }
+
+    /* 支付方式 */
+    .payment-icons {
+      display: flex;
+      gap: 6px;
+    }
+    .pay-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .pay-icon.wechat { background: #1aad19; }
+    .pay-icon.alipay { background: #1677ff; }
+    .pay-icon.bank { background: #ff9500; }
+    .pay-icon.usdt { background: #26a17b; }
+
+    /* 状态 */
+    .status-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+    .status-tag.online {
+      background: rgba(76, 217, 100, 0.15);
+      color: #4cd964;
+    }
+    .status-tag.offline {
+      background: rgba(153, 153, 153, 0.15);
+      color: #999;
+    }
+
+    /* 操作按钮 */
+    .op-btn {
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      margin-right: 6px;
+    }
+    .op-btn.primary {
+      background: none;
+      border: 1px solid #4cd964;
+      color: #4cd964;
+    }
+    .op-btn.danger {
+      background: none;
+      border: 1px solid #ff6b6b;
+      color: #ff6b6b;
+    }
+    .op-btn.default {
+      background: none;
+      border: 1px solid #666;
+      color: #999;
+    }
+
+    /* ===== App 端样式 ===== */
+    .app-view {
+      display: none;
+    }
+    .phone-frame {
+      width: 375px;
+      margin: 0 auto;
+      background: #f8f9fa;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: #f8f9fa;
+    }
+    .status-bar .time { font-size: 15px; font-weight: 600; }
+    .status-bar .icons { font-size: 14px; }
+
+    .app-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #f8f9fa;
+    }
+    .app-nav .back { font-size: 24px; color: #1a1a1a; }
+    .app-nav .title { font-size: 17px; font-weight: 600; }
+    .app-nav .actions { display: flex; gap: 12px; }
+    .app-nav .icon-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .app-nav .publish-btn {
+      background: #4cd964;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* App 筛选 */
+    .app-filters {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #f8f9fa;
+      overflow-x: auto;
+    }
+    .app-filter {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 16px;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: #666;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .app-filter.active {
+      background: #e8f5e9;
+      border-color: #4cd964;
+      color: #4cd964;
+    }
+
+    /* App 广告卡片 */
+    .app-content {
+      padding: 12px 16px;
+      background: #f0f0f0;
+      min-height: 500px;
+    }
+    .ad-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    /* 卡片头部 */
+    .ad-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .ad-id {
+      font-size: 14px;
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+    .ad-type {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-left: 8px;
+    }
+    .ad-type.buy {
+      background: #e8f5e9;
+      color: #4cd964;
+    }
+    .ad-type.sell {
+      background: #ffebee;
+      color: #ff6b6b;
+    }
+    .ad-status {
+      font-size: 13px;
+      color: #4cd964;
+    }
+    .ad-status.offline { color: #999; }
+
+    /* 价格行 */
+    .ad-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .ad-pair {
+      font-size: 12px;
+      color: #999;
+    }
+    .ad-price {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .ad-currency {
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* 数据行 */
+    .ad-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 12px 0;
+      border-top: 1px solid #f0f0f0;
+      border-bottom: 1px solid #f0f0f0;
+      margin-bottom: 12px;
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #999;
+    }
+    .stat-value {
+      font-size: 14px;
+      color: #1a1a1a;
+    }
+
+    /* 进度 */
+    .ad-progress {
+      margin-bottom: 12px;
+    }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 6px;
+    }
+    .progress-track {
+      height: 6px;
+      background: #f0f0f0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #4cd964;
+      border-radius: 3px;
+    }
+
+    /* 支付方式行 */
+    .ad-payment {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .ad-payment-label {
+      font-size: 12px;
+      color: #999;
+    }
+    .ad-payment-icons {
+      display: flex;
+      gap: 6px;
+    }
+    .pay-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      background: #f5f5f5;
+      border-radius: 12px;
+      font-size: 11px;
+      color: #666;
+    }
+    .pay-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .pay-badge .dot.wechat { background: #1aad19; }
+    .pay-badge .dot.alipay { background: #1677ff; }
+    .pay-badge .dot.bank { background: #ff9500; }
+
+    /* 底部信息和操作 */
+    .ad-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ad-time {
+      font-size: 12px;
+      color: #999;
+    }
+    .ad-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .ad-btn {
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .ad-btn.outline {
+      background: #fff;
+      border: 1px solid #ddd;
+      color: #666;
+    }
+    .ad-btn.danger {
+      background: #fff;
+      border: 1px solid #ff6b6b;
+      color: #ff6b6b;
+    }
+
+    .app-footer {
+      text-align: center;
+      padding: 16px;
+      color: #999;
+      font-size: 13px;
+      background: #f0f0f0;
+    }
+
+    /* 设计说明 */
+    .design-notes {
+      margin-top: 24px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .design-notes h3 {
+      font-size: 16px;
+      margin-bottom: 16px;
+      color: #1a1a1a;
+    }
+    .note-section {
+      margin-bottom: 16px;
+    }
+    .note-section h4 {
+      font-size: 14px;
+      color: #4cd964;
+      margin-bottom: 8px;
+    }
+    .note-section ul {
+      padding-left: 20px;
+      font-size: 13px;
+      color: #666;
+      line-height: 1.8;
+    }
+    .highlight {
+      background: #fff3cd;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-nav">
+    <button class="active" onclick="showView('web')">Web 端</button>
+    <button onclick="showView('app')">App 端</button>
+  </div>
+
+  <div class="demo-title" id="demoTitle">Web 端 - 广告管理列表（优化后）</div>
+
+  <!-- Web 端 -->
+  <div class="web-view" id="webView">
+    <div class="web-header">
+      <div class="web-title">我的广告</div>
+      <button class="web-btn-publish">+ 发布广告</button>
+    </div>
+
+    <div class="web-filters">
+      <select class="web-filter">
+        <option>全部币种</option>
+        <option>USDT</option>
+        <option>BTC</option>
+      </select>
+      <select class="web-filter">
+        <option>全部类型</option>
+        <option>买入</option>
+        <option>卖出</option>
+      </select>
+      <select class="web-filter">
+        <option>全部状态</option>
+        <option>上架中</option>
+        <option>已下架</option>
+      </select>
+      <select class="web-filter">
+        <option>全部支付方式</option>
+        <option>微信</option>
+        <option>支付宝</option>
+        <option>银行卡</option>
+      </select>
+      <input class="web-filter" type="text" placeholder="选择日期" style="width:140px;">
+    </div>
+
+    <div class="web-actions">
+      <label><input type="checkbox"> 全选</label>
+      <button class="action-btn">上架</button>
+      <button class="action-btn">下架</button>
+      <button class="action-btn danger">撤销</button>
+    </div>
+
+    <table class="web-table">
+      <thead>
+        <tr>
+          <th style="width:30px;"></th>
+          <th>广告编号</th>
+          <th>类型</th>
+          <th>币种</th>
+          <th>单价</th>
+          <th>限额</th>
+          <th>成交进度</th>
+          <th>支付方式</th>
+          <th>状态</th>
+          <th>创建时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>358</td>
+          <td><span class="type-tag sell">卖出</span></td>
+          <td>USDT/CNY</td>
+          <td>¥ 6.67</td>
+          <td>100-5,000 CNY</td>
+          <td class="progress-cell">
+            <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+            <div class="progress-text">0 / 20 USDT (0%)</div>
+          </td>
+          <td>
+            <div class="payment-icons">
+              <span class="pay-icon wechat">微</span>
+              <span class="pay-icon alipay">支</span>
+            </div>
+          </td>
+          <td><span class="status-tag online">上架中</span></td>
+          <td>2026-10-19 17:03</td>
+          <td>
+            <button class="op-btn default">下架</button>
+            <button class="op-btn danger">撤销</button>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>357</td>
+          <td><span class="type-tag sell">卖出</span></td>
+          <td>USDT/CNY</td>
+          <td>¥ 6.65</td>
+          <td>500-10,000 CNY</td>
+          <td class="progress-cell">
+            <div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div>
+            <div class="progress-text">6.5 / 10 USDT (65%)</div>
+          </td>
+          <td>
+            <div class="payment-icons">
+              <span class="pay-icon wechat">微</span>
+              <span class="pay-icon bank">银</span>
+            </div>
+          </td>
+          <td><span class="status-tag online">上架中</span></td>
+          <td>2026-10-19 15:25</td>
+          <td>
+            <button class="op-btn default">下架</button>
+            <button class="op-btn danger">撤销</button>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>350</td>
+          <td><span class="type-tag buy">买入</span></td>
+          <td>BTC/USDT</td>
+          <td>$ 88,500.00</td>
+          <td>100-5,000 USDT</td>
+          <td class="progress-cell">
+            <div class="progress-bar"><div class="progress-fill" style="width:84%"></div></div>
+            <div class="progress-text">4.2 / 5 BTC (84%)</div>
+          </td>
+          <td>
+            <div class="payment-icons">
+              <span class="pay-icon usdt">U</span>
+            </div>
+          </td>
+          <td><span class="status-tag online">上架中</span></td>
+          <td>2026-10-16 17:19</td>
+          <td>
+            <button class="op-btn default">下架</button>
+            <button class="op-btn danger">撤销</button>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>341</td>
+          <td><span class="type-tag sell">卖出</span></td>
+          <td>BTC/USDT</td>
+          <td>$ 88,787.60</td>
+          <td>500-50,000 USDT</td>
+          <td class="progress-cell">
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+            <div class="progress-text">5 / 5 BTC (100%)</div>
+          </td>
+          <td>
+            <div class="payment-icons">
+              <span class="pay-icon usdt">U</span>
+            </div>
+          </td>
+          <td><span class="status-tag offline">已下架</span></td>
+          <td>2026-10-15 18:44</td>
+          <td>
+            <button class="op-btn primary">上架</button>
+            <button class="op-btn danger">撤销</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- App 端 -->
+  <div class="app-view" id="appView">
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="time">6:09</span>
+        <span class="icons">●●● ▂▄▆█ 59</span>
+      </div>
+
+      <div class="app-nav">
+        <span class="back">‹</span>
+        <span class="title">广告管理</span>
+        <div class="actions">
+          <button class="publish-btn">+ 发布广告</button>
+        </div>
+      </div>
+
+      <div class="app-filters">
+        <div class="app-filter active">已选3项 ▾</div>
+        <div class="app-filter">全部币种 ▾</div>
+        <div class="app-filter">全部类型 ▾</div>
+        <div class="app-filter">支付方式 ▾</div>
+      </div>
+
+      <div class="app-content">
+        <!-- 卡片1 -->
+        <div class="ad-card">
+          <div class="ad-header">
+            <div>
+              <span class="ad-id">ID: 358</span>
+              <span class="ad-type sell">卖出</span>
+            </div>
+            <span class="ad-status">上架中</span>
+          </div>
+
+          <div class="ad-price-row">
+            <span class="ad-pair">USDT/CNY</span>
+            <span class="ad-price">¥ 6.67</span>
+          </div>
+
+          <div class="ad-stats">
+            <div class="stat-item">
+              <span class="stat-label">剩余</span>
+              <span class="stat-value">20.000 USDT</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">限额</span>
+              <span class="stat-value">100-5,000 CNY</span>
+            </div>
+          </div>
+
+          <div class="ad-progress">
+            <div class="progress-header">
+              <span>成交进度</span>
+              <span>0 / 20 USDT (0%)</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-bar-fill" style="width:0%"></div>
+            </div>
+          </div>
+
+          <div class="ad-payment">
+            <span class="ad-payment-label">收款方式</span>
+            <div class="ad-payment-icons">
+              <span class="pay-badge"><span class="dot wechat"></span>微信</span>
+              <span class="pay-badge"><span class="dot alipay"></span>支付宝</span>
+            </div>
+          </div>
+
+          <div class="ad-footer">
+            <span class="ad-time">2026-10-19 17:03</span>
+            <div class="ad-actions">
+              <button class="ad-btn outline">下架</button>
+              <button class="ad-btn danger">撤销</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 卡片2 -->
+        <div class="ad-card">
+          <div class="ad-header">
+            <div>
+              <span class="ad-id">ID: 357</span>
+              <span class="ad-type sell">卖出</span>
+            </div>
+            <span class="ad-status">上架中</span>
+          </div>
+
+          <div class="ad-price-row">
+            <span class="ad-pair">USDT/CNY</span>
+            <span class="ad-price">¥ 6.65</span>
+          </div>
+
+          <div class="ad-stats">
+            <div class="stat-item">
+              <span class="stat-label">剩余</span>
+              <span class="stat-value">3.500 USDT</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">限额</span>
+              <span class="stat-value">500-10,000 CNY</span>
+            </div>
+          </div>
+
+          <div class="ad-progress">
+            <div class="progress-header">
+              <span>成交进度</span>
+              <span>6.5 / 10 USDT (65%)</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-bar-fill" style="width:65%"></div>
+            </div>
+          </div>
+
+          <div class="ad-payment">
+            <span class="ad-payment-label">收款方式</span>
+            <div class="ad-payment-icons">
+              <span class="pay-badge"><span class="dot wechat"></span>微信</span>
+              <span class="pay-badge"><span class="dot bank"></span>银行卡</span>
+            </div>
+          </div>
+
+          <div class="ad-footer">
+            <span class="ad-time">2026-10-19 15:25</span>
+            <div class="ad-actions">
+              <button class="ad-btn outline">下架</button>
+              <button class="ad-btn danger">撤销</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 卡片3 - 买入 -->
+        <div class="ad-card">
+          <div class="ad-header">
+            <div>
+              <span class="ad-id">ID: 350</span>
+              <span class="ad-type buy">买入</span>
+            </div>
+            <span class="ad-status">上架中</span>
+          </div>
+
+          <div class="ad-price-row">
+            <span class="ad-pair">BTC/USDT</span>
+            <span class="ad-price">$ 88,500</span>
+          </div>
+
+          <div class="ad-stats">
+            <div class="stat-item">
+              <span class="stat-label">剩余</span>
+              <span class="stat-value">0.800 BTC</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">限额</span>
+              <span class="stat-value">100-5,000 USDT</span>
+            </div>
+          </div>
+
+          <div class="ad-progress">
+            <div class="progress-header">
+              <span>成交进度</span>
+              <span>4.2 / 5 BTC (84%)</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-bar-fill" style="width:84%"></div>
+            </div>
+          </div>
+
+          <div class="ad-payment">
+            <span class="ad-payment-label">付款方式</span>
+            <div class="ad-payment-icons">
+              <span class="pay-badge"><span class="dot" style="background:#26a17b"></span>USDT</span>
+            </div>
+          </div>
+
+          <div class="ad-footer">
+            <span class="ad-time">2026-10-16 17:19</span>
+            <div class="ad-actions">
+              <button class="ad-btn outline">下架</button>
+              <button class="ad-btn danger">撤销</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-footer">共 3 条广告</div>
+    </div>
+  </div>
+
+  <!-- 设计说明 -->
+  <div class="design-notes">
+    <h3>字段统一方案说明</h3>
+
+    <div class="note-section">
+      <h4>核心字段（Web/App 统一）</h4>
+      <ul>
+        <li><strong>广告编号</strong> - 唯一标识</li>
+        <li><strong>类型</strong> - 买入/卖出，用颜色区分</li>
+        <li><strong>币种对</strong> - 交易对</li>
+        <li><strong>单价</strong> - 当前价格</li>
+        <li><strong>限额</strong> - 单笔交易范围（原 App 有，Web 缺）</li>
+        <li><strong>成交进度</strong> - 已完成/总数 + 进度条（原 Web 有，App 缺）</li>
+        <li><span class="highlight"><strong>支付方式</strong></span> - <strong>新增！</strong>显示该广告绑定的收款/付款方式</li>
+        <li><strong>状态</strong> - 上架中/已下架</li>
+        <li><strong>创建时间</strong></li>
+      </ul>
+    </div>
+
+    <div class="note-section">
+      <h4>关键新增：支付方式</h4>
+      <ul>
+        <li>商家发布多个广告时，需要知道每个广告绑定了哪个收款账户</li>
+        <li>Web 端用图标展示，节省空间</li>
+        <li>App 端用标签展示，更清晰</li>
+        <li>筛选栏也增加"支付方式"筛选</li>
+      </ul>
+    </div>
+
+    <div class="note-section">
+      <h4>优化点</h4>
+      <ul>
+        <li>成交进度用进度条可视化，比纯数字更直观</li>
+        <li>买入/卖出用绿色/红色区分，符合交易直觉</li>
+        <li>App 端卡片布局信息分组更清晰</li>
+        <li>操作按钮统一为"下架/上架"+"撤销"</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function showView(type) {
+      document.querySelectorAll('.demo-nav button').forEach(function(btn, i) {
+        btn.classList.remove('active');
+        if ((type === 'web' && i === 0) || (type === 'app' && i === 1)) {
+          btn.classList.add('active');
+        }
+      });
+
+      document.getElementById('webView').style.display = 'none';
+      document.getElementById('appView').style.display = 'none';
+
+      if (type === 'web') {
+        document.getElementById('demoTitle').textContent = 'Web 端 - 广告管理列表（优化后）';
+        document.getElementById('webView').style.display = 'block';
+      } else {
+        document.getElementById('demoTitle').textContent = 'App 端 - 广告管理卡片（优化后）';
+        document.getElementById('appView').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
