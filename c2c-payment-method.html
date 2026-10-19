@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>C2C 收款方式优化</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .demo-nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px;
+      background: #fff;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      flex-wrap: wrap;
+    }
+
+    .demo-nav button {
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      background: #fff;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .demo-nav button.active {
+      background: #4cd964;
+      border-color: #4cd964;
+      color: #fff;
+    }
+
+    .demo-title {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+
+    .phone-frame {
+      width: 375px;
+      margin: 0 auto;
+      background: #f8f9fa;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: #f8f9fa;
+    }
+
+    .status-bar .time {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .status-bar .icons {
+      font-size: 14px;
+    }
+
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #f8f9fa;
+    }
+
+    .nav-bar .back {
+      font-size: 24px;
+      color: #1a1a1a;
+    }
+
+    .nav-bar .title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-bar .title .icon {
+      width: 24px;
+      height: 24px;
+      background: #666;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+    }
+
+    .nav-bar .title-text {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .nav-bar .subtitle {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .nav-bar .timer {
+      font-size: 14px;
+      color: #999;
+    }
+
+    .content {
+      padding: 16px;
+      background: #f8f9fa;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .amount-tabs {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .amount-tab {
+      font-size: 14px;
+      color: #999;
+      cursor: pointer;
+      padding-bottom: 8px;
+    }
+
+    .amount-tab.active {
+      color: #1a1a1a;
+      font-weight: 500;
+      border-bottom: 2px solid #1a1a1a;
+    }
+
+    .amount-display {
+      margin-bottom: 8px;
+    }
+
+    .amount-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .amount-value {
+      font-size: 36px;
+      font-weight: 600;
+    }
+
+    .amount-unit {
+      font-size: 16px;
+      color: #1a1a1a;
+    }
+
+    .amount-max {
+      color: #4cd964;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .amount-info {
+      font-size: 13px;
+      color: #999;
+    }
+
+    /* 支付方式区域 */
+    .section-title {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      color: #1a1a1a;
+    }
+
+    .payment-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    /* 已配置的支付方式 */
+    .payment-item {
+      display: flex;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .payment-item.selected {
+      border-color: #4cd964;
+      background: #f0fff4;
+    }
+
+    .payment-item .icon {
+      width: 32px;
+      height: 32px;
+      background: #26a17b;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      margin-right: 12px;
+    }
+
+    .payment-item .info {
+      flex: 1;
+    }
+
+    .payment-item .name {
+      font-size: 15px;
+      color: #1a1a1a;
+    }
+
+    .payment-item .desc {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .payment-item .check {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #ddd;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .payment-item.selected .check {
+      border-color: #4cd964;
+      background: #4cd964;
+      color: #fff;
+    }
+
+    /* 未配置的支付方式 - 优化后 */
+    .payment-item.unconfigured {
+      border: 1px dashed #ddd;
+      background: #fafafa;
+    }
+
+    .payment-item.unconfigured .icon {
+      opacity: 0.5;
+    }
+
+    .payment-item.unconfigured .name {
+      color: #999;
+    }
+
+    .payment-item.unconfigured .warning {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: #ff9500;
+      margin-top: 4px;
+    }
+
+    .payment-item.unconfigured .warning .icon-warn {
+      font-size: 14px;
+    }
+
+    .payment-item.unconfigured .add-btn {
+      background: #4cd964;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* 原始设计（有问题的） */
+    .payment-item.original-bad {
+      border: 1px solid #4cd964;
+      background: #f0fff4;
+    }
+
+    .payment-item.original-bad .check {
+      border-color: #4cd964;
+      background: #4cd964;
+      color: #fff;
+    }
+
+    .add-payment-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 12px;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .payment-tip {
+      font-size: 13px;
+      color: #4cd964;
+      margin-top: 8px;
+    }
+
+    /* 商家信息 */
+    .merchant-section {
+      padding: 16px;
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .merchant-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+    }
+
+    .merchant-row .label {
+      color: #999;
+      font-size: 14px;
+    }
+
+    .merchant-row .value {
+      color: #1a1a1a;
+      font-size: 14px;
+    }
+
+    /* 提示框 */
+    .warning-box {
+      background: #f0fff4;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    /* 底部按钮 */
+    .bottom-area {
+      padding: 16px;
+      background: #f8f9fa;
+    }
+
+    .disclaimer {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 12px;
+    }
+
+    .disclaimer a {
+      color: #4cd964;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .submit-btn.active {
+      background: #4cd964;
+      color: #fff;
+    }
+
+    .submit-btn.disabled {
+      background: #e5e5e5;
+      color: #999;
+    }
+
+    .submit-btn-tip {
+      text-align: center;
+      font-size: 12px;
+      color: #ff9500;
+      margin-top: 8px;
+    }
+
+    /* 对比展示 */
+    .compare-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .compare-item {
+      text-align: center;
+    }
+
+    .compare-label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 12px;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    .compare-label.bad {
+      background: #ffebee;
+      color: #f44336;
+    }
+
+    .compare-label.good {
+      background: #e8f5e9;
+      color: #4caf50;
+    }
+
+    .highlight-box {
+      border: 2px solid #f44336;
+      border-radius: 14px;
+      padding: 4px;
+      margin: 8px 0;
+    }
+
+    .annotation {
+      font-size: 12px;
+      color: #f44336;
+      margin-top: 8px;
+      text-align: left;
+      padding: 0 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-nav">
+    <button class="active" onclick="showDemo('compare')">问题对比</button>
+    <button onclick="showDemo('unconfigured')">未配置状态</button>
+    <button onclick="showDemo('configured')">已配置状态</button>
+    <button onclick="showDemo('mixed')">混合状态</button>
+  </div>
+
+  <div class="demo-title" id="demoTitle">问题对比：原设计 vs 优化后</div>
+
+  <!-- 对比展示 -->
+  <div id="compareView">
+    <div class="compare-container">
+      <!-- 原设计（有问题） -->
+      <div class="compare-item">
+        <div class="compare-label bad">原设计（有问题）</div>
+        <div class="phone-frame" style="width:340px;">
+          <div class="content" style="padding-top:0;">
+            <div class="payment-card">
+              <div class="section-title">支付方式</div>
+
+              <div class="highlight-box">
+                <div class="payment-item original-bad">
+                  <div class="icon">T</div>
+                  <div class="info">
+                    <div class="name">USDT支付</div>
+                  </div>
+                  <div class="check">✓</div>
+                </div>
+                <div class="add-payment-btn">+ 添加收款方式</div>
+              </div>
+
+              <div class="payment-tip">对方仅接受通过USDT支付付款</div>
+            </div>
+            <div class="annotation">
+              问题：<br>
+              1. 用户没有USDT收款方式，却显示已勾选 ✓<br>
+              2. "添加收款方式"按钮不够明显<br>
+              3. 用户以为可以直接下单
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 优化后 -->
+      <div class="compare-item">
+        <div class="compare-label good">优化后</div>
+        <div class="phone-frame" style="width:340px;">
+          <div class="content" style="padding-top:0;">
+            <div class="payment-card">
+              <div class="section-title">支付方式</div>
+
+              <div class="payment-item unconfigured">
+                <div class="icon">T</div>
+                <div class="info">
+                  <div class="name">USDT支付</div>
+                  <div class="warning">
+                    <span class="icon-warn">⚠</span>
+                    <span>您还未添加此收款方式</span>
+                  </div>
+                </div>
+                <button class="add-btn">去添加</button>
+              </div>
+
+              <div class="payment-tip">对方仅接受通过USDT支付付款</div>
+            </div>
+            <div class="annotation" style="color:#4caf50;">
+              优化：<br>
+              1. 虚线框 + 灰色，明确表示未配置<br>
+              2. 橙色警告文案，提示需要添加<br>
+              3. 按钮改为"去添加"，引导操作
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 未配置状态 -->
+  <div id="unconfiguredView" style="display:none;">
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="time">9:21</span>
+        <span class="icons">●●● ▂▄▆█ 92</span>
+      </div>
+
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <div class="title">
+          <div class="icon">C</div>
+          <div>
+            <div class="title-text">卖出CLD</div>
+            <div class="subtitle">参考单价 $1,000.00</div>
+          </div>
+        </div>
+        <span class="timer">00:35秒</span>
+      </div>
+
+      <div class="content">
+        <div class="card">
+          <div class="amount-tabs">
+            <span class="amount-tab">按金额</span>
+            <span class="amount-tab active">按数量</span>
+          </div>
+          <div class="amount-display">
+            <div class="amount-row">
+              <span class="amount-value">1.00</span>
+              <span class="amount-unit">CLD</span>
+              <span class="amount-max">最大</span>
+            </div>
+          </div>
+          <div class="amount-info">我将收到 1000.00 USDT</div>
+        </div>
+
+        <div class="payment-card">
+          <div class="section-title">支付方式</div>
+
+          <div class="payment-item unconfigured">
+            <div class="icon">T</div>
+            <div class="info">
+              <div class="name">USDT支付</div>
+              <div class="warning">
+                <span class="icon-warn">⚠</span>
+                <span>您还未添加此收款方式</span>
+              </div>
+            </div>
+            <button class="add-btn" onclick="alert('跳转到添加USDT收款地址页面')">去添加</button>
+          </div>
+
+          <div class="payment-tip">对方仅接受通过USDT支付付款</div>
+        </div>
+
+        <div class="merchant-section">
+          <div class="section-title">商家信息</div>
+          <div class="merchant-row">
+            <span class="label">付款时间</span>
+            <span class="value">30分钟</span>
+          </div>
+          <div class="merchant-row">
+            <span class="label">商家名称</span>
+            <span class="value">uu商家 ›</span>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          交易提醒: 必须使用本人实名账号转账。转账时请不要备注任何信息，请不要设置延迟到账。黑钱绕道，发现必报警。
+        </div>
+      </div>
+
+      <div class="bottom-area">
+        <div class="disclaimer">
+          如果您同意使用C2C功能进行C2C交易，即表示您接受相应交易法律条款
+          <a href="#">免责声明</a>
+        </div>
+        <button class="submit-btn disabled">请先添加收款方式</button>
+        <div class="submit-btn-tip">添加 USDT 收款地址后即可下单</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 已配置状态 -->
+  <div id="configuredView" style="display:none;">
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="time">9:21</span>
+        <span class="icons">●●● ▂▄▆█ 92</span>
+      </div>
+
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <div class="title">
+          <div class="icon">C</div>
+          <div>
+            <div class="title-text">卖出CLD</div>
+            <div class="subtitle">参考单价 $1,000.00</div>
+          </div>
+        </div>
+        <span class="timer">00:35秒</span>
+      </div>
+
+      <div class="content">
+        <div class="card">
+          <div class="amount-tabs">
+            <span class="amount-tab">按金额</span>
+            <span class="amount-tab active">按数量</span>
+          </div>
+          <div class="amount-display">
+            <div class="amount-row">
+              <span class="amount-value">1.00</span>
+              <span class="amount-unit">CLD</span>
+              <span class="amount-max">最大</span>
+            </div>
+          </div>
+          <div class="amount-info">我将收到 1000.00 USDT</div>
+        </div>
+
+        <div class="payment-card">
+          <div class="section-title">支付方式</div>
+
+          <div class="payment-item selected">
+            <div class="icon">T</div>
+            <div class="info">
+              <div class="name">USDT支付</div>
+              <div class="desc">TRC20 · TXk8...vBJy</div>
+            </div>
+            <div class="check">✓</div>
+          </div>
+
+          <div class="payment-tip">对方仅接受通过USDT支付付款</div>
+        </div>
+
+        <div class="merchant-section">
+          <div class="section-title">商家信息</div>
+          <div class="merchant-row">
+            <span class="label">付款时间</span>
+            <span class="value">30分钟</span>
+          </div>
+          <div class="merchant-row">
+            <span class="label">商家名称</span>
+            <span class="value">uu商家 ›</span>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          交易提醒: 必须使用本人实名账号转账。转账时请不要备注任何信息，请不要设置延迟到账。黑钱绕道，发现必报警。
+        </div>
+      </div>
+
+      <div class="bottom-area">
+        <div class="disclaimer">
+          如果您同意使用C2C功能进行C2C交易，即表示您接受相应交易法律条款
+          <a href="#">免责声明</a>
+        </div>
+        <button class="submit-btn active">0手续费出售 CLD</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 混合状态（多个支付方式） -->
+  <div id="mixedView" style="display:none;">
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="time">9:21</span>
+        <span class="icons">●●● ▂▄▆█ 92</span>
+      </div>
+
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <div class="title">
+          <div class="icon">C</div>
+          <div>
+            <div class="title-text">卖出CLD</div>
+            <div class="subtitle">参考单价 $1,000.00</div>
+          </div>
+        </div>
+        <span class="timer">00:35秒</span>
+      </div>
+
+      <div class="content">
+        <div class="card">
+          <div class="amount-tabs">
+            <span class="amount-tab">按金额</span>
+            <span class="amount-tab active">按数量</span>
+          </div>
+          <div class="amount-display">
+            <div class="amount-row">
+              <span class="amount-value">1.00</span>
+              <span class="amount-unit">CLD</span>
+              <span class="amount-max">最大</span>
+            </div>
+          </div>
+          <div class="amount-info">我将收到 6700.00 CNY</div>
+        </div>
+
+        <div class="payment-card">
+          <div class="section-title">支付方式</div>
+
+          <!-- 已配置 -->
+          <div class="payment-item selected" onclick="selectPayment(this)">
+            <div class="icon" style="background:#1aad19;">W</div>
+            <div class="info">
+              <div class="name">微信支付</div>
+              <div class="desc">已绑定 · 138****8888</div>
+            </div>
+            <div class="check">✓</div>
+          </div>
+
+          <!-- 已配置但未选中 -->
+          <div class="payment-item" onclick="selectPayment(this)">
+            <div class="icon" style="background:#1677ff;">A</div>
+            <div class="info">
+              <div class="name">支付宝</div>
+              <div class="desc">已绑定 · zhangsan@email.com</div>
+            </div>
+            <div class="check"></div>
+          </div>
+
+          <!-- 未配置 -->
+          <div class="payment-item unconfigured">
+            <div class="icon" style="background:#666;">B</div>
+            <div class="info">
+              <div class="name">银行卡</div>
+              <div class="warning">
+                <span class="icon-warn">⚠</span>
+                <span>您还未添加此收款方式</span>
+              </div>
+            </div>
+            <button class="add-btn">去添加</button>
+          </div>
+
+          <div class="payment-tip">商家支持：微信、支付宝、银行卡</div>
+        </div>
+
+        <div class="merchant-section">
+          <div class="section-title">商家信息</div>
+          <div class="merchant-row">
+            <span class="label">付款时间</span>
+            <span class="value">15分钟</span>
+          </div>
+          <div class="merchant-row">
+            <span class="label">商家名称</span>
+            <span class="value">C2商家 ›</span>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          交易提醒: 必须使用本人实名账号转账。转账时请不要备注任何信息，请不要设置延迟到账。黑钱绕道，发现必报警。
+        </div>
+      </div>
+
+      <div class="bottom-area">
+        <div class="disclaimer">
+          如果您同意使用C2C功能进行C2C交易，即表示您接受相应交易法律条款
+          <a href="#">免责声明</a>
+        </div>
+        <button class="submit-btn active">0手续费出售 CLD</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showDemo(type) {
+      document.querySelectorAll('.demo-nav button').forEach(function(btn) {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      document.getElementById('compareView').style.display = 'none';
+      document.getElementById('unconfiguredView').style.display = 'none';
+      document.getElementById('configuredView').style.display = 'none';
+      document.getElementById('mixedView').style.display = 'none';
+
+      if (type === 'compare') {
+        document.getElementById('demoTitle').textContent = '问题对比：原设计 vs 优化后';
+        document.getElementById('compareView').style.display = 'block';
+      } else if (type === 'unconfigured') {
+        document.getElementById('demoTitle').textContent = '未配置收款方式 - 按钮置灰，提示添加';
+        document.getElementById('unconfiguredView').style.display = 'block';
+      } else if (type === 'configured') {
+        document.getElementById('demoTitle').textContent = '已配置收款方式 - 正常选中，可下单';
+        document.getElementById('configuredView').style.display = 'block';
+      } else if (type === 'mixed') {
+        document.getElementById('demoTitle').textContent = '混合状态 - 部分已配置，部分未配置';
+        document.getElementById('mixedView').style.display = 'block';
+      }
+    }
+
+    function selectPayment(el) {
+      var items = el.parentElement.querySelectorAll('.payment-item:not(.unconfigured)');
+      items.forEach(function(item) {
+        item.classList.remove('selected');
+        item.querySelector('.check').innerHTML = '';
+      });
+      el.classList.add('selected');
+      el.querySelector('.check').innerHTML = '✓';
+    }
+  </script>
+</body>
+</html>
