@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>任务卡片 - 且关系双条件</title>
+  <title>任务卡片 - 活动类型展示</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -19,23 +19,58 @@
       margin: 0 auto;
     }
 
+    /* ===== 活动类型切换 ===== */
+    .activity-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .activity-tab {
+      padding: 12px 32px;
+      border-radius: 24px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid #444;
+      background: #1a1a1a;
+      color: #888;
+      transition: all 0.2s;
+    }
+    .activity-tab.active {
+      background: #c8ff00;
+      border-color: #c8ff00;
+      color: #000;
+    }
+    .activity-tab:hover:not(.active) {
+      border-color: #c8ff00;
+      color: #c8ff00;
+    }
+
     .demo-title {
       text-align: center;
-      font-size: 20px;
-      margin-bottom: 32px;
-      color: #c8ff00;
+      font-size: 18px;
+      margin-bottom: 24px;
+      color: #888;
+    }
+
+    .activity-section {
+      display: none;
+    }
+    .activity-section.active {
+      display: block;
     }
 
     .task-list {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 20px;
     }
 
-    /* ===== 双条件任务卡片 ===== */
-    .task-card-and {
+    /* ===== 通用任务卡片 ===== */
+    .task-card {
       background: #1a1a1a;
-      border: 1px solid #c8ff00;
+      border: 1px solid #333;
       border-radius: 16px;
       padding: 24px;
       display: flex;
@@ -43,8 +78,11 @@
       gap: 20px;
       position: relative;
     }
+    .task-card.highlight {
+      border-color: #c8ff00;
+    }
 
-    /* 左侧奖励区 */
+    /* 左侧奖励区 - 抽奖次数 */
     .task-reward {
       display: flex;
       flex-direction: column;
@@ -65,6 +103,44 @@
       white-space: nowrap;
     }
 
+    /* 左侧奖励区 - 常规奖励 */
+    .task-reward-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 100px;
+      padding-right: 20px;
+      border-right: 1px dashed #333;
+      gap: 8px;
+    }
+    .reward-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .reward-icon.token { background: linear-gradient(135deg, #ffd700 0%, #ff9500 100%); }
+    .reward-icon.points { background: linear-gradient(135deg, #00d4aa 0%, #00ff88 100%); }
+    .reward-icon.coupon { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); }
+    .reward-icon.vip { background: linear-gradient(135deg, #a55eea 0%, #8854d0 100%); }
+    .reward-icon.position { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+
+    .reward-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      text-align: center;
+    }
+    .reward-type {
+      font-size: 11px;
+      color: #888;
+      text-align: center;
+    }
+
     /* 双条件内容区 */
     .task-conditions {
       flex: 1;
@@ -81,7 +157,7 @@
       gap: 12px;
     }
     .condition-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 500;
       line-height: 1.4;
     }
@@ -127,14 +203,6 @@
       background: #b8ef00;
       transform: translateY(-1px);
     }
-    .condition-btn.outline {
-      background: transparent;
-      border: 1px solid #c8ff00;
-      color: #c8ff00;
-    }
-    .condition-btn.outline:hover {
-      background: rgba(200, 255, 0, 0.1);
-    }
     .condition-btn.done {
       background: #333;
       color: #4cd964;
@@ -142,6 +210,10 @@
     }
     .condition-btn.done::before {
       content: '✓ ';
+    }
+    .condition-btn.claim {
+      background: linear-gradient(135deg, #ff6b35 0%, #f7931a 100%);
+      color: #fff;
     }
 
     /* 且符号 */
@@ -164,8 +236,51 @@
       color: #fff;
     }
 
-    /* ===== 状态变体 ===== */
-    /* 单项完成状态 */
+    /* 单条件样式 */
+    .task-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .task-name {
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .task-desc {
+      font-size: 13px;
+      color: #888;
+    }
+    .task-progress {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .task-progress .progress-bar {
+      flex: 1;
+    }
+    .task-btn {
+      background: #c8ff00;
+      color: #000;
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .task-btn.claim {
+      background: linear-gradient(135deg, #ff6b35 0%, #f7931a 100%);
+      color: #fff;
+    }
+    .task-btn.done {
+      background: #333;
+      color: #666;
+      cursor: default;
+    }
+
+    /* 状态变体 */
     .condition-block.completed .condition-title {
       color: #4cd964;
     }
@@ -173,31 +288,13 @@
       color: #4cd964;
     }
 
-    /* ===== 普通单条件卡片（对比用） ===== */
-    .task-card-single {
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 16px;
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .task-card-single .task-info {
-      flex: 1;
-    }
-    .task-card-single .task-name {
-      font-size: 16px;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-    .task-card-single .task-progress {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .task-card-single .progress-bar {
-      flex: 1;
+    /* 分隔标题 */
+    .section-label {
+      font-size: 14px;
+      color: #666;
+      margin: 32px 0 16px;
+      padding-left: 12px;
+      border-left: 3px solid #c8ff00;
     }
 
     /* ===== 设计说明 ===== */
@@ -223,14 +320,19 @@
     .design-notes li strong {
       color: #fff;
     }
+    .design-notes .note-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px dashed #333;
+    }
 
     /* ===== 响应式 ===== */
     @media (max-width: 768px) {
-      .task-card-and {
+      .task-card {
         flex-direction: column;
         padding: 20px;
       }
-      .task-reward {
+      .task-reward, .task-reward-item {
         flex-direction: row;
         gap: 12px;
         border-right: none;
@@ -254,174 +356,288 @@
 </head>
 <body>
   <div class="container">
-    <h1 class="demo-title">任务卡片 - 且关系双条件</h1>
 
-    <div class="task-list">
+    <!-- 活动类型切换 -->
+    <div class="activity-tabs">
+      <button class="activity-tab active" onclick="showActivity('lottery')">抽奖活动</button>
+      <button class="activity-tab" onclick="showActivity('regular')">常规活动</button>
+    </div>
 
-      <!-- 双条件任务卡片 - 全部未完成 -->
-      <div class="task-card-and">
-        <div class="task-reward">
-          <div class="task-reward-num">1</div>
-          <div class="task-reward-label">抽奖次数</div>
+    <!-- ========== 抽奖活动 ========== -->
+    <div id="lotterySection" class="activity-section active">
+      <p class="demo-title">完成任务获得抽奖次数</p>
+
+      <div class="task-list">
+        <!-- 双条件任务 - 未完成 -->
+        <div class="task-card highlight">
+          <div class="task-reward">
+            <div class="task-reward-num">1</div>
+            <div class="task-reward-label">抽奖次数</div>
+          </div>
+          <div class="task-conditions">
+            <div class="condition-block">
+              <div class="condition-title">累计充值≥100 USDT</div>
+              <div class="condition-progress">
+                <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                <span class="progress-text">0/100 USDT</span>
+              </div>
+              <button class="condition-btn">去完成</button>
+            </div>
+            <div class="and-connector">
+              <div class="and-symbol">且</div>
+            </div>
+            <div class="condition-block">
+              <div class="condition-title">DNA/USDT累计现货交易 ≥ 100 USDT</div>
+              <div class="condition-progress">
+                <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                <span class="progress-text">0/100 USDT</span>
+              </div>
+              <button class="condition-btn">去完成</button>
+            </div>
+          </div>
         </div>
-        <div class="task-conditions">
-          <!-- 条件1 -->
-          <div class="condition-block">
-            <div class="condition-title">累计充值≥100 USDT</div>
-            <div class="condition-progress">
+
+        <!-- 双条件任务 - 单项完成 -->
+        <div class="task-card highlight">
+          <div class="task-reward">
+            <div class="task-reward-num">1</div>
+            <div class="task-reward-label">抽奖次数</div>
+          </div>
+          <div class="task-conditions">
+            <div class="condition-block completed">
+              <div class="condition-title">累计充值≥100 USDT</div>
+              <div class="condition-progress">
+                <div class="progress-bar"><div class="progress-fill done" style="width: 100%;"></div></div>
+                <span class="progress-text">100/100 USDT ✓</span>
+              </div>
+              <button class="condition-btn done">已完成</button>
+            </div>
+            <div class="and-connector">
+              <div class="and-symbol">且</div>
+            </div>
+            <div class="condition-block">
+              <div class="condition-title">DNA/USDT累计现货交易 ≥ 100 USDT</div>
+              <div class="condition-progress">
+                <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
+                <span class="progress-text">45/100 USDT</span>
+              </div>
+              <button class="condition-btn">去完成</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 单条件任务 -->
+        <div class="task-card">
+          <div class="task-reward">
+            <div class="task-reward-num">2</div>
+            <div class="task-reward-label">抽奖次数</div>
+          </div>
+          <div class="task-info">
+            <div class="task-name">邀请好友注册并完成交易</div>
+            <div class="task-desc">每成功邀请1人可获得2次抽奖机会</div>
+            <div class="task-progress">
+              <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+              <span class="progress-text">0/1 人</span>
+            </div>
+          </div>
+          <button class="task-btn">去完成</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 常规活动 ========== -->
+    <div id="regularSection" class="activity-section">
+      <p class="demo-title">完成任务直接获得奖励</p>
+
+      <div class="task-list">
+
+        <div class="section-label">Token 奖励</div>
+
+        <!-- Token奖励 - 双条件 -->
+        <div class="task-card highlight">
+          <div class="task-reward-item">
+            <div class="reward-icon token">🪙</div>
+            <div class="reward-value">50 DNA</div>
+            <div class="reward-type">Token 奖励</div>
+          </div>
+          <div class="task-conditions">
+            <div class="condition-block">
+              <div class="condition-title">纯入金≥500 USDT</div>
+              <div class="condition-progress">
+                <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+                <span class="progress-text">300/500 USDT</span>
+              </div>
+              <button class="condition-btn">去完成</button>
+            </div>
+            <div class="and-connector">
+              <div class="and-symbol">且</div>
+            </div>
+            <div class="condition-block">
+              <div class="condition-title">DNA/USDT累计交易 ≥ 1000 USDT</div>
+              <div class="condition-progress">
+                <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                <span class="progress-text">0/1000 USDT</span>
+              </div>
+              <button class="condition-btn">去完成</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Token奖励 - 可领取 -->
+        <div class="task-card" style="border-color: #ff9500;">
+          <div class="task-reward-item">
+            <div class="reward-icon token">🪙</div>
+            <div class="reward-value">100 DNA</div>
+            <div class="reward-type">Token 奖励</div>
+          </div>
+          <div class="task-info">
+            <div class="task-name">完成KYC认证</div>
+            <div class="task-desc">完成身份认证即可获得奖励</div>
+            <div class="task-progress">
+              <div class="progress-bar"><div class="progress-fill done" style="width: 100%;"></div></div>
+              <span class="progress-text" style="color: #4cd964;">已完成 ✓</span>
+            </div>
+          </div>
+          <button class="task-btn claim">领取奖励</button>
+        </div>
+
+        <div class="section-label">积分奖励</div>
+
+        <!-- 积分奖励 -->
+        <div class="task-card">
+          <div class="task-reward-item">
+            <div class="reward-icon points">⭐</div>
+            <div class="reward-value">100 积分</div>
+            <div class="reward-type">积分</div>
+          </div>
+          <div class="task-info">
+            <div class="task-name">连续交易7天</div>
+            <div class="task-desc">每天至少完成1笔交易</div>
+            <div class="task-progress">
+              <div class="progress-bar"><div class="progress-fill" style="width: 43%;"></div></div>
+              <span class="progress-text">3/7 天</span>
+            </div>
+          </div>
+          <button class="task-btn">去完成</button>
+        </div>
+
+        <div class="section-label">券类奖励</div>
+
+        <!-- 手续费抵扣券 -->
+        <div class="task-card">
+          <div class="task-reward-item">
+            <div class="reward-icon coupon">🎫</div>
+            <div class="reward-value">10 USDT</div>
+            <div class="reward-type">手续费抵扣券</div>
+          </div>
+          <div class="task-info">
+            <div class="task-name">首次现货交易 ≥100 USDT</div>
+            <div class="task-desc">完成首笔现货交易</div>
+            <div class="task-progress">
               <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
               <span class="progress-text">0/100 USDT</span>
             </div>
-            <button class="condition-btn">去完成</button>
           </div>
+          <button class="task-btn">去完成</button>
+        </div>
 
-          <!-- 且符号 -->
-          <div class="and-connector">
-            <div class="and-symbol">且</div>
+        <!-- VIP体验券 -->
+        <div class="task-card">
+          <div class="task-reward-item">
+            <div class="reward-icon vip">👑</div>
+            <div class="reward-value">7天</div>
+            <div class="reward-type">VIP等级体验券</div>
           </div>
-
-          <!-- 条件2 -->
-          <div class="condition-block">
-            <div class="condition-title">DNA/USDT累计现货交易 ≥ 100 USDT</div>
-            <div class="condition-progress">
-              <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
-              <span class="progress-text">0/100 USDT</span>
+          <div class="task-info">
+            <div class="task-name">邀请3位好友注册</div>
+            <div class="task-desc">好友需完成KYC认证</div>
+            <div class="task-progress">
+              <div class="progress-bar"><div class="progress-fill" style="width: 33%;"></div></div>
+              <span class="progress-text">1/3 人</span>
             </div>
-            <button class="condition-btn">去完成</button>
+          </div>
+          <button class="task-btn">去完成</button>
+        </div>
+
+        <!-- 仓位券 - 双条件 -->
+        <div class="task-card highlight">
+          <div class="task-reward-item">
+            <div class="reward-icon position">📊</div>
+            <div class="reward-value">500 USDT</div>
+            <div class="reward-type">现货仓位券</div>
+          </div>
+          <div class="task-conditions">
+            <div class="condition-block">
+              <div class="condition-title">关注官方Twitter账号</div>
+              <div class="condition-progress">
+                <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                <span class="progress-text">未完成</span>
+              </div>
+              <button class="condition-btn">去完成</button>
+            </div>
+            <div class="and-connector">
+              <div class="and-symbol">且</div>
+            </div>
+            <div class="condition-block">
+              <div class="condition-title">RWA交易量 ≥ 500 USDT</div>
+              <div class="condition-progress">
+                <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                <span class="progress-text">0/500 USDT</span>
+              </div>
+              <button class="condition-btn">去完成</button>
+            </div>
           </div>
         </div>
+
       </div>
-
-      <!-- 双条件任务卡片 - 合约交易版本 -->
-      <div class="task-card-and">
-        <div class="task-reward">
-          <div class="task-reward-num">1</div>
-          <div class="task-reward-label">抽奖次数</div>
-        </div>
-        <div class="task-conditions">
-          <!-- 条件1 -->
-          <div class="condition-block">
-            <div class="condition-title">累计充值≥100 USDT</div>
-            <div class="condition-progress">
-              <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
-              <span class="progress-text">0/100 USDT</span>
-            </div>
-            <button class="condition-btn">去完成</button>
-          </div>
-
-          <!-- 且符号 -->
-          <div class="and-connector">
-            <div class="and-symbol">且</div>
-          </div>
-
-          <!-- 条件2 -->
-          <div class="condition-block">
-            <div class="condition-title">DNAUSDT累计合约交易 ≥ 500 USDT</div>
-            <div class="condition-progress">
-              <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
-              <span class="progress-text">0/500 USDT</span>
-            </div>
-            <button class="condition-btn">去完成</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 双条件任务卡片 - 单项完成状态 -->
-      <div class="task-card-and">
-        <div class="task-reward">
-          <div class="task-reward-num">1</div>
-          <div class="task-reward-label">抽奖次数</div>
-        </div>
-        <div class="task-conditions">
-          <!-- 条件1 - 已完成 -->
-          <div class="condition-block completed">
-            <div class="condition-title">累计充值≥100 USDT</div>
-            <div class="condition-progress">
-              <div class="progress-bar"><div class="progress-fill done" style="width: 100%;"></div></div>
-              <span class="progress-text">100/100 USDT ✓</span>
-            </div>
-            <button class="condition-btn done">已完成</button>
-          </div>
-
-          <!-- 且符号 -->
-          <div class="and-connector">
-            <div class="and-symbol">且</div>
-          </div>
-
-          <!-- 条件2 - 进行中 -->
-          <div class="condition-block">
-            <div class="condition-title">DNA/USDT累计现货交易 ≥ 100 USDT</div>
-            <div class="condition-progress">
-              <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
-              <span class="progress-text">45/100 USDT</span>
-            </div>
-            <button class="condition-btn">去完成</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 双条件任务卡片 - 全部完成可领取 -->
-      <div class="task-card-and" style="border-color: #ff9500;">
-        <div class="task-reward">
-          <div class="task-reward-num" style="color: #ff9500;">1</div>
-          <div class="task-reward-label">抽奖次数</div>
-        </div>
-        <div class="task-conditions">
-          <!-- 条件1 - 已完成 -->
-          <div class="condition-block completed">
-            <div class="condition-title">累计充值≥100 USDT</div>
-            <div class="condition-progress">
-              <div class="progress-bar"><div class="progress-fill done" style="width: 100%;"></div></div>
-              <span class="progress-text">100/100 USDT ✓</span>
-            </div>
-            <button class="condition-btn done">已完成</button>
-          </div>
-
-          <!-- 且符号 -->
-          <div class="and-connector">
-            <div class="and-symbol" style="background: #ff9500; color: #000;">且</div>
-          </div>
-
-          <!-- 条件2 - 已完成 -->
-          <div class="condition-block completed">
-            <div class="condition-title">DNA/USDT累计现货交易 ≥ 100 USDT</div>
-            <div class="condition-progress">
-              <div class="progress-bar"><div class="progress-fill done" style="width: 100%;"></div></div>
-              <span class="progress-text">100/100 USDT ✓</span>
-            </div>
-            <button class="condition-btn" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931a 100%); color: #fff;">领取奖励</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 对比：普通单条件卡片 -->
-      <div class="task-card-single" style="opacity: 0.6; margin-top: 32px;">
-        <div class="task-reward">
-          <div class="task-reward-num">1</div>
-          <div class="task-reward-label">抽奖次数</div>
-        </div>
-        <div class="task-info">
-          <div class="task-name">首次现货交易 ≥100 USDT（单条件对比）</div>
-          <div class="task-progress">
-            <div class="progress-bar"><div class="progress-fill" style="width: 30%;"></div></div>
-            <span class="progress-text">30/100 USDT</span>
-          </div>
-        </div>
-        <button class="condition-btn outline">去完成</button>
-      </div>
-
     </div>
 
     <!-- 设计说明 -->
     <div class="design-notes">
       <h3>📐 设计说明</h3>
       <ul>
-        <li><strong>双进度区</strong>：将任务卡片水平划分为两个子条件区，各自展示独立进度</li>
-        <li><strong>"且"符号</strong>：圆形灰色背景的"且"字，清晰表达必须双项达标的逻辑</li>
-        <li><strong>独立引导按钮</strong>：每个条件配独立的"去完成"按钮，跳转到对应功能页</li>
-        <li><strong>状态流转</strong>：未开始 → 单项完成 → 全部达成（按钮高亮"领取奖励"）</li>
+        <li><strong>活动类型</strong>：抽奖活动（奖励=抽奖次数）vs 常规活动（奖励=Token/积分/券）</li>
+        <li><strong>双条件展示</strong>：水平并排 + "且"符号，清晰表达 AND 逻辑</li>
+        <li><strong>独立按钮</strong>：每个条件配独立的"去完成"按钮</li>
+        <li><strong>状态流转</strong>：未开始 → 进行中 → 全部达成（领取奖励）</li>
       </ul>
+      <div class="note-section">
+        <h3>🎁 奖励类型</h3>
+        <ul>
+          <li><strong>Token 奖励</strong>：发放指定代币（如 DNA）</li>
+          <li><strong>积分</strong>：平台积分，可用于兑换</li>
+          <li><strong>现货手续费抵扣券</strong>：抵扣交易手续费</li>
+          <li><strong>VIP等级体验券</strong>：限时体验高级会员特权</li>
+          <li><strong>现货仓位券</strong>：增加交易仓位额度</li>
+        </ul>
+      </div>
+      <div class="note-section">
+        <h3>📋 触发条件类型</h3>
+        <ul>
+          <li>KYC、FTT、交易额、纯入金、邀请人数</li>
+          <li>下载APP、关注账号、连续入金、连续交易</li>
+          <li>RWA交易量、社区任务</li>
+        </ul>
+      </div>
     </div>
   </div>
+
+  <script>
+    function showActivity(type) {
+      document.querySelectorAll('.activity-tab').forEach(function(tab, i) {
+        tab.classList.remove('active');
+        if ((type === 'lottery' && i === 0) || (type === 'regular' && i === 1)) {
+          tab.classList.add('active');
+        }
+      });
+      document.getElementById('lotterySection').classList.remove('active');
+      document.getElementById('regularSection').classList.remove('active');
+      if (type === 'lottery') {
+        document.getElementById('lotterySection').classList.add('active');
+      } else {
+        document.getElementById('regularSection').classList.add('active');
+      }
+    }
+  </script>
 </body>
 </html>
