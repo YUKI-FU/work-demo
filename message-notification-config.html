@@ -76,15 +76,6 @@
     background: #c8ff00;
     border-radius: 2px;
   }
-  .tab-dot {
-    display: inline-block;
-    width: 5px; height: 5px; border-radius: 50%;
-    background: #c8ff00;
-    margin-left: 5px;
-    vertical-align: middle;
-    opacity: 0;
-  }
-  .tab.has-on .tab-dot { opacity: 1; }
 
   /* ===== 分类列表 ===== */
   .cat {
@@ -201,17 +192,6 @@
 
   .switch:focus-visible { outline: 2px solid #c8ff00; outline-offset: 2px; }
 
-  /* ===== 底部提示 ===== */
-  .panel-foot {
-    padding: 14px 20px 18px;
-    font-size: 12px;
-    color: #4f4f4f;
-    line-height: 1.5;
-    border-top: 1px solid #232323;
-    background: #141414;
-  }
-  .panel-foot b { color: #777; font-weight: 500; }
-
   /* ===== 设计说明 ===== */
   .notes {
     max-width: 460px;
@@ -252,15 +232,11 @@
   </div>
 
   <div class="tabs">
-    <button class="tab active" data-tab="inapp">站内信<span class="tab-dot"></span></button>
-    <button class="tab" data-tab="email">邮件<span class="tab-dot"></span></button>
+    <button class="tab active" data-tab="inapp">站内信</button>
+    <button class="tab" data-tab="email">邮件</button>
   </div>
 
   <div id="list"></div>
-
-  <div class="panel-foot">
-    <b>账号安全与资产变动通知</b>属于必达消息，不受此处开关影响。
-  </div>
 </div>
 
 <div class="notes">
@@ -269,7 +245,7 @@
     <li><b>两级结构</b>：一级分类控制整组，二级分类逐个控制；二级右侧小字列出该组包含的消息项，不再单独做第三层</li>
     <li><b>父级开关三态</b>：全开=亮色、部分开启=黄色横杠半选、全关=灰；点一下按"全开 ⇄ 全关"切换</li>
     <li><b>父级显示 x/y</b>：不用展开也能看出这组开了几项</li>
-    <li><b>站内信 / 邮件各自独立</b>：两个通道分别配置，tab 上有小圆点表示该通道有开启项</li>
+    <li><b>站内信 / 邮件各自独立</b>：两个通道分别配置，互不影响</li>
     <li><b>默认展开</b>：使用频率高的组（奖励、社区）默认打开，低频组（行情、活动推送）默认收起</li>
   </ul>
 </div>
@@ -365,7 +341,6 @@
 
     list.innerHTML = html;
     hydrate();
-    syncTabs();
   }
 
   function countOn(tab, catKey) {
@@ -384,14 +359,6 @@
     master.classList.toggle('partial', on > 0 && on < total);
 
     catEl.querySelector('.cat-meta').textContent = on + '/' + total;
-  }
-
-  function syncTabs() {
-    document.querySelectorAll('.tab').forEach(function (t) {
-      var tab = t.dataset.tab;
-      var any = CATS.some(function (c) { return countOn(tab, c.key) > 0; });
-      t.classList.toggle('has-on', any);
-    });
   }
 
   function hydrate() {
@@ -443,7 +410,6 @@
       sw.setAttribute('aria-checked', String(on));
     });
     syncCat(catEl);
-    syncTabs();
   }
 
   /* tab 切换 */
