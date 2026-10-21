@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>消息通知配置 · 交互原型</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d0d0d;
+    color: #eee;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding: 32px 16px 64px;
+  }
+
+  .page-title {
+    max-width: 460px;
+    margin: 0 auto 20px;
+    font-size: 13px;
+    color: #666;
+    letter-spacing: .4px;
+  }
+
+  /* ===== 面板 ===== */
+  .panel {
+    max-width: 460px;
+    margin: 0 auto;
+    background: #161616;
+    border: 1px solid #262626;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 0;
+  }
+  .panel-title { font-size: 18px; font-weight: 600; }
+  .close-btn {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border: none; background: none; color: #777;
+    font-size: 20px; cursor: pointer; border-radius: 6px;
+    transition: background .2s, color .2s;
+  }
+  .close-btn:hover { background: #222; color: #ccc; }
+
+  /* ===== 站内信 / 邮件 ===== */
+  .tabs {
+    display: flex;
+    gap: 24px;
+    padding: 16px 20px 0;
+    border-bottom: 1px solid #232323;
+  }
+  .tab {
+    position: relative;
+    padding: 0 0 12px;
+    font-size: 15px;
+    color: #777;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color .2s;
+  }
+  .tab:hover { color: #aaa; }
+  .tab.active { color: #fff; font-weight: 600; }
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 2px;
+    background: #c8ff00;
+    border-radius: 2px;
+  }
+  .tab-dot {
+    display: inline-block;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #c8ff00;
+    margin-left: 5px;
+    vertical-align: middle;
+    opacity: 0;
+  }
+  .tab.has-on .tab-dot { opacity: 1; }
+
+  /* ===== 分类列表 ===== */
+  .cat {
+    border-bottom: 1px solid #232323;
+  }
+  .cat:last-child { border-bottom: none; }
+
+  .cat-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background .18s;
+  }
+  .cat-head:hover { background: #1b1b1b; }
+
+  .cat-name {
+    font-size: 15px;
+    color: #ddd;
+    flex: 1;
+    min-width: 0;
+  }
+  .cat-meta {
+    font-size: 12px;
+    color: #5c5c5c;
+    font-variant-numeric: tabular-nums;
+  }
+  .cat.open .cat-meta { color: #8a8a8a; }
+
+  .chev {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    position: relative;
+    transition: transform .25s ease;
+  }
+  .chev::before,
+  .chev::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    width: 8px; height: 1.5px;
+    background: #666;
+    border-radius: 1px;
+  }
+  .chev::before { left: 1px; transform: rotate(45deg); }
+  .chev::after  { right: 1px; transform: rotate(-45deg); }
+  .cat.open .chev { transform: rotate(180deg); }
+  .cat.open .chev::before, .cat.open .chev::after { background: #aaa; }
+
+  /* ===== 二级：展开区域 ===== */
+  .cat-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .28s ease;
+    background: #131313;
+  }
+  .cat.open .cat-body { max-height: 600px; }
+
+  .sub {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px 14px 20px;
+    border-top: 1px solid #1d1d1d;
+  }
+  .sub-text { flex: 1; min-width: 0; }
+  .sub-name { font-size: 14px; color: #ccc; }
+  .sub-desc {
+    font-size: 12px;
+    color: #5a5a5a;
+    margin-top: 4px;
+    line-height: 1.45;
+  }
+  .sub.off .sub-name { color: #6b6b6b; }
+  .sub.off .sub-desc { color: #464646; }
+
+  /* ===== 开关 ===== */
+  .switch {
+    position: relative;
+    width: 42px; height: 24px;
+    border-radius: 12px;
+    background: #2e2e2e;
+    flex-shrink: 0;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    transition: background .22s ease;
+  }
+  .switch .knob {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: #6e6e6e;
+    transition: transform .22s cubic-bezier(.4,0,.2,1), background .22s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .switch.on { background: #c8ff00; }
+  .switch.on .knob { transform: translateX(18px); background: #000; }
+
+  /* 半选：部分子项开启 */
+  .switch.partial { background: #4a4a2a; }
+  .switch.partial .knob { background: #c8ff00; }
+  .switch.partial .knob::after {
+    content: '';
+    width: 8px; height: 2px;
+    border-radius: 1px;
+    background: #000;
+  }
+
+  .switch:focus-visible { outline: 2px solid #c8ff00; outline-offset: 2px; }
+
+  /* ===== 底部提示 ===== */
+  .panel-foot {
+    padding: 14px 20px 18px;
+    font-size: 12px;
+    color: #4f4f4f;
+    line-height: 1.5;
+    border-top: 1px solid #232323;
+    background: #141414;
+  }
+  .panel-foot b { color: #777; font-weight: 500; }
+
+  /* ===== 设计说明 ===== */
+  .notes {
+    max-width: 460px;
+    margin: 28px auto 0;
+    padding: 20px;
+    background: #161616;
+    border: 1px dashed #333;
+    border-radius: 12px;
+  }
+  .notes h3 { font-size: 14px; margin-bottom: 12px; color: #ccc; }
+  .notes ul { padding-left: 18px; }
+  .notes li {
+    font-size: 12.5px;
+    color: #7d7d7d;
+    line-height: 1.75;
+    margin-bottom: 4px;
+  }
+  .notes li b { color: #b0b0b0; font-weight: 500; }
+
+  @media (max-width: 420px) {
+    body { padding: 16px 12px 48px; }
+    .cat-head { padding: 16px 16px; }
+    .sub { padding: 13px 16px; }
+    .panel-head { padding: 16px 16px 0; }
+    .tabs { padding: 14px 16px 0; }
+    .panel-foot { padding: 12px 16px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-title">消息通知配置 · 站内信 / 邮件双通道</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-title">通知设置</div>
+    <button class="close-btn" aria-label="关闭">✕</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="inapp">站内信<span class="tab-dot"></span></button>
+    <button class="tab" data-tab="email">邮件<span class="tab-dot"></span></button>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="panel-foot">
+    <b>账号安全与资产变动通知</b>属于必达消息，不受此处开关影响。
+  </div>
+</div>
+
+<div class="notes">
+  <h3>📐 设计说明</h3>
+  <ul>
+    <li><b>两级结构</b>：一级分类控制整组，二级分类逐个控制；二级右侧小字列出该组包含的消息项，不再单独做第三层</li>
+    <li><b>父级开关三态</b>：全开=亮色、部分开启=黄色横杠半选、全关=灰；点一下按"全开 ⇄ 全关"切换</li>
+    <li><b>父级显示 x/y</b>：不用展开也能看出这组开了几项</li>
+    <li><b>站内信 / 邮件各自独立</b>：两个通道分别配置，tab 上有小圆点表示该通道有开启项</li>
+    <li><b>默认展开</b>：使用频率高的组（奖励、社区）默认打开，低频组（行情、活动推送）默认收起</li>
+  </ul>
+</div>
+
+<script>
+  var CATS = [
+    {
+      key: 'market',
+      name: '行情推送',
+      items: [
+        { key: 'spot', name: '现货', desc: '行情涨跌幅达到预警条件时提醒' }
+      ]
+    },
+    {
+      key: 'reward',
+      name: '奖励推送',
+      items: [
+        { key: 'reward-center', name: '活动中心', desc: '活动奖励到账、抽奖奖励到账' },
+        { key: 'reward-welfare', name: '福利中心', desc: '签到奖励到账、商城兑换到账、积分即将清零' },
+        { key: 'reward-airdrop', name: '空投', desc: '空投奖励到账' }
+      ]
+    },
+    {
+      key: 'activity',
+      name: '活动推送',
+      items: [
+        { key: 'act-center', name: '活动中心', desc: '新活动上线推送' },
+        { key: 'act-welfare', name: '福利中心', desc: '福利任务上新、每日签到提醒' }
+      ]
+    },
+    {
+      key: 'community',
+      name: '社区推送',
+      items: [
+        { key: 'c-interact', name: '互动通知', desc: '帖子被转发、评论回复' },
+        { key: 'c-follow', name: '关注通知', desc: '关注的用户发帖、新关注提醒' },
+        { key: 'c-audit', name: '内容审核通知', desc: '帖子违规删除 / 下架、评论敏感行为' },
+        { key: 'c-punish', name: '账号处罚通知', desc: '违规禁言、违规封禁' }
+      ]
+    }
+  ];
+
+  /* 每个通道的开关状态 */
+  var STATE = {
+    inapp: {
+      market:  [1],
+      reward:  [1, 1, 0],
+      activity:[0, 0],
+      community:[1, 1, 1, 1]
+    },
+    email: {
+      market:  [0],
+      reward:  [1, 0, 1],
+      activity:[0, 0],
+      community:[0, 0, 1, 1]
+    }
+  };
+
+  /* 默认展开的分类 */
+  var OPEN = { inapp: ['reward', 'community'], email: ['reward'] };
+
+  var currentTab = 'inapp';
+
+  function render(tab) {
+    var list = document.getElementById('list');
+    var html = '';
+
+    CATS.forEach(function (cat) {
+      var isOpen = OPEN[tab].indexOf(cat.key) >= 0;
+      html += '<div class="cat' + (isOpen ? ' open' : '') + '" data-cat="' + cat.key + '">';
+      html += '  <div class="cat-head">';
+      html += '    <span class="cat-name">' + cat.name + '</span>';
+      html += '    <span class="cat-meta"></span>';
+      html += '    <span class="chev"></span>';
+      html += '    <button class="switch master-switch" role="switch" aria-label="' + cat.name + ' 全部开关"></button>';
+      html += '  </div>';
+      html += '  <div class="cat-body">';
+
+      cat.items.forEach(function (item, i) {
+        var on = STATE[tab][cat.key][i] === 1;
+        html += '    <div class="sub' + (on ? '' : ' off') + '" data-idx="' + i + '">';
+        html += '      <div class="sub-text">';
+        html += '        <div class="sub-name">' + item.name + '</div>';
+        html += '        <div class="sub-desc">' + item.desc + '</div>';
+        html += '      </div>';
+        html += '      <button class="switch sub-switch' + (on ? ' on' : '') + '" role="switch" aria-checked="' + on + '"></button>';
+        html += '    </div>';
+      });
+
+      html += '  </div>';
+      html += '</div>';
+    });
+
+    list.innerHTML = html;
+    hydrate();
+    syncTabs();
+  }
+
+  function countOn(tab, catKey) {
+    return STATE[tab][catKey].reduce(function (a, b) { return a + b; }, 0);
+  }
+
+  /* 刷新每个分类的 master 状态和 x/y 文案 */
+  function syncCat(catEl) {
+    var catKey = catEl.dataset.cat;
+    var arr = STATE[currentTab][catKey];
+    var on = countOn(currentTab, catKey);
+    var total = arr.length;
+
+    var master = catEl.querySelector('.master-switch');
+    master.classList.toggle('on', on === total);
+    master.classList.toggle('partial', on > 0 && on < total);
+
+    catEl.querySelector('.cat-meta').textContent = on + '/' + total;
+  }
+
+  function syncTabs() {
+    document.querySelectorAll('.tab').forEach(function (t) {
+      var tab = t.dataset.tab;
+      var any = CATS.some(function (c) { return countOn(tab, c.key) > 0; });
+      t.classList.toggle('has-on', any);
+    });
+  }
+
+  function hydrate() {
+    document.querySelectorAll('.cat').forEach(function (catEl) {
+      syncCat(catEl);
+
+      /* 展开 / 收起：点整行 */
+      catEl.querySelector('.cat-head').addEventListener('click', function () {
+        var isOpen = catEl.classList.toggle('open');
+        var list = OPEN[currentTab];
+        var idx = list.indexOf(catEl.dataset.cat);
+        if (isOpen && idx < 0) list.push(catEl.dataset.cat);
+        if (!isOpen && idx >= 0) list.splice(idx, 1);
+      });
+
+      /* 一级开关：全开 / 全关，不触发展开 */
+      catEl.querySelector('.master-switch').addEventListener('click', function (e) {
+        e.stopPropagation();
+        var catKey = catEl.dataset.cat;
+        var arr = STATE[currentTab][catKey];
+        var allOn = arr.every(function (v) { return v === 1; });
+        var next = allOn ? 0 : 1;
+        arr.forEach(function (_, i) { arr[i] = next; });
+        repaintCat(catEl);
+      });
+
+      /* 二级开关 */
+      catEl.querySelectorAll('.sub-switch').forEach(function (sw) {
+        sw.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var i = +sw.closest('.sub').dataset.idx;
+          var catKey = catEl.dataset.cat;
+          STATE[currentTab][catKey][i] = STATE[currentTab][catKey][i] ? 0 : 1;
+          repaintCat(catEl);
+        });
+      });
+    });
+  }
+
+  /* 局部重绘，保留展开动画 */
+  function repaintCat(catEl) {
+    var catKey = catEl.dataset.cat;
+    catEl.querySelectorAll('.sub').forEach(function (sub) {
+      var i = +sub.dataset.idx;
+      var on = STATE[currentTab][catKey][i] === 1;
+      sub.classList.toggle('off', !on);
+      var sw = sub.querySelector('.sub-switch');
+      sw.classList.toggle('on', on);
+      sw.setAttribute('aria-checked', String(on));
+    });
+    syncCat(catEl);
+    syncTabs();
+  }
+
+  /* tab 切换 */
+  document.querySelectorAll('.tab').forEach(function (tabBtn) {
+    tabBtn.addEventListener('click', function () {
+      currentTab = tabBtn.dataset.tab;
+      document.querySelectorAll('.tab').forEach(function (t) {
+        t.classList.toggle('active', t === tabBtn);
+      });
+      render(currentTab);
+    });
+  });
+
+  render(currentTab);
+</script>
+</body>
+</html>
