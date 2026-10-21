@@ -359,6 +359,7 @@
     .ir-status { font-size: 12px; text-align: right; white-space: nowrap; }
     .ir-status.ok { color: #4cd964; }
     .ir-status.pending { color: #888; }
+    .ir-status.registered { color: #5c5c5c; }
 
     .invite-empty {
       font-size: 12px; color: #555; text-align: center;
@@ -631,7 +632,51 @@
                 <div class="ir-status pending">进行中</div>
               </div>
 
-              <div class="invite-empty">还有 3 位好友已通过链接注册，尚未产生进度</div>
+              <!-- 仅注册组（时间倒序） -->
+              <div class="invitee-row">
+                <div class="ir-user">
+                  <div class="ir-avatar" style="background:#8e8e8e;">L</div>
+                  <div style="min-width:0;">
+                    <div class="ir-name">lin***02</div>
+                    <div class="ir-time">10-20 11:18 注册</div>
+                  </div>
+                </div>
+                <div class="ir-conds">
+                  <span class="ir-cond wait">KYC 未认证</span>
+                  <span class="ir-cond wait">充值 0/100 U</span>
+                </div>
+                <div class="ir-status registered">仅注册</div>
+              </div>
+
+              <div class="invitee-row">
+                <div class="ir-user">
+                  <div class="ir-avatar" style="background:#9b8ec4;">0x</div>
+                  <div style="min-width:0;">
+                    <div class="ir-name">0x4b…e71</div>
+                    <div class="ir-time">10-20 09:42 注册</div>
+                  </div>
+                </div>
+                <div class="ir-conds">
+                  <span class="ir-cond wait">KYC 未认证</span>
+                  <span class="ir-cond wait">充值 0/100 U</span>
+                </div>
+                <div class="ir-status registered">仅注册</div>
+              </div>
+
+              <div class="invitee-row">
+                <div class="ir-user">
+                  <div class="ir-avatar" style="background:#6ea8a0;">S</div>
+                  <div style="min-width:0;">
+                    <div class="ir-name">sun***ang</div>
+                    <div class="ir-time">10-19 23:06 注册</div>
+                  </div>
+                </div>
+                <div class="ir-conds">
+                  <span class="ir-cond wait">KYC 未认证</span>
+                  <span class="ir-cond wait">充值 0/100 U</span>
+                </div>
+                <div class="ir-status registered">仅注册</div>
+              </div>
             </div>
           </div>
         </div>
@@ -835,7 +880,34 @@
                 <div class="ir-status pending">进行中</div>
               </div>
 
-              <div class="invite-empty">还有 2 位好友已通过链接注册，尚未产生进度</div>
+              <!-- 仅注册组（时间倒序） -->
+              <div class="invitee-row">
+                <div class="ir-user">
+                  <div class="ir-avatar" style="background:#9b8ec4;">0x</div>
+                  <div style="min-width:0;">
+                    <div class="ir-name">0x4b…e71</div>
+                    <div class="ir-time">10-20 09:42 注册</div>
+                  </div>
+                </div>
+                <div class="ir-conds">
+                  <span class="ir-cond wait">KYC 未认证</span>
+                </div>
+                <div class="ir-status registered">仅注册</div>
+              </div>
+
+              <div class="invitee-row">
+                <div class="ir-user">
+                  <div class="ir-avatar" style="background:#6ea8a0;">S</div>
+                  <div style="min-width:0;">
+                    <div class="ir-name">sun***ang</div>
+                    <div class="ir-time">10-19 23:06 注册</div>
+                  </div>
+                </div>
+                <div class="ir-conds">
+                  <span class="ir-cond wait">KYC 未认证</span>
+                </div>
+                <div class="ir-status registered">仅注册</div>
+              </div>
             </div>
           </div>
         </div>
@@ -882,7 +954,7 @@
         <li><strong>独立按钮</strong>：每个条件配独立的"去完成"按钮</li>
         <li><strong>状态流转</strong>：未开始 → 进行中 → 全部达成（领取奖励）</li>
         <li><strong>邀请任务</strong>：卡片下方挂可展开的"被邀请人明细"，聚合进度看 3/5，展开看每人卡在哪</li>
-        <li><strong>排序规则</strong>：① 已达标置顶 → 进行中居中 → 未开始沉底；② 同状态组内按注册时间倒序</li>
+        <li><strong>排序规则</strong>：① 已达标置顶 → 进行中居中 → 仅注册沉底；② 同状态组内按注册时间倒序；③ 未产生进度的好友也完整展示（头像、名称、注册时间、未完成条件），状态标注"仅注册"而不是折叠成一行统计</li>
       </ul>
       <div class="note-section">
         <h3>🎁 奖励类型</h3>
