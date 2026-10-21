@@ -356,6 +356,22 @@
     .ir-cond.fail { background: rgba(255, 107, 107, 0.1); color: #ff6b6b; }
     .ir-cond.wait { background: rgba(255, 255, 255, 0.05); color: #777; }
 
+    /* 平台关注类条件：带平台标识 */
+    .ir-cond.pf {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding-left: 4px;
+    }
+    .ir-cond.pf .pf-badge {
+      width: 14px; height: 14px; border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 700;
+    }
+    .ir-cond.pf .pf-badge.x { background: #fff; color: #000; }
+    .ir-cond.pf .pf-badge.tg { background: #29a9eb; color: #fff; }
+    .ir-cond.pf .pf-badge.dc { background: #5865f2; color: #fff; }
+    .ir-cond.pf.ok .pf-badge { opacity: 1; }
+    .ir-cond.pf.fail .pf-badge, .ir-cond.pf.wait .pf-badge { opacity: 0.45; }
+
     .ir-status { font-size: 12px; text-align: right; white-space: nowrap; }
     .ir-status.ok { color: #4cd964; }
     .ir-status.pending { color: #888; }
@@ -536,8 +552,8 @@
               <div class="task-reward-label">抽奖次数</div>
             </div>
             <div class="task-info">
-              <div class="task-name">邀请好友注册并完成交易</div>
-              <div class="task-desc">好友需完成 KYC 且累计充值 ≥ 100 USDT</div>
+              <div class="task-name">邀请好友注册并完成社区任务</div>
+              <div class="task-desc">好友需完成 KYC、充值 ≥ 100 USDT、关注 X 和 Telegram、社区点赞 3 次</div>
               <div class="task-progress">
                 <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
                 <span class="progress-text">3/5 人达标</span>
@@ -567,6 +583,9 @@
                 <div class="ir-conds">
                   <span class="ir-cond ok">KYC ✓</span>
                   <span class="ir-cond ok">充值 100 U ✓</span>
+                  <span class="ir-cond pf ok"><span class="pf-badge x">X</span>已关注 ✓</span>
+                  <span class="ir-cond pf ok"><span class="pf-badge tg">TG</span>已关注 ✓</span>
+                  <span class="ir-cond ok">点赞 3/3 ✓</span>
                 </div>
                 <div class="ir-status ok">已达标</div>
               </div>
@@ -582,6 +601,9 @@
                 <div class="ir-conds">
                   <span class="ir-cond ok">KYC ✓</span>
                   <span class="ir-cond ok">充值 120 U ✓</span>
+                  <span class="ir-cond pf ok"><span class="pf-badge x">X</span>已关注 ✓</span>
+                  <span class="ir-cond pf ok"><span class="pf-badge tg">TG</span>已关注 ✓</span>
+                  <span class="ir-cond ok">点赞 3/3 ✓</span>
                 </div>
                 <div class="ir-status ok">已达标</div>
               </div>
@@ -597,6 +619,9 @@
                 <div class="ir-conds">
                   <span class="ir-cond ok">KYC ✓</span>
                   <span class="ir-cond ok">充值 150 U ✓</span>
+                  <span class="ir-cond pf ok"><span class="pf-badge x">X</span>已关注 ✓</span>
+                  <span class="ir-cond pf ok"><span class="pf-badge tg">TG</span>已关注 ✓</span>
+                  <span class="ir-cond ok">点赞 3/3 ✓</span>
                 </div>
                 <div class="ir-status ok">已达标</div>
               </div>
@@ -613,6 +638,9 @@
                 <div class="ir-conds">
                   <span class="ir-cond wait">KYC 未认证</span>
                   <span class="ir-cond fail">充值 0/100 U</span>
+                  <span class="ir-cond pf ok"><span class="pf-badge x">X</span>已关注 ✓</span>
+                  <span class="ir-cond pf wait"><span class="pf-badge tg">TG</span>未关注</span>
+                  <span class="ir-cond fail">点赞 0/3</span>
                 </div>
                 <div class="ir-status pending">进行中</div>
               </div>
@@ -628,6 +656,9 @@
                 <div class="ir-conds">
                   <span class="ir-cond ok">KYC ✓</span>
                   <span class="ir-cond fail">充值 60/100 U</span>
+                  <span class="ir-cond pf ok"><span class="pf-badge x">X</span>已关注 ✓</span>
+                  <span class="ir-cond pf ok"><span class="pf-badge tg">TG</span>已关注 ✓</span>
+                  <span class="ir-cond fail">点赞 2/3</span>
                 </div>
                 <div class="ir-status pending">进行中</div>
               </div>
@@ -644,6 +675,9 @@
                 <div class="ir-conds">
                   <span class="ir-cond wait">KYC 未认证</span>
                   <span class="ir-cond wait">充值 0/100 U</span>
+                  <span class="ir-cond pf wait"><span class="pf-badge x">X</span>未关注</span>
+                  <span class="ir-cond pf wait"><span class="pf-badge tg">TG</span>未关注</span>
+                  <span class="ir-cond wait">点赞 0/3</span>
                 </div>
                 <div class="ir-status registered">仅注册</div>
               </div>
@@ -659,6 +693,9 @@
                 <div class="ir-conds">
                   <span class="ir-cond wait">KYC 未认证</span>
                   <span class="ir-cond wait">充值 0/100 U</span>
+                  <span class="ir-cond pf wait"><span class="pf-badge x">X</span>未关注</span>
+                  <span class="ir-cond pf wait"><span class="pf-badge tg">TG</span>未关注</span>
+                  <span class="ir-cond wait">点赞 0/3</span>
                 </div>
                 <div class="ir-status registered">仅注册</div>
               </div>
@@ -674,6 +711,9 @@
                 <div class="ir-conds">
                   <span class="ir-cond wait">KYC 未认证</span>
                   <span class="ir-cond wait">充值 0/100 U</span>
+                  <span class="ir-cond pf wait"><span class="pf-badge x">X</span>未关注</span>
+                  <span class="ir-cond pf wait"><span class="pf-badge tg">TG</span>未关注</span>
+                  <span class="ir-cond wait">点赞 0/3</span>
                 </div>
                 <div class="ir-status registered">仅注册</div>
               </div>
@@ -955,6 +995,7 @@
         <li><strong>状态流转</strong>：未开始 → 进行中 → 全部达成（领取奖励）</li>
         <li><strong>邀请任务</strong>：卡片下方挂可展开的"被邀请人明细"，聚合进度看 3/5，展开看每人卡在哪</li>
         <li><strong>排序规则</strong>：① 已达标置顶 → 进行中居中 → 仅注册沉底；② 同状态组内按注册时间倒序；③ 未产生进度的好友也完整展示（头像、名称、注册时间、未完成条件），状态标注"仅注册"而不是折叠成一行统计</li>
+        <li><strong>被邀请人条件里的关注/社区项</strong>：每个条件一枚 chip，关注类带平台小标（X 白、Telegram 蓝、Discord 紫）；已关注绿字 + ✓、未关注灰字、计数类直接写"点赞 2/3"，三态一眼可比</li>
       </ul>
       <div class="note-section">
         <h3>🎁 奖励类型</h3>
