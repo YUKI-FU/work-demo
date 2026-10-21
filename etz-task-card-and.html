@@ -288,6 +288,55 @@
       color: #4cd964;
     }
 
+    /* ===== 关注/社区类任务：平台清单 ===== */
+    .social-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .social-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      border: 1px solid #2e2e2e;
+      background: #191919;
+      color: #bbb;
+      white-space: nowrap;
+    }
+    .social-item .si-icon {
+      width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #000;
+    }
+    .social-item .si-icon.x { background: #fff; color: #000; }
+    .social-item .si-icon.tg { background: #29a9eb; color: #fff; }
+    .social-item .si-icon.dc { background: #5865f2; color: #fff; }
+    .social-item .si-icon.li { background: #ff7a00; color: #fff; }
+
+    .social-item.followed {
+      border-color: rgba(76, 217, 100, 0.45);
+      background: rgba(76, 217, 100, 0.07);
+      color: #4cd964;
+    }
+    .social-item .si-state { font-size: 11px; color: #666; margin-left: 2px; }
+    .social-item.followed .si-state { color: #4cd964; font-weight: 600; }
+    .social-item.unbound {
+      border-color: rgba(255, 149, 0, 0.4);
+      background: rgba(255, 149, 0, 0.07);
+      color: #ff9500;
+    }
+    .social-item.unbound .si-state { color: #ff9500; }
+
+    .social-hint {
+      font-size: 12px;
+      color: #666;
+      margin-top: 2px;
+    }
+    .social-hint b { color: #ff9500; font-weight: 600; }
+
     /* 分隔标题 */
     .section-label {
       font-size: 14px;
@@ -788,6 +837,81 @@
           <button class="task-btn">去完成</button>
         </div>
 
+        <div class="section-label">社区任务</div>
+
+        <!-- 关注账号 - 多平台清单 -->
+        <div class="task-card">
+          <div class="task-reward-item">
+            <div class="reward-icon points">📣</div>
+            <div class="reward-value">50 积分</div>
+            <div class="reward-type">积分</div>
+          </div>
+          <div class="task-info">
+            <div class="task-name">关注官方社媒账号</div>
+            <div class="task-desc">关注全部 3 个官方账号，各得 50 积分</div>
+            <div class="social-list">
+              <div class="social-item followed">
+                <span class="si-icon x">X</span>
+                <span>@DNA_Official</span>
+                <span class="si-state">已关注 ✓</span>
+              </div>
+              <div class="social-item followed">
+                <span class="si-icon tg">TG</span>
+                <span>Telegram 官方频道</span>
+                <span class="si-state">已关注 ✓</span>
+              </div>
+              <div class="social-item">
+                <span class="si-icon dc">DC</span>
+                <span>Discord 社区</span>
+                <span class="si-state">未关注</span>
+              </div>
+            </div>
+            <div class="social-hint">进度按平台逐个累加：<b>2/3</b> 已关注</div>
+          </div>
+          <button class="task-btn">去完成</button>
+        </div>
+
+        <!-- 社区互动 - 计数型（点赞/评论/转发） -->
+        <div class="task-card">
+          <div class="task-reward-item">
+            <div class="reward-icon points">👍</div>
+            <div class="reward-value">30 积分</div>
+            <div class="reward-type">积分</div>
+          </div>
+          <div class="task-info">
+            <div class="task-name">社区点赞帖子</div>
+            <div class="task-desc">在官方社媒下点赞指定帖子</div>
+            <div class="task-progress">
+              <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+              <span class="progress-text">0/3 次</span>
+            </div>
+            <div class="social-hint">每次点赞需绑定对应平台账号，点赞后 5 分钟内同步</div>
+          </div>
+          <button class="task-btn">去完成</button>
+        </div>
+
+        <!-- 未绑定账号 - 需要先授权平台 -->
+        <div class="task-card">
+          <div class="task-reward-item">
+            <div class="reward-icon points">🔗</div>
+            <div class="reward-value">30 积分</div>
+            <div class="reward-type">积分</div>
+          </div>
+          <div class="task-info">
+            <div class="task-name">转发官方推文</div>
+            <div class="task-desc">转发官方 X 推文并保持 24 小时</div>
+            <div class="social-list">
+              <div class="social-item unbound">
+                <span class="si-icon x">X</span>
+                <span>未绑定 X 账号</span>
+                <span class="si-state">去绑定</span>
+              </div>
+            </div>
+            <div class="social-hint">绑定后系统才能读取你的转发状态</div>
+          </div>
+          <button class="task-btn">去绑定</button>
+        </div>
+
         <div class="section-label">券类奖励</div>
 
         <!-- 手续费抵扣券 -->
@@ -955,6 +1079,8 @@
         <li><strong>状态流转</strong>：未开始 → 进行中 → 全部达成（领取奖励）</li>
         <li><strong>邀请任务</strong>：卡片下方挂可展开的"被邀请人明细"，聚合进度看 3/5，展开看每人卡在哪</li>
         <li><strong>排序规则</strong>：① 已达标置顶 → 进行中居中 → 仅注册沉底；② 同状态组内按注册时间倒序；③ 未产生进度的好友也完整展示（头像、名称、注册时间、未完成条件），状态标注"仅注册"而不是折叠成一行统计</li>
+        <li><strong>关注类任务</strong>：多平台（X / Telegram / Discord）逐个列出清单，已关注=绿底绿字+✓，未关注=灰底"未关注"，汇总 2/3 进度；未绑定账号的平台用橙色提示"去绑定"，因为系统读不到状态</li>
+        <li><strong>计数类社区任务</strong>（点赞/评论/转发）：用标准进度条 + "0/3 次"，与交易额类条件保持一致的视觉语言</li>
       </ul>
       <div class="note-section">
         <h3>🎁 奖励类型</h3>
