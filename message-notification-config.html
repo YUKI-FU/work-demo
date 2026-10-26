@@ -49,39 +49,95 @@
   }
   .close-btn:hover { background: #222; color: #ccc; }
 
-  /* ===== 站内信 / 邮件 ===== */
-  .tabs {
+  /* ===== 模式选择 ===== */
+  .mode-section {
+    padding: 16px 20px;
+  }
+  .mode-row {
     display: flex;
-    gap: 24px;
-    padding: 16px 20px 0;
-    border-bottom: 1px solid #232323;
-  }
-  .tab {
-    position: relative;
-    padding: 0 0 12px;
-    font-size: 15px;
-    color: #777;
-    background: none;
-    border: none;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: color .2s;
+    transition: background .18s;
+    border: 1px solid transparent;
   }
-  .tab:hover { color: #aaa; }
-  .tab.active { color: #fff; font-weight: 600; }
-  .tab.active::after {
+  .mode-row:hover { background: #1c1c1c; }
+  .mode-row.active {
+    background: rgba(200, 255, 0, 0.06);
+    border-color: rgba(200, 255, 0, 0.25);
+  }
+  .mode-row + .mode-row { margin-top: 8px; }
+
+  .mode-radio {
+    width: 20px; height: 20px;
+    border: 2px solid #444;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color .2s;
+  }
+  .mode-row.active .mode-radio {
+    border-color: #c8ff00;
+  }
+  .mode-row.active .mode-radio::after {
     content: '';
-    position: absolute;
-    left: 0; right: 0; bottom: -1px;
-    height: 2px;
+    width: 10px; height: 10px;
     background: #c8ff00;
-    border-radius: 2px;
+    border-radius: 50%;
   }
+
+  .mode-text { flex: 1; min-width: 0; }
+  .mode-title { font-size: 15px; font-weight: 500; color: #eee; }
+  .mode-desc { font-size: 12px; color: #666; margin-top: 4px; line-height: 1.45; }
+  .mode-row.active .mode-title { color: #fff; }
+  .mode-row.active .mode-desc { color: #888; }
+
+  .mode-check {
+    width: 20px; height: 20px;
+    color: #c8ff00;
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .mode-row.active .mode-check { opacity: 1; }
+
+  .detail-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-top: 1px solid #232323;
+    cursor: pointer;
+    user-select: none;
+    transition: background .18s;
+  }
+  .detail-toggle:hover { background: #1b1b1b; }
+  .detail-toggle-text { font-size: 14px; color: #888; }
+  .detail-toggle-arrow {
+    font-size: 12px; color: #555;
+    transition: transform .25s;
+  }
+  .detail-toggle.open .detail-toggle-arrow { transform: rotate(180deg); }
+  .detail-toggle.open .detail-toggle-text { color: #aaa; }
+
+  .detail-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s ease;
+  }
+  .detail-body.open { max-height: 2000px; }
 
   /* ===== 分类列表 ===== */
   .cat {
     border-bottom: 1px solid #232323;
   }
   .cat:last-child { border-bottom: none; }
+  .cat:first-child { border-top: 1px solid #232323; }
 
   .cat-head {
     display: flex;
@@ -216,14 +272,12 @@
     .cat-head { padding: 16px 16px; }
     .sub { padding: 13px 16px; }
     .panel-head { padding: 16px 16px 0; }
-    .tabs { padding: 14px 16px 0; }
-    .panel-foot { padding: 12px 16px 16px; }
   }
 </style>
 </head>
 <body>
 
-<div class="page-title">消息通知配置 · 站内信 / 邮件双通道</div>
+<div class="page-title">消息通知配置 · 站内信</div>
 
 <div class="panel">
   <div class="panel-head">
@@ -231,21 +285,43 @@
     <button class="close-btn" aria-label="关闭">✕</button>
   </div>
 
-  <div class="tabs">
-    <button class="tab active" data-tab="inapp">站内信</button>
-    <button class="tab" data-tab="email">邮件</button>
+  <div class="mode-section">
+    <div class="mode-row active" data-mode="all">
+      <div class="mode-radio"></div>
+      <div class="mode-text">
+        <div class="mode-title">全部</div>
+        <div class="mode-desc">接受站内全部消息通知</div>
+      </div>
+      <div class="mode-check">✓</div>
+    </div>
+    <div class="mode-row" data-mode="basic">
+      <div class="mode-radio"></div>
+      <div class="mode-text">
+        <div class="mode-title">基础</div>
+        <div class="mode-desc">仅接收奖励到账、账号安全等重要通知</div>
+      </div>
+      <div class="mode-check">✓</div>
+    </div>
   </div>
 
-  <div id="list"></div>
+  <div class="detail-toggle">
+    <span class="detail-toggle-text">详细配置</span>
+    <span class="detail-toggle-arrow">▾</span>
+  </div>
+
+  <div class="detail-body">
+    <div id="list"></div>
+  </div>
 </div>
 
 <div class="notes">
   <h3>📐 设计说明</h3>
   <ul>
+    <li><b>模式快捷切换</b>：顶部提供"全部/基础"两档快捷选择；选"全部"全开，选"基础"只保留奖励到账和账号安全相关</li>
+    <li><b>详细配置折叠</b>：默认收起，点开可逐项调整；手动改动后不影响快捷模式选中态（预设仍可一键切回）</li>
     <li><b>两级结构</b>：一级分类控制整组，二级分类逐个控制；二级右侧小字列出该组包含的消息项，不再单独做第三层</li>
     <li><b>父级开关三态</b>：全开=亮色、部分开启=黄色横杠半选、全关=灰；点一下按"全开 ⇄ 全关"切换</li>
     <li><b>父级显示 x/y</b>：不用展开也能看出这组开了几项</li>
-    <li><b>站内信 / 邮件各自独立</b>：两个通道分别配置，互不影响</li>
     <li><b>默认展开</b>：使用频率高的组（奖励、社区）默认打开，低频组（行情、活动推送）默认收起</li>
   </ul>
 </div>
@@ -288,33 +364,23 @@
     }
   ];
 
-  /* 每个通道的开关状态 */
+  /* 每个分类的开关状态 */
   var STATE = {
-    inapp: {
-      market:  [1],
-      reward:  [1, 1, 0],
-      activity:[0, 0],
-      community:[1, 1, 1, 1]
-    },
-    email: {
-      market:  [0],
-      reward:  [1, 0, 1],
-      activity:[0, 0],
-      community:[0, 0, 1, 1]
-    }
+    market:  [1],
+    reward:  [1, 1, 0],
+    activity:[0, 0],
+    community:[1, 1, 1, 1]
   };
 
   /* 默认展开的分类 */
-  var OPEN = { inapp: ['reward', 'community'], email: ['reward'] };
+  var OPEN = ['reward', 'community'];
 
-  var currentTab = 'inapp';
-
-  function render(tab) {
+  function render() {
     var list = document.getElementById('list');
     var html = '';
 
     CATS.forEach(function (cat) {
-      var isOpen = OPEN[tab].indexOf(cat.key) >= 0;
+      var isOpen = OPEN.indexOf(cat.key) >= 0;
       html += '<div class="cat' + (isOpen ? ' open' : '') + '" data-cat="' + cat.key + '">';
       html += '  <div class="cat-head">';
       html += '    <span class="cat-name">' + cat.name + '</span>';
@@ -325,7 +391,7 @@
       html += '  <div class="cat-body">';
 
       cat.items.forEach(function (item, i) {
-        var on = STATE[tab][cat.key][i] === 1;
+        var on = STATE[cat.key][i] === 1;
         html += '    <div class="sub' + (on ? '' : ' off') + '" data-idx="' + i + '">';
         html += '      <div class="sub-text">';
         html += '        <div class="sub-name">' + item.name + '</div>';
@@ -343,15 +409,15 @@
     hydrate();
   }
 
-  function countOn(tab, catKey) {
-    return STATE[tab][catKey].reduce(function (a, b) { return a + b; }, 0);
+  function countOn(catKey) {
+    return STATE[catKey].reduce(function (a, b) { return a + b; }, 0);
   }
 
   /* 刷新每个分类的 master 状态和 x/y 文案 */
   function syncCat(catEl) {
     var catKey = catEl.dataset.cat;
-    var arr = STATE[currentTab][catKey];
-    var on = countOn(currentTab, catKey);
+    var arr = STATE[catKey];
+    var on = countOn(catKey);
     var total = arr.length;
 
     var master = catEl.querySelector('.master-switch');
@@ -368,17 +434,16 @@
       /* 展开 / 收起：点整行 */
       catEl.querySelector('.cat-head').addEventListener('click', function () {
         var isOpen = catEl.classList.toggle('open');
-        var list = OPEN[currentTab];
-        var idx = list.indexOf(catEl.dataset.cat);
-        if (isOpen && idx < 0) list.push(catEl.dataset.cat);
-        if (!isOpen && idx >= 0) list.splice(idx, 1);
+        var idx = OPEN.indexOf(catEl.dataset.cat);
+        if (isOpen && idx < 0) OPEN.push(catEl.dataset.cat);
+        if (!isOpen && idx >= 0) OPEN.splice(idx, 1);
       });
 
       /* 一级开关：全开 / 全关，不触发展开 */
       catEl.querySelector('.master-switch').addEventListener('click', function (e) {
         e.stopPropagation();
         var catKey = catEl.dataset.cat;
-        var arr = STATE[currentTab][catKey];
+        var arr = STATE[catKey];
         var allOn = arr.every(function (v) { return v === 1; });
         var next = allOn ? 0 : 1;
         arr.forEach(function (_, i) { arr[i] = next; });
@@ -391,7 +456,7 @@
           e.stopPropagation();
           var i = +sw.closest('.sub').dataset.idx;
           var catKey = catEl.dataset.cat;
-          STATE[currentTab][catKey][i] = STATE[currentTab][catKey][i] ? 0 : 1;
+          STATE[catKey][i] = STATE[catKey][i] ? 0 : 1;
           repaintCat(catEl);
         });
       });
@@ -403,7 +468,7 @@
     var catKey = catEl.dataset.cat;
     catEl.querySelectorAll('.sub').forEach(function (sub) {
       var i = +sub.dataset.idx;
-      var on = STATE[currentTab][catKey][i] === 1;
+      var on = STATE[catKey][i] === 1;
       sub.classList.toggle('off', !on);
       var sw = sub.querySelector('.sub-switch');
       sw.classList.toggle('on', on);
@@ -412,18 +477,55 @@
     syncCat(catEl);
   }
 
-  /* tab 切换 */
-  document.querySelectorAll('.tab').forEach(function (tabBtn) {
-    tabBtn.addEventListener('click', function () {
-      currentTab = tabBtn.dataset.tab;
-      document.querySelectorAll('.tab').forEach(function (t) {
-        t.classList.toggle('active', t === tabBtn);
-      });
-      render(currentTab);
+  /* 预设模式 */
+  var PRESETS = {
+    all: {
+      market:  [1],
+      reward:  [1, 1, 1],
+      activity:[1, 1],
+      community:[1, 1, 1, 1]
+    },
+    basic: {
+      market:  [0],
+      reward:  [1, 1, 0],
+      activity:[0, 0],
+      community:[0, 0, 1, 1]
+    }
+  };
+
+  function applyPreset(mode) {
+    var preset = PRESETS[mode];
+    for (var k in preset) {
+      STATE[k] = preset[k].slice();
+    }
+    document.querySelectorAll('.cat').forEach(function (catEl) {
+      repaintCat(catEl);
+    });
+  }
+
+  function setMode(mode) {
+    document.querySelectorAll('.mode-row').forEach(function (row) {
+      row.classList.toggle('active', row.dataset.mode === mode);
+    });
+    applyPreset(mode);
+  }
+
+  /* 模式点击 */
+  document.querySelectorAll('.mode-row').forEach(function (row) {
+    row.addEventListener('click', function () {
+      setMode(row.dataset.mode);
     });
   });
 
-  render(currentTab);
+  /* 详细配置展开 */
+  var detailToggle = document.querySelector('.detail-toggle');
+  var detailBody = document.querySelector('.detail-body');
+  detailToggle.addEventListener('click', function () {
+    detailToggle.classList.toggle('open');
+    detailBody.classList.toggle('open');
+  });
+
+  render();
 </script>
 </body>
 </html>
