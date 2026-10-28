@@ -1231,6 +1231,7 @@
         <button class="filter-btn default">↻ 重置</button>
         <button class="filter-btn cyan">↻ 刷新KYC</button>
         <button class="filter-btn orange" onclick="showTagManageModal()">📋 用户标签管理</button>
+        <button class="filter-btn primary" style="background: #52c41a;" onclick="showWhitelistModal()">📋 白名单</button>
       </div>
 
       <!-- 表格 -->
@@ -1252,10 +1253,9 @@
               <th>发帖数</th>
               <th>点赞数</th>
               <th>推荐</th>
-              <th>推荐码</th>
-              <th>处方类型</th>
-              <th>处方截止</th>
-              <th>处理周期</th>
+              <th>处罚天数</th>
+              <th>处罚截止</th>
+              <th>处理原因</th>
               <th>创建时间</th>
               <th>操作</th>
             </tr>
@@ -1269,15 +1269,14 @@
               <td>C4@gmail.com</td>
               <td><span class="status-tag blue">普通</span></td>
               <td><span class="status-tag success">正常</span></td>
+              <td><span class="status-tag success">是</span></td>
               <td>中国台湾</td>
-              <td>—</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
-              <td>—</td>
-              <td>SELFAA56AH</td>
-              <td>—</td>
+              <td><span class="status-tag default">否</span></td>
+              <td class="num-cell">0</td>
               <td>—</td>
               <td>—</td>
               <td>2026-09-03 10:45:15</td>
@@ -1301,15 +1300,14 @@
               <td>test@gmail.com</td>
               <td><span class="status-tag blue">普通</span></td>
               <td><span class="status-tag success">正常</span></td>
+              <td><span class="status-tag success">是</span></td>
               <td>新加坡</td>
-              <td>—</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
               <td class="num-cell">2</td>
               <td class="num-cell">0</td>
-              <td>—</td>
-              <td>XXKYGANN#8</td>
-              <td>—</td>
+              <td><span class="status-tag default">否</span></td>
+              <td class="num-cell">0</td>
               <td>—</td>
               <td>—</td>
               <td>2026-08-31 15:21:20</td>
@@ -1333,15 +1331,14 @@
               <td>3o9ksq.com</td>
               <td><span class="status-tag blue">普通</span></td>
               <td><span class="status-tag success">正常</span></td>
+              <td><span class="status-tag success">是</span></td>
               <td>中国</td>
-              <td>—</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
-              <td>—</td>
-              <td>ZNWAZCHOKN</td>
-              <td>—</td>
+              <td><span class="status-tag default">否</span></td>
+              <td class="num-cell">0</td>
               <td>—</td>
               <td>—</td>
               <td>2026-06-28 14:46:13</td>
@@ -1365,15 +1362,14 @@
               <td>xito-agent@gamil.com</td>
               <td><span class="status-tag blue">普通</span></td>
               <td><span class="status-tag success">正常</span></td>
-              <td>—</td>
+              <td><span class="status-tag success">是</span></td>
               <td>中国-无锡</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
-              <td>—</td>
-              <td>PVSPISTTYKO</td>
-              <td>—</td>
+              <td><span class="status-tag default">否</span></td>
+              <td class="num-cell">0</td>
               <td>—</td>
               <td>—</td>
               <td>2026-08-25 11:03:08</td>
@@ -1397,15 +1393,14 @@
               <td>bug3018@gmail.com</td>
               <td><span class="status-tag blue">普通</span></td>
               <td><span class="status-tag success">正常</span></td>
-              <td>—</td>
+              <td><span class="status-tag default">否</span></td>
               <td>—</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
-              <td>—</td>
-              <td>PPONVKGFUV</td>
-              <td>—</td>
+              <td><span class="status-tag default">否</span></td>
+              <td class="num-cell">0</td>
               <td>—</td>
               <td>—</td>
               <td>2026-08-05 17:48:38</td>
@@ -1429,15 +1424,14 @@
               <td>79295876189@qq.com</td>
               <td><span class="status-tag blue">普通</span></td>
               <td><span class="status-tag success">正常</span></td>
-              <td>—</td>
+              <td><span class="status-tag default">否</span></td>
               <td>—</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
               <td class="num-cell">0</td>
-              <td>—</td>
-              <td>VONBA4S3BLO</td>
-              <td>—</td>
+              <td><span class="status-tag default">否</span></td>
+              <td class="num-cell">0</td>
               <td>—</td>
               <td>—</td>
               <td>2026-08-05 12:28:15</td>
@@ -1803,6 +1797,134 @@
               <div>请从左侧选择标签进行编辑</div>
               <div style="margin-top: 8px;">或点击"+ 新增"创建新标签</div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 白名单管理弹窗 -->
+  <div class="modal-overlay" id="whitelistModal">
+    <div class="modal" style="width: 1000px;">
+      <div class="modal-header">
+        <span class="modal-title">白名单管理</span>
+        <button class="modal-icon-btn" onclick="hideModal('whitelist')">×</button>
+      </div>
+      <div class="modal-body">
+        <!-- 添加白名单区域 -->
+        <div style="background: #f5f5f5; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+          <div style="display: flex; align-items: flex-start; gap: 16px;">
+            <div style="flex: 1;">
+              <div style="font-size: 14px; font-weight: 500; color: #333; margin-bottom: 8px;">添加白名单用户</div>
+              <textarea id="whitelistInput" placeholder="请输入 UID 或邮箱，多个用户请换行输入&#10;示例：&#10;1700822363&#10;test@gmail.com&#10;1700428288" style="width: 100%; height: 100px; padding: 12px; border: 1px solid #d9d9d9; border-radius: 6px; font-size: 13px; resize: none; outline: none;"></textarea>
+              <div style="font-size: 12px; color: #999; margin-top: 6px;">支持 UID 或邮箱，每行一个，可批量添加</div>
+            </div>
+            <button class="filter-btn primary" style="height: 36px; margin-top: 28px;" onclick="addToWhitelist()">+ 添加白名单</button>
+          </div>
+        </div>
+
+        <!-- 白名单列表操作栏 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 14px; font-weight: 500; color: #333;">白名单列表</span>
+            <span style="font-size: 13px; color: #999;">共 <span id="whitelistCount">6</span> 位用户</span>
+          </div>
+          <button class="filter-btn default" id="batchRemoveBtn" style="height: 32px; color: #ff4d4f; border-color: #ff4d4f;" onclick="batchRemoveWhitelist()" disabled>批量移除</button>
+        </div>
+
+        <!-- 白名单列表表格 -->
+        <div class="table-container" style="max-height: 360px; overflow-y: auto;">
+          <table class="data-table" id="whitelistTable">
+            <thead>
+              <tr>
+                <th style="width: 40px;"><input type="checkbox" id="whitelistSelectAll" onclick="toggleWhitelistSelectAll()"></th>
+                <th>社区用户ID</th>
+                <th>UID</th>
+                <th>昵称</th>
+                <th>用户类型</th>
+                <th>添加时间</th>
+                <th>操作人</th>
+                <th style="width: 80px;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="whitelistTableBody">
+              <tr data-wl-id="1">
+                <td><input type="checkbox" class="wl-checkbox" onclick="updateWhitelistSelection()"></td>
+                <td>501</td>
+                <td class="id-cell">1700112233</td>
+                <td>CryptoKing</td>
+                <td><span class="status-tag warning">KOL</span></td>
+                <td>2026-10-15 14:30:22</td>
+                <td>admin</td>
+                <td><span class="op-link danger" onclick="removeFromWhitelist(1)">移除</span></td>
+              </tr>
+              <tr data-wl-id="2">
+                <td><input type="checkbox" class="wl-checkbox" onclick="updateWhitelistSelection()"></td>
+                <td>502</td>
+                <td class="id-cell">1700223344</td>
+                <td>ETZ-Official</td>
+                <td><span class="status-tag success">官方</span></td>
+                <td>2026-10-14 10:15:00</td>
+                <td>admin</td>
+                <td><span class="op-link danger" onclick="removeFromWhitelist(2)">移除</span></td>
+              </tr>
+              <tr data-wl-id="3">
+                <td><input type="checkbox" class="wl-checkbox" onclick="updateWhitelistSelection()"></td>
+                <td>503</td>
+                <td class="id-cell">1700334455</td>
+                <td>BlockchainAnalyst</td>
+                <td><span class="status-tag blue">普通</span></td>
+                <td>2026-10-12 16:45:33</td>
+                <td>operator1</td>
+                <td><span class="op-link danger" onclick="removeFromWhitelist(3)">移除</span></td>
+              </tr>
+              <tr data-wl-id="4">
+                <td><input type="checkbox" class="wl-checkbox" onclick="updateWhitelistSelection()"></td>
+                <td>504</td>
+                <td class="id-cell">1700445566</td>
+                <td>Web3Pioneer</td>
+                <td><span class="status-tag warning">KOL</span></td>
+                <td>2026-10-10 09:20:18</td>
+                <td>admin</td>
+                <td><span class="op-link danger" onclick="removeFromWhitelist(4)">移除</span></td>
+              </tr>
+              <tr data-wl-id="5">
+                <td><input type="checkbox" class="wl-checkbox" onclick="updateWhitelistSelection()"></td>
+                <td>505</td>
+                <td class="id-cell">1700556677</td>
+                <td>DeFiMaster</td>
+                <td><span class="status-tag blue">普通</span></td>
+                <td>2026-10-08 11:55:40</td>
+                <td>operator2</td>
+                <td><span class="op-link danger" onclick="removeFromWhitelist(5)">移除</span></td>
+              </tr>
+              <tr data-wl-id="6">
+                <td><input type="checkbox" class="wl-checkbox" onclick="updateWhitelistSelection()"></td>
+                <td>506</td>
+                <td class="id-cell">1700667788</td>
+                <td>NFTCollector</td>
+                <td><span class="status-tag blue">普通</span></td>
+                <td>2026-10-05 08:30:55</td>
+                <td>admin</td>
+                <td><span class="op-link danger" onclick="removeFromWhitelist(6)">移除</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination" style="padding: 12px 0 0;">
+          <span class="page-info">共 6 条</span>
+          <span style="margin-right: 8px;">10条/页</span>
+          <button class="page-btn" disabled>‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">›</button>
+        </div>
+
+        <!-- 说明 -->
+        <div style="margin-top: 16px; padding: 12px 16px; background: #fffbe6; border: 1px solid #ffe58f; border-radius: 6px;">
+          <div style="font-size: 13px; color: #d48806;">
+            <b>📋 白名单说明：</b>白名单用户发布的内容将跳过人工审核环节，直接发布。移除白名单后，用户发布内容将恢复正常审核流程。
           </div>
         </div>
       </div>
@@ -2266,6 +2388,146 @@
         this.closest('.nav-group').classList.toggle('expanded');
       });
     });
+
+    // ===== 白名单功能 =====
+
+    // 白名单数据
+    let whitelistData = [
+      { id: 1, communityId: '501', uid: '1700112233', nickname: 'CryptoKing', type: 'KOL', addTime: '2026-10-15 14:30:22', operator: 'admin' },
+      { id: 2, communityId: '502', uid: '1700223344', nickname: 'ETZ-Official', type: '官方', addTime: '2026-10-14 10:15:00', operator: 'admin' },
+      { id: 3, communityId: '503', uid: '1700334455', nickname: 'BlockchainAnalyst', type: '普通', addTime: '2026-10-12 16:45:33', operator: 'operator1' },
+      { id: 4, communityId: '504', uid: '1700445566', nickname: 'Web3Pioneer', type: 'KOL', addTime: '2026-10-10 09:20:18', operator: 'admin' },
+      { id: 5, communityId: '505', uid: '1700556677', nickname: 'DeFiMaster', type: '普通', addTime: '2026-10-08 11:55:40', operator: 'operator2' },
+      { id: 6, communityId: '506', uid: '1700667788', nickname: 'NFTCollector', type: '普通', addTime: '2026-10-05 08:30:55', operator: 'admin' }
+    ];
+
+    // 显示白名单弹窗
+    function showWhitelistModal() {
+      document.getElementById('whitelistModal').classList.add('show');
+      renderWhitelistTable();
+    }
+
+    // 渲染白名单表格
+    function renderWhitelistTable() {
+      const tbody = document.getElementById('whitelistTableBody');
+      const typeTagClass = { '普通': 'blue', 'KOL': 'warning', '官方': 'success' };
+
+      tbody.innerHTML = whitelistData.map(item => `
+        <tr data-wl-id="${item.id}">
+          <td><input type="checkbox" class="wl-checkbox" onclick="updateWhitelistSelection()"></td>
+          <td>${item.communityId}</td>
+          <td class="id-cell">${item.uid}</td>
+          <td>${item.nickname}</td>
+          <td><span class="status-tag ${typeTagClass[item.type] || 'blue'}">${item.type}</span></td>
+          <td>${item.addTime}</td>
+          <td>${item.operator}</td>
+          <td><span class="op-link danger" onclick="removeFromWhitelist(${item.id})">移除</span></td>
+        </tr>
+      `).join('');
+
+      document.getElementById('whitelistCount').textContent = whitelistData.length;
+      document.getElementById('whitelistSelectAll').checked = false;
+      updateWhitelistSelection();
+    }
+
+    // 添加到白名单
+    function addToWhitelist() {
+      const input = document.getElementById('whitelistInput').value.trim();
+      if (!input) {
+        alert('请输入 UID 或邮箱');
+        return;
+      }
+
+      const lines = input.split('\n').filter(line => line.trim());
+      const now = new Date();
+      const timeStr = now.getFullYear() + '-' +
+        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+        String(now.getDate()).padStart(2, '0') + ' ' +
+        String(now.getHours()).padStart(2, '0') + ':' +
+        String(now.getMinutes()).padStart(2, '0') + ':' +
+        String(now.getSeconds()).padStart(2, '0');
+
+      let addedCount = 0;
+      lines.forEach(line => {
+        const value = line.trim();
+        if (!value) return;
+
+        // 检查是否已存在
+        const exists = whitelistData.some(item => item.uid === value || item.nickname.includes(value));
+        if (exists) return;
+
+        const newId = Math.max(...whitelistData.map(d => d.id), 0) + 1;
+        const isEmail = value.includes('@');
+        whitelistData.unshift({
+          id: newId,
+          communityId: String(500 + newId),
+          uid: isEmail ? '170' + String(Math.random()).slice(2, 9) : value,
+          nickname: isEmail ? value.split('@')[0] : 'User-' + value.slice(-4),
+          type: '普通',
+          addTime: timeStr,
+          operator: 'admin'
+        });
+        addedCount++;
+      });
+
+      if (addedCount > 0) {
+        document.getElementById('whitelistInput').value = '';
+        renderWhitelistTable();
+        alert(`成功添加 ${addedCount} 位用户到白名单`);
+      } else {
+        alert('未添加任何用户（可能已存在或输入无效）');
+      }
+    }
+
+    // 单个移除白名单
+    function removeFromWhitelist(id) {
+      if (!confirm('确定要将该用户移出白名单吗？')) return;
+      whitelistData = whitelistData.filter(item => item.id !== id);
+      renderWhitelistTable();
+    }
+
+    // 更新白名单选择状态
+    function updateWhitelistSelection() {
+      const checkboxes = document.querySelectorAll('.wl-checkbox');
+      const checked = document.querySelectorAll('.wl-checkbox:checked');
+      const selectAll = document.getElementById('whitelistSelectAll');
+      const batchBtn = document.getElementById('batchRemoveBtn');
+
+      selectAll.checked = checkboxes.length > 0 && checked.length === checkboxes.length;
+      selectAll.indeterminate = checked.length > 0 && checked.length < checkboxes.length;
+      batchBtn.disabled = checked.length === 0;
+    }
+
+    // 全选/取消全选白名单
+    function toggleWhitelistSelectAll() {
+      const selectAll = document.getElementById('whitelistSelectAll');
+      document.querySelectorAll('.wl-checkbox').forEach(cb => {
+        cb.checked = selectAll.checked;
+      });
+      updateWhitelistSelection();
+    }
+
+    // 批量移除白名单
+    function batchRemoveWhitelist() {
+      const checked = document.querySelectorAll('.wl-checkbox:checked');
+      if (checked.length === 0) {
+        alert('请先选择要移除的用户');
+        return;
+      }
+
+      if (!confirm(`确定要将选中的 ${checked.length} 位用户移出白名单吗？`)) return;
+
+      const idsToRemove = [];
+      checked.forEach(cb => {
+        const row = cb.closest('tr');
+        const id = parseInt(row.dataset.wlId);
+        idsToRemove.push(id);
+      });
+
+      whitelistData = whitelistData.filter(item => !idsToRemove.includes(item.id));
+      renderWhitelistTable();
+      alert(`已移除 ${idsToRemove.length} 位用户`);
+    }
   </script>
 
 </body>
