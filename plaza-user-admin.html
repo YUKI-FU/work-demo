@@ -1828,6 +1828,11 @@
               <button class="filter-btn default" onclick="showBatchImportModal()">批量导入 UID</button>
             </div>
           </div>
+          <!-- 添加到白名单按钮 -->
+          <div id="addToWhitelistBar" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e8e8e8;">
+            <button class="filter-btn primary" style="background: #52c41a; border-color: #52c41a;" onclick="addSelectedToWhitelist()">+ 将选中用户添加到白名单</button>
+            <button class="filter-btn default" style="margin-left: 12px;" onclick="clearSelectedUsers()">清空选择</button>
+          </div>
         </div>
 
         <!-- 白名单列表操作栏 -->
@@ -2570,10 +2575,12 @@
     function renderSelectedUserTags() {
       const container = document.getElementById('selectedUserTags');
       const countEl = document.getElementById('selectedUserCount');
+      const addBar = document.getElementById('addToWhitelistBar');
       countEl.textContent = selectedUsersToAdd.length;
 
       if (selectedUsersToAdd.length === 0) {
         container.innerHTML = '<span style="font-size: 13px; color: #999;">暂未选择用户</span>';
+        addBar.style.display = 'none';
       } else {
         container.innerHTML = selectedUsersToAdd.map(user => `
           <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: #e6f7ff; border: 1px solid #91d5ff; border-radius: 4px; font-size: 13px; color: #1890ff;">
@@ -2581,6 +2588,7 @@
             <span style="cursor: pointer; font-size: 14px; color: #1890ff;" onclick="removeSelectedUser('${user.uid}')">&times;</span>
           </span>
         `).join('');
+        addBar.style.display = 'block';
       }
     }
 
@@ -2588,6 +2596,55 @@
     function removeSelectedUser(uid) {
       selectedUsersToAdd = selectedUsersToAdd.filter(u => u.uid !== uid);
       renderSelectedUserTags();
+    }
+
+    // 清空已选用户
+    function clearSelectedUsers() {
+      selectedUsersToAdd = [];
+      renderSelectedUserTags();
+    }
+
+    // 将选中用户添加到白名单
+    function addSelectedToWhitelist() {
+      if (selectedUsersToAdd.length === 0) {
+        alert('请先选择用户');
+        return;
+      }
+
+      const now = new Date();
+      const timeStr = now.getFullYear() + '-' +
+        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+        String(now.getDate()).padStart(2, '0') + ' ' +
+        String(now.getHours()).padStart(2, '0') + ':' +
+        String(now.getMinutes()).padStart(2, '0') + ':' +
+        String(now.getSeconds()).padStart(2, '0');
+
+      let addedCount = 0;
+      selectedUsersToAdd.forEach(user => {
+        // 检查是否已在白名单中
+        if (whitelistData.some(item => item.uid === user.uid)) return;
+
+        const newId = Math.max(...whitelistData.map(d => d.id), 0) + 1;
+        whitelistData.unshift({
+          id: newId,
+          communityId: String(500 + newId),
+          uid: user.uid,
+          nickname: user.nickname,
+          type: '普通',
+          addTime: timeStr,
+          operator: 'admin'
+        });
+        addedCount++;
+      });
+
+      if (addedCount > 0) {
+        selectedUsersToAdd = [];
+        renderSelectedUserTags();
+        renderWhitelistTable();
+        alert(`成功添加 ${addedCount} 位用户到白名单`);
+      } else {
+        alert('所选用户已在白名单中');
+      }
     }
 
     // 显示选择用户弹窗
