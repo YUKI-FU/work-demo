@@ -1019,17 +1019,6 @@
                 <span class="info-code" id="infoCode">c2c <span class="copy-btn" onclick="copyCode()">📋</span></span>
               </span>
             </div>
-            <div class="info-row">
-              <span class="info-label">所属页面</span>
-              <span class="info-value" id="infoPage">C2C 交易页</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">展示形式</span>
-              <span class="info-value">
-                <span class="info-tag blue" id="infoType">折叠列表</span>
-                <span style="color: #999; font-size: 12px; margin-left: 8px;">最多展示 5 条</span>
-              </span>
-            </div>
           </div>
 
           <!-- 投放策略 -->
@@ -1057,24 +1046,15 @@
                   <option value="api_document">接口文档</option>
                 </select>
               </div>
-              <div class="category-select-row">
-                <label>排序规则</label>
-                <select class="category-select">
-                  <option>置顶优先 + 最新发布</option>
-                  <option>按后台排序权重降序</option>
-                  <option>按发布时间倒序</option>
-                </select>
-              </div>
 
               <!-- 预览 -->
               <div class="preview-box">
-                <div class="preview-title">📄 当前实时预览效果（该分类下前 5 条）</div>
+                <div class="preview-title">📄 当前实时预览效果</div>
                 <div id="categoryPreview">
                   <div class="preview-item">
                     <span class="preview-item-order">1</span>
                     <span class="preview-item-title">如何成为OTC商家</span>
                     <span class="preview-item-id">ID: 1062</span>
-                    <span class="preview-item-badge">置顶</span>
                   </div>
                   <div class="preview-item">
                     <span class="preview-item-order">2</span>
@@ -1096,7 +1076,7 @@
                       <th>文章标题</th>
                       <th style="width: 140px;">所属分类</th>
                       <th style="width: 80px;">状态</th>
-                      <th style="width: 100px;">操作</th>
+                      <th style="width: 80px;">操作</th>
                     </tr>
                   </thead>
                   <tbody id="articleTableBody">
@@ -1107,7 +1087,6 @@
                       <td>常见问题 › C2C</td>
                       <td><span class="status-tag success">已发布</span></td>
                       <td>
-                        <span class="op-link">置顶</span>
                         <span class="op-link danger">移除</span>
                       </td>
                     </tr>
@@ -1118,7 +1097,6 @@
                       <td>常见问题 › C2C</td>
                       <td><span class="status-tag success">已发布</span></td>
                       <td>
-                        <span class="op-link">置顶</span>
                         <span class="op-link danger">移除</span>
                       </td>
                     </tr>
@@ -1127,31 +1105,6 @@
                 <div class="add-article-bar">
                   <button class="btn btn-primary" onclick="showAddArticleModal()">+ 关联文章</button>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 高级设置 -->
-          <div class="strategy-section">
-            <div class="section-title">高级投放控制（可选）</div>
-            <div class="advanced-section">
-              <div class="advanced-row">
-                <span class="advanced-label">生效时间</span>
-                <div class="time-range">
-                  <input type="datetime-local" class="time-input" placeholder="开始时间">
-                  <span>—</span>
-                  <input type="datetime-local" class="time-input" placeholder="结束时间">
-                </div>
-                <span style="font-size: 12px; color: #999;">留空表示长期有效</span>
-              </div>
-              <div class="advanced-row">
-                <span class="advanced-label">多语言</span>
-                <select class="category-select" style="width: 150px;">
-                  <option>中文简体</option>
-                  <option>English</option>
-                  <option>中文繁体</option>
-                </select>
-                <span style="font-size: 12px; color: #999;">切换语言查看不同版本绑定</span>
               </div>
             </div>
           </div>
