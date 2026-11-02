@@ -931,6 +931,165 @@
   .toast.show {
     display: block;
   }
+
+  /* 表单样式 */
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus {
+    border-color: #1890ff;
+  }
+
+  .form-select {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .form-select:focus {
+    border-color: #1890ff;
+  }
+
+  .form-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .form-textarea:focus {
+    border-color: #1890ff;
+  }
+
+  /* 切换按钮组 */
+  .btn-group {
+    display: inline-flex;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .btn-toggle {
+    padding: 8px 16px;
+    border: none;
+    background: #fff;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-toggle:not(:last-child) {
+    border-right: 1px solid #d9d9d9;
+  }
+
+  .btn-toggle.active {
+    background: #1890ff;
+    color: #fff;
+  }
+
+  /* 富文本编辑器 */
+  .editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border: 1px solid #d9d9d9;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    background: #fafafa;
+    flex-wrap: wrap;
+  }
+
+  .editor-sub-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #d9d9d9;
+    border-top: none;
+    border-bottom: none;
+    background: #fafafa;
+  }
+
+  .editor-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .editor-btn:hover {
+    background: #e6e6e6;
+  }
+
+  .editor-divider {
+    width: 1px;
+    height: 20px;
+    background: #d9d9d9;
+    margin: 0 4px;
+  }
+
+  .editor-select {
+    height: 28px;
+    padding: 0 8px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    font-size: 12px;
+    outline: none;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .editor-content {
+    min-height: 200px;
+    padding: 16px;
+    border: 1px solid #d9d9d9;
+    border-radius: 0 0 6px 6px;
+    font-size: 14px;
+    line-height: 1.6;
+    outline: none;
+  }
+
+  .editor-content:focus {
+    border-color: #1890ff;
+  }
 </style>
 </head>
 <body>
@@ -1025,46 +1184,63 @@
             </div>
           </div>
 
-          <!-- 手动指定文章 -->
+          <!-- 关联文章 -->
           <div class="strategy-section">
-            <div class="section-title">手动指定文章</div>
+            <div class="section-title">关联文章</div>
             <div class="article-table-wrap">
               <table class="article-table">
                 <thead>
                   <tr>
-                    <th style="width: 50px;">排序</th>
-                    <th style="width: 100px;">文章 ID</th>
-                    <th>文章标题</th>
-                    <th style="width: 140px;">所属分类</th>
-                    <th style="width: 80px;">状态</th>
-                    <th style="width: 80px;">操作</th>
+                    <th style="width: 80px;">文章 ID</th>
+                    <th>标题</th>
+                    <th style="width: 120px;">文章编码</th>
+                    <th style="width: 100px;">顶级父类</th>
+                    <th style="width: 100px;">文章分类</th>
+                    <th style="width: 70px;">是否置顶</th>
+                    <th style="width: 60px;">推送</th>
+                    <th style="width: 60px;">排序</th>
+                    <th style="width: 60px;">状态</th>
+                    <th style="width: 150px;">创建时间</th>
+                    <th style="width: 100px;">操作</th>
                   </tr>
                 </thead>
                 <tbody id="articleTableBody">
-                  <tr draggable="true">
-                    <td><span class="drag-handle">⋮⋮</span></td>
+                  <tr>
                     <td>1062</td>
                     <td><a href="#" class="article-link">如何成为OTC商家</a></td>
-                    <td>常见问题 › C2C</td>
-                    <td><span class="status-tag success">已发布</span></td>
+                    <td><span style="font-family: monospace; color: #666;">INFOuSqITv...</span></td>
+                    <td>常见问题</td>
+                    <td>C2C</td>
+                    <td><span class="status-tag default">不置顶</span></td>
+                    <td>否</td>
+                    <td>2</td>
+                    <td><span class="status-tag success">开启</span></td>
+                    <td>2025-07-30 18:27:24</td>
                     <td>
-                      <span class="op-link danger">移除</span>
+                      <span class="op-link" onclick="showEditArticleModal(1062)">编辑</span>
+                      <span class="op-link danger">删除</span>
                     </td>
                   </tr>
-                  <tr draggable="true">
-                    <td><span class="drag-handle">⋮⋮</span></td>
+                  <tr>
                     <td>1061</td>
                     <td><a href="#" class="article-link">什么是OTC交易</a></td>
-                    <td>常见问题 › C2C</td>
-                    <td><span class="status-tag success">已发布</span></td>
+                    <td><span style="font-family: monospace; color: #666;">INFOuSqlac...</span></td>
+                    <td>常见问题</td>
+                    <td>C2C</td>
+                    <td><span class="status-tag default">不置顶</span></td>
+                    <td>否</td>
+                    <td>1</td>
+                    <td><span class="status-tag success">开启</span></td>
+                    <td>2025-07-30 18:24:30</td>
                     <td>
-                      <span class="op-link danger">移除</span>
+                      <span class="op-link" onclick="showEditArticleModal(1061)">编辑</span>
+                      <span class="op-link danger">删除</span>
                     </td>
                   </tr>
                 </tbody>
               </table>
               <div class="add-article-bar">
-                <button class="btn btn-primary" onclick="showAddArticleModal()">+ 关联文章</button>
+                <button class="btn btn-primary" onclick="showAddArticleModal()">+ 新增</button>
               </div>
             </div>
           </div>
@@ -1092,74 +1268,142 @@
     </div>
   </main>
 
-  <!-- 添加文章弹窗 -->
+  <!-- 新增文章弹窗 -->
   <div class="modal-overlay" id="addArticleModal">
-    <div class="modal">
+    <div class="modal" style="width: 900px;">
       <div class="modal-header">
-        <span class="modal-title">关联文章</span>
-        <button class="modal-close" onclick="hideModal('addArticle')">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="search-row">
-          <input type="text" class="search-input" placeholder="输入文章标题或文章编码搜索">
-          <button class="btn btn-primary">查询</button>
-          <button class="btn btn-default">重置</button>
+        <span class="modal-title">新增</span>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 20px; cursor: pointer; color: #999;">⛶</span>
+          <button class="modal-close" onclick="hideModal('addArticle')">×</button>
         </div>
-        <div class="select-table-wrap">
-          <table class="select-table">
-            <thead>
-              <tr>
-                <th style="width: 40px;"><input type="checkbox" id="articleSelectAll"></th>
-                <th style="width: 80px;">文章 ID</th>
-                <th>文章标题</th>
-                <th style="width: 120px;">所属分类</th>
-                <th style="width: 80px;">状态</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><input type="checkbox" class="article-cb"></td>
-                <td>1065</td>
-                <td>C2C 交易手续费说明</td>
-                <td>常见问题 › C2C</td>
-                <td><span class="status-tag success">已发布</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" class="article-cb"></td>
-                <td>1064</td>
-                <td>如何进行C2C买币</td>
-                <td>常见问题 › C2C</td>
-                <td><span class="status-tag success">已发布</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" class="article-cb"></td>
-                <td>1063</td>
-                <td>商家保证金规则说明</td>
-                <td>常见问题 › C2C</td>
-                <td><span class="status-tag success">已发布</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" class="article-cb"></td>
-                <td>1060</td>
-                <td>C2C 交易限额说明</td>
-                <td>常见问题 › C2C</td>
-                <td><span class="status-tag success">已发布</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" class="article-cb"></td>
-                <td>1059</td>
-                <td>如何申诉订单</td>
-                <td>常见问题 › C2C</td>
-                <td><span class="status-tag success">已发布</span></td>
-              </tr>
-            </tbody>
-          </table>
+      </div>
+      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+        <!-- 语言标签 -->
+        <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+          <span style="color: #1890ff; padding: 6px 16px; border-bottom: 2px solid #1890ff; cursor: pointer;">简体中文</span>
+          <button class="btn btn-primary" style="border-style: dashed; background: #fff; color: #1890ff;">+ 添加</button>
+        </div>
+
+        <!-- 文章编码 -->
+        <div class="form-group">
+          <label class="form-label"><span style="color: #ff4d4f;">*</span> 文章编码</label>
+          <input type="text" class="form-input" id="articleCode" placeholder="请输入文章编码">
+        </div>
+
+        <!-- 文章分类 -->
+        <div class="form-group">
+          <label class="form-label"><span style="color: #ff4d4f;">*</span> 文章分类</label>
+          <select class="form-select" id="articleCategory">
+            <option>C2C</option>
+            <option>RWA</option>
+            <option>常见问题</option>
+            <option>公告中心</option>
+          </select>
+        </div>
+
+        <!-- 标题 -->
+        <div class="form-group">
+          <label class="form-label"><span style="color: #ff4d4f;">*</span> 标题</label>
+          <input type="text" class="form-input" id="articleTitle" placeholder="请输入标题">
+        </div>
+
+        <!-- 简介 -->
+        <div class="form-group">
+          <label class="form-label">简介</label>
+          <textarea class="form-textarea" id="articleIntro" placeholder="请输入简介" rows="3"></textarea>
+        </div>
+
+        <!-- 一行四列：是否置顶、状态、站内信、排序 -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label"><span style="color: #ff4d4f;">*</span> 是否置顶</label>
+            <div class="btn-group">
+              <button class="btn-toggle" onclick="toggleBtn(this)">置顶</button>
+              <button class="btn-toggle active" onclick="toggleBtn(this)">不置顶</button>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label"><span style="color: #ff4d4f;">*</span> 状态</label>
+            <div class="btn-group">
+              <button class="btn-toggle active" onclick="toggleBtn(this)">开启</button>
+              <button class="btn-toggle" onclick="toggleBtn(this)">关闭</button>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label"><span style="color: #ff4d4f;">*</span> 站内信</label>
+            <div class="btn-group">
+              <button class="btn-toggle" onclick="toggleBtn(this)">是</button>
+              <button class="btn-toggle active" onclick="toggleBtn(this)">否</button>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label"><span style="color: #ff4d4f;">*</span> 排序</label>
+            <input type="text" class="form-input" id="articleSort" placeholder="请输入" style="width: 100%;">
+          </div>
+        </div>
+
+        <!-- 内容 -->
+        <div class="form-group">
+          <label class="form-label"><span style="color: #ff4d4f;">*</span> 内容</label>
+          <div class="editor-toolbar">
+            <button class="editor-btn"><b>B</b></button>
+            <button class="editor-btn"><i>I</i></button>
+            <button class="editor-btn"><u>U</u></button>
+            <button class="editor-btn"><s>S</s></button>
+            <button class="editor-btn">🖼</button>
+            <span class="editor-divider"></span>
+            <button class="editor-btn">↩</button>
+            <button class="editor-btn">↪</button>
+            <span class="editor-divider"></span>
+            <button class="editor-btn">🚩</button>
+            <button class="editor-btn">T<sub>x</sub></button>
+            <span class="editor-divider"></span>
+            <button class="editor-btn">A</button>
+            <button class="editor-btn">🖊</button>
+            <span class="editor-divider"></span>
+            <button class="editor-btn">≡</button>
+            <button class="editor-btn">⌘</button>
+            <button class="editor-btn">↓≡</button>
+            <button class="editor-btn">↑≡</button>
+            <span class="editor-divider"></span>
+            <button class="editor-btn">•</button>
+            <button class="editor-btn">1.</button>
+            <span class="editor-divider"></span>
+            <button class="editor-btn">"</button>
+            <button class="editor-btn">🔗</button>
+          </div>
+          <div class="editor-sub-toolbar">
+            <select class="editor-select">
+              <option>段落</option>
+              <option>标题1</option>
+              <option>标题2</option>
+            </select>
+            <select class="editor-select">
+              <option>14px</option>
+              <option>12px</option>
+              <option>16px</option>
+            </select>
+            <select class="editor-select">
+              <option>系统字体</option>
+              <option>宋体</option>
+              <option>黑体</option>
+            </select>
+            <span class="editor-divider"></span>
+            <button class="editor-btn">⊞</button>
+            <button class="editor-btn">{}</button>
+            <button class="editor-btn">👁</button>
+            <button class="editor-btn">🔖</button>
+            <button class="editor-btn">⛶</button>
+          </div>
+          <div class="editor-content" contenteditable="true">
+            <p style="color: #bfbfbf;">Enter text here</p>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
-        <span style="flex: 1; font-size: 13px; color: #1890ff;">已选择 0 篇文章</span>
         <button class="btn btn-default" onclick="hideModal('addArticle')">取消</button>
-        <button class="btn btn-primary" onclick="confirmAddArticle()">确认关联</button>
+        <button class="btn btn-primary" onclick="confirmAddArticle()">确认</button>
       </div>
     </div>
   </div>
@@ -1327,10 +1571,23 @@
       document.getElementById(name + 'Modal').classList.remove('show');
     }
 
-    // 确认关联文章
+    // 确认添加文章
     function confirmAddArticle() {
       hideModal('addArticle');
-      showToast('文章关联成功');
+      showToast('文章添加成功');
+    }
+
+    // 切换按钮状态
+    function toggleBtn(btn) {
+      const group = btn.parentElement;
+      group.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // 显示编辑文章弹窗
+    function showEditArticleModal(id) {
+      document.getElementById('addArticleModal').classList.add('show');
+      document.querySelector('#addArticleModal .modal-title').textContent = '编辑';
     }
 
     // 点击遮罩关闭
