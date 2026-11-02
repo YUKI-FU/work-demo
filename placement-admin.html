@@ -1019,91 +1019,70 @@
                 <span class="info-code" id="infoCode">c2c <span class="copy-btn" onclick="copyCode()">📋</span></span>
               </span>
             </div>
+            <div class="info-row">
+              <span class="info-label">关联分类</span>
+              <span class="info-value" id="infoCategory" style="color: #1890ff;">常见问题 › C2C交易</span>
+            </div>
           </div>
 
-          <!-- 投放策略 -->
+          <!-- 手动指定文章 -->
           <div class="strategy-section">
-            <div class="section-title">内容投放策略</div>
-            <div class="strategy-tabs">
-              <div class="strategy-tab active" data-tab="category" onclick="switchTab('category')">关联指定分类</div>
-              <div class="strategy-tab" data-tab="article" onclick="switchTab('article')">手动指定文章</div>
-            </div>
-
-            <!-- 分类模式 -->
-            <div class="strategy-content active" id="tabCategory">
-              <div class="category-select-row">
-                <label>关联分类</label>
-                <select class="category-select" id="categorySelect" onchange="updatePreview()">
-                  <option value="">请选择分类</option>
-                  <option value="c2c" selected>常见问题 › C2C交易</option>
-                  <option value="home_faqs">首页常见问题</option>
-                  <option value="RWA_FAQS">RWA 常见问题</option>
-                  <option value="notice_new">公告中心 › 最新</option>
-                  <option value="notice_activity">公告中心 › 活动</option>
-                  <option value="notice_market">公告中心 › 行情</option>
-                  <option value="invite_friend">邀请好友</option>
-                  <option value="Transfer">划转</option>
-                  <option value="api_document">接口文档</option>
-                </select>
+            <div class="section-title">手动指定文章</div>
+            <div class="article-table-wrap">
+              <table class="article-table">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">排序</th>
+                    <th style="width: 100px;">文章 ID</th>
+                    <th>文章标题</th>
+                    <th style="width: 140px;">所属分类</th>
+                    <th style="width: 80px;">状态</th>
+                    <th style="width: 80px;">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="articleTableBody">
+                  <tr draggable="true">
+                    <td><span class="drag-handle">⋮⋮</span></td>
+                    <td>1062</td>
+                    <td><a href="#" class="article-link">如何成为OTC商家</a></td>
+                    <td>常见问题 › C2C</td>
+                    <td><span class="status-tag success">已发布</span></td>
+                    <td>
+                      <span class="op-link danger">移除</span>
+                    </td>
+                  </tr>
+                  <tr draggable="true">
+                    <td><span class="drag-handle">⋮⋮</span></td>
+                    <td>1061</td>
+                    <td><a href="#" class="article-link">什么是OTC交易</a></td>
+                    <td>常见问题 › C2C</td>
+                    <td><span class="status-tag success">已发布</span></td>
+                    <td>
+                      <span class="op-link danger">移除</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="add-article-bar">
+                <button class="btn btn-primary" onclick="showAddArticleModal()">+ 关联文章</button>
               </div>
+            </div>
+          </div>
 
-              <!-- 预览 -->
-              <div class="preview-box">
-                <div class="preview-title">📄 当前实时预览效果</div>
-                <div id="categoryPreview">
-                  <div class="preview-item">
-                    <span class="preview-item-order">1</span>
-                    <span class="preview-item-title">如何成为OTC商家</span>
-                    <span class="preview-item-id">ID: 1062</span>
-                  </div>
-                  <div class="preview-item">
-                    <span class="preview-item-order">2</span>
-                    <span class="preview-item-title">什么是OTC交易</span>
-                    <span class="preview-item-id">ID: 1061</span>
-                  </div>
+          <!-- 预览 -->
+          <div class="strategy-section">
+            <div class="section-title">当前实时预览效果</div>
+            <div class="preview-box" style="border-style: solid;">
+              <div id="categoryPreview">
+                <div class="preview-item">
+                  <span class="preview-item-order">1</span>
+                  <span class="preview-item-title">如何成为OTC商家</span>
+                  <span class="preview-item-id">ID: 1062</span>
                 </div>
-              </div>
-            </div>
-
-            <!-- 文章模式 -->
-            <div class="strategy-content" id="tabArticle">
-              <div class="article-table-wrap">
-                <table class="article-table">
-                  <thead>
-                    <tr>
-                      <th style="width: 50px;">排序</th>
-                      <th style="width: 100px;">文章 ID</th>
-                      <th>文章标题</th>
-                      <th style="width: 140px;">所属分类</th>
-                      <th style="width: 80px;">状态</th>
-                      <th style="width: 80px;">操作</th>
-                    </tr>
-                  </thead>
-                  <tbody id="articleTableBody">
-                    <tr draggable="true">
-                      <td><span class="drag-handle">⋮⋮</span></td>
-                      <td>1062</td>
-                      <td><a href="#" class="article-link">如何成为OTC商家</a></td>
-                      <td>常见问题 › C2C</td>
-                      <td><span class="status-tag success">已发布</span></td>
-                      <td>
-                        <span class="op-link danger">移除</span>
-                      </td>
-                    </tr>
-                    <tr draggable="true">
-                      <td><span class="drag-handle">⋮⋮</span></td>
-                      <td>1061</td>
-                      <td><a href="#" class="article-link">什么是OTC交易</a></td>
-                      <td>常见问题 › C2C</td>
-                      <td><span class="status-tag success">已发布</span></td>
-                      <td>
-                        <span class="op-link danger">移除</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div class="add-article-bar">
-                  <button class="btn btn-primary" onclick="showAddArticleModal()">+ 关联文章</button>
+                <div class="preview-item">
+                  <span class="preview-item-order">2</span>
+                  <span class="preview-item-title">什么是OTC交易</span>
+                  <span class="preview-item-id">ID: 1061</span>
                 </div>
               </div>
             </div>
@@ -1297,17 +1276,7 @@
       document.getElementById('detailTitle').textContent = placement.name;
       document.getElementById('infoName').textContent = placement.name;
       document.getElementById('infoCode').innerHTML = `${placement.key} <span class="copy-btn" onclick="copyCode()">📋</span>`;
-      document.getElementById('infoPage').textContent = placement.page;
-      document.getElementById('infoType').textContent = placement.type;
-
-      // 更新分类选择
-      const categorySelect = document.getElementById('categorySelect');
-      for (let i = 0; i < categorySelect.options.length; i++) {
-        if (categorySelect.options[i].value === placement.key) {
-          categorySelect.selectedIndex = i;
-          break;
-        }
-      }
+      document.getElementById('infoCategory').textContent = placement.category;
     }
 
     // Tab 切换
