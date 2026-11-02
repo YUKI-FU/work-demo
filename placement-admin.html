@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>展位内容投放管理 - ETZ Admin</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* 左侧导航 */
+  .sidebar {
+    width: 220px;
+    background: #001529;
+    color: #fff;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .logo {
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-badge {
+    font-size: 10px;
+    background: #52c41a;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .nav-menu {
+    flex: 1;
+    padding: 12px 0;
+    overflow-y: auto;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: rgba(255,255,255,0.65);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+
+  .nav-item:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.05);
+  }
+
+  .nav-item.active {
+    background: #1890ff;
+    color: #fff;
+  }
+
+  .nav-item .icon {
+    margin-right: 10px;
+    font-size: 16px;
+  }
+
+  .nav-item .arrow {
+    margin-left: auto;
+    font-size: 12px;
+    transition: transform 0.2s;
+  }
+
+  .nav-group.expanded .arrow {
+    transform: rotate(180deg);
+  }
+
+  .nav-submenu {
+    display: none;
+    background: rgba(0,0,0,0.2);
+  }
+
+  .nav-group.expanded .nav-submenu {
+    display: block;
+  }
+
+  .nav-subitem {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px 10px 48px;
+    color: rgba(255,255,255,0.65);
+    cursor: pointer;
+    font-size: 13px;
+    text-decoration: none;
+  }
+
+  .nav-subitem:hover, .nav-subitem.active {
+    color: #fff;
+    background: rgba(255,255,255,0.05);
+  }
+
+  .nav-subitem.active {
+    color: #1890ff;
+  }
+
+  /* 主内容区 */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* 顶部栏 */
+  .header {
+    height: 56px;
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    flex-shrink: 0;
+  }
+
+  .breadcrumb {
+    font-size: 14px;
+    color: #666;
+  }
+
+  .breadcrumb a {
+    color: #1890ff;
+    text-decoration: none;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .header-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 4px;
+    color: #666;
+    font-size: 18px;
+  }
+
+  .header-icon:hover {
+    background: #f5f5f5;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #1890ff;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  /* 内容区 */
+  .content {
+    flex: 1;
+    padding: 16px 24px;
+    overflow: auto;
+    display: flex;
+    gap: 16px;
+  }
+
+  /* 左侧展位树 */
+  .placement-tree {
+    width: 280px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tree-header {
+    padding: 16px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .tree-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  .tree-search {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .tree-search input {
+    width: 100%;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+  }
+
+  .tree-search input:focus {
+    border-color: #1890ff;
+  }
+
+  .tree-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+  }
+
+  .tree-group {
+    margin-bottom: 4px;
+  }
+
+  .tree-group-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    transition: background 0.2s;
+  }
+
+  .tree-group-header:hover {
+    background: #f5f5f5;
+  }
+
+  .tree-group-icon {
+    margin-right: 8px;
+    font-size: 14px;
+    color: #faad14;
+  }
+
+  .tree-group-arrow {
+    margin-left: auto;
+    font-size: 10px;
+    color: #999;
+    transition: transform 0.2s;
+  }
+
+  .tree-group.open .tree-group-arrow {
+    transform: rotate(90deg);
+  }
+
+  .tree-group-items {
+    display: none;
+  }
+
+  .tree-group.open .tree-group-items {
+    display: block;
+  }
+
+  .tree-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px 10px 40px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #666;
+    transition: all 0.2s;
+  }
+
+  .tree-item:hover {
+    background: #f5f5f5;
+    color: #333;
+  }
+
+  .tree-item.active {
+    background: #e6f7ff;
+    color: #1890ff;
+  }
+
+  .tree-item-icon {
+    margin-right: 8px;
+    font-size: 14px;
+  }
+
+  .tree-item-key {
+    margin-left: auto;
+    font-size: 11px;
+    color: #999;
+    background: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .tree-item.active .tree-item-key {
+    background: #bae7ff;
+    color: #1890ff;
+  }
+
+  /* 右侧详情区 */
+  .detail-panel {
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .detail-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .detail-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  .detail-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn {
+    height: 32px;
+    padding: 0 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: #1890ff;
+    border: 1px solid #1890ff;
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: #40a9ff;
+    border-color: #40a9ff;
+  }
+
+  .btn-default {
+    background: #fff;
+    border: 1px solid #d9d9d9;
+    color: #333;
+  }
+
+  .btn-default:hover {
+    border-color: #1890ff;
+    color: #1890ff;
+  }
+
+  .btn-success {
+    background: #52c41a;
+    border: 1px solid #52c41a;
+    color: #fff;
+  }
+
+  .btn-success:hover {
+    background: #73d13d;
+    border-color: #73d13d;
+  }
+
+  .detail-body {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  /* 基础信息卡片 */
+  .info-card {
+    background: #fafafa;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .info-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .info-label {
+    width: 100px;
+    font-size: 13px;
+    color: #666;
+    flex-shrink: 0;
+  }
+
+  .info-value {
+    flex: 1;
+    font-size: 13px;
+    color: #333;
+  }
+
+  .info-code {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f5f5f5;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-family: Monaco, Consolas, monospace;
+    font-size: 12px;
+    color: #d4380d;
+  }
+
+  .info-code .copy-btn {
+    cursor: pointer;
+    color: #1890ff;
+    font-size: 14px;
+  }
+
+  .info-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .info-tag.blue {
+    background: #e6f7ff;
+    color: #1890ff;
+  }
+
+  .info-tag.green {
+    background: #f6ffed;
+    color: #52c41a;
+  }
+
+  /* 投放策略区 */
+  .strategy-section {
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    background: #1890ff;
+    border-radius: 2px;
+  }
+
+  /* Tab 切换 */
+  .strategy-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .strategy-tab {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .strategy-tab:hover {
+    color: #1890ff;
+  }
+
+  .strategy-tab.active {
+    color: #1890ff;
+    border-bottom-color: #1890ff;
+  }
+
+  .strategy-content {
+    display: none;
+  }
+
+  .strategy-content.active {
+    display: block;
+  }
+
+  /* 分类选择 */
+  .category-select-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .category-select-row label {
+    font-size: 13px;
+    color: #666;
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .category-select {
+    flex: 1;
+    max-width: 300px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .category-select:focus {
+    border-color: #1890ff;
+  }
+
+  /* 预览区域 */
+  .preview-box {
+    background: #fafafa;
+    border: 1px dashed #d9d9d9;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+
+  .preview-title {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+  }
+
+  .preview-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+
+  .preview-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .preview-item-order {
+    width: 24px;
+    height: 24px;
+    background: #1890ff;
+    color: #fff;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+
+  .preview-item-title {
+    flex: 1;
+    color: #333;
+  }
+
+  .preview-item-id {
+    font-size: 12px;
+    color: #999;
+    margin-left: 12px;
+  }
+
+  .preview-item-badge {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #fff7e6;
+    color: #fa8c16;
+    margin-left: 8px;
+  }
+
+  /* 文章列表表格 */
+  .article-table-wrap {
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .article-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .article-table th {
+    background: #fafafa;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .article-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+  }
+
+  .article-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .article-table tr:hover td {
+    background: #fafafa;
+  }
+
+  .drag-handle {
+    cursor: grab;
+    color: #999;
+    font-size: 16px;
+  }
+
+  .drag-handle:active {
+    cursor: grabbing;
+  }
+
+  .article-link {
+    color: #1890ff;
+    text-decoration: none;
+  }
+
+  .article-link:hover {
+    text-decoration: underline;
+  }
+
+  .op-link {
+    color: #1890ff;
+    cursor: pointer;
+    margin-right: 12px;
+    font-size: 13px;
+  }
+
+  .op-link:hover {
+    text-decoration: underline;
+  }
+
+  .op-link.danger {
+    color: #ff4d4f;
+  }
+
+  .add-article-bar {
+    padding: 12px 16px;
+    background: #fafafa;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  /* 空状态 */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  .empty-text {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  /* 高级设置 */
+  .advanced-section {
+    background: #fafafa;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    padding: 16px 20px;
+  }
+
+  .advanced-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .advanced-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .advanced-label {
+    font-size: 13px;
+    color: #666;
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .time-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .time-input {
+    width: 180px;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+  }
+
+  .time-input:focus {
+    border-color: #1890ff;
+  }
+
+  /* 状态标签 */
+  .status-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .status-tag.success {
+    background: #f6ffed;
+    color: #52c41a;
+  }
+
+  .status-tag.warning {
+    background: #fffbe6;
+    color: #faad14;
+  }
+
+  .status-tag.default {
+    background: #f5f5f5;
+    color: #999;
+  }
+
+  /* 弹窗 */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 1000;
+    padding: 60px 20px;
+    overflow: auto;
+  }
+
+  .modal-overlay.show {
+    display: flex;
+  }
+
+  .modal {
+    background: #fff;
+    border-radius: 8px;
+    width: 700px;
+    max-width: 100%;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .modal-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  .modal-close {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #999;
+    border-radius: 4px;
+  }
+
+  .modal-close:hover {
+    background: #f5f5f5;
+    color: #333;
+  }
+
+  .modal-body {
+    padding: 20px 24px;
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  /* 文章选择弹窗 */
+  .search-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .search-input {
+    flex: 1;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+  }
+
+  .search-input:focus {
+    border-color: #1890ff;
+  }
+
+  .select-table-wrap {
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+
+  .select-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .select-table th {
+    background: #fafafa;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 1px solid #f0f0f0;
+    position: sticky;
+    top: 0;
+  }
+
+  .select-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+  }
+
+  .select-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .select-table tr:hover td {
+    background: #f5f5f5;
+  }
+
+  /* Toast 提示 */
+  .toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    z-index: 2000;
+    display: none;
+  }
+
+  .toast.show {
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+  <!-- 左侧导航 -->
+  <aside class="sidebar">
+    <div class="logo">
+      <span>⚡ ETZ Admin</span>
+      <span class="logo-badge">TEST</span>
+    </div>
+    <nav class="nav-menu">
+      <div class="nav-item"><span class="icon">👑</span> VIP管理 <span class="arrow">∨</span></div>
+      <div class="nav-item"><span class="icon">👤</span> RWA管理 <span class="arrow">∨</span></div>
+      <div class="nav-item"><span class="icon">💰</span> OTC系统 <span class="arrow">∨</span></div>
+      <div class="nav-item"><span class="icon">📢</span> 广场管理 <span class="arrow">∨</span></div>
+      <div class="nav-item"><span class="icon">📋</span> 合约管理 <span class="arrow">∨</span></div>
+      <div class="nav-item"><span class="icon">⚙️</span> 运营管理 <span class="arrow">∨</span></div>
+      <div class="nav-group expanded">
+        <div class="nav-item parent"><span class="icon">📄</span> 文章管理 <span class="arrow">∧</span></div>
+        <div class="nav-submenu">
+          <div class="nav-subitem">📁 文章类别</div>
+          <div class="nav-subitem">📝 文章列表</div>
+          <a href="placement-admin.html" class="nav-subitem active">📍 展位投放</a>
+        </div>
+      </div>
+      <div class="nav-item"><span class="icon">📨</span> 平台邀请 <span class="arrow">∨</span></div>
+      <div class="nav-item"><span class="icon">🔔</span> 基础配置 <span class="arrow">∨</span></div>
+    </nav>
+  </aside>
+
+  <!-- 主内容 -->
+  <main class="main-content">
+    <!-- 顶部栏 -->
+    <header class="header">
+      <div class="breadcrumb">
+        <a href="#">文章管理</a> / 展位内容投放管理
+      </div>
+      <div class="header-right">
+        <span class="header-icon">⤢</span>
+        <span class="header-icon">🔍</span>
+        <span class="header-icon">🌙</span>
+        <span class="header-icon">🌐</span>
+        <span class="header-icon">🔔</span>
+        <div class="user-info">
+          <div class="avatar">👤</div>
+          <span>admin</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 内容区 -->
+    <div class="content">
+      <!-- 左侧展位树 -->
+      <div class="placement-tree">
+        <div class="tree-header">
+          <span class="tree-title">展位列表</span>
+          <button class="btn btn-primary" style="height: 28px; padding: 0 12px; font-size: 12px;" onclick="showAddPlacementModal()">+ 新增</button>
+        </div>
+        <div class="tree-search">
+          <input type="text" placeholder="🔍 搜索展位名称或编码...">
+        </div>
+        <div class="tree-body" id="placementTree">
+          <!-- 动态生成 -->
+        </div>
+      </div>
+
+      <!-- 右侧详情区 -->
+      <div class="detail-panel">
+        <div class="detail-header">
+          <span class="detail-title" id="detailTitle">C2C 行情页底部 FAQ</span>
+          <div class="detail-actions">
+            <button class="btn btn-default" onclick="previewPlacement()">👁 预览</button>
+            <button class="btn btn-success" onclick="savePlacement()">💾 保存修改</button>
+          </div>
+        </div>
+        <div class="detail-body">
+          <!-- 基础信息 -->
+          <div class="info-card">
+            <div class="info-row">
+              <span class="info-label">展位名称</span>
+              <span class="info-value" id="infoName">C2C 行情页底部 FAQ</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">展位编码</span>
+              <span class="info-value">
+                <span class="info-code" id="infoCode">c2c <span class="copy-btn" onclick="copyCode()">📋</span></span>
+              </span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">所属页面</span>
+              <span class="info-value" id="infoPage">C2C 交易页</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">展示形式</span>
+              <span class="info-value">
+                <span class="info-tag blue" id="infoType">折叠列表</span>
+                <span style="color: #999; font-size: 12px; margin-left: 8px;">最多展示 5 条</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- 投放策略 -->
+          <div class="strategy-section">
+            <div class="section-title">内容投放策略</div>
+            <div class="strategy-tabs">
+              <div class="strategy-tab active" data-tab="category" onclick="switchTab('category')">关联指定分类</div>
+              <div class="strategy-tab" data-tab="article" onclick="switchTab('article')">手动指定文章</div>
+            </div>
+
+            <!-- 分类模式 -->
+            <div class="strategy-content active" id="tabCategory">
+              <div class="category-select-row">
+                <label>关联分类</label>
+                <select class="category-select" id="categorySelect" onchange="updatePreview()">
+                  <option value="">请选择分类</option>
+                  <option value="c2c" selected>常见问题 › C2C交易</option>
+                  <option value="home_faqs">首页常见问题</option>
+                  <option value="RWA_FAQS">RWA 常见问题</option>
+                  <option value="notice_new">公告中心 › 最新</option>
+                  <option value="notice_activity">公告中心 › 活动</option>
+                  <option value="notice_market">公告中心 › 行情</option>
+                  <option value="invite_friend">邀请好友</option>
+                  <option value="Transfer">划转</option>
+                  <option value="api_document">接口文档</option>
+                </select>
+              </div>
+              <div class="category-select-row">
+                <label>排序规则</label>
+                <select class="category-select">
+                  <option>置顶优先 + 最新发布</option>
+                  <option>按后台排序权重降序</option>
+                  <option>按发布时间倒序</option>
+                </select>
+              </div>
+
+              <!-- 预览 -->
+              <div class="preview-box">
+                <div class="preview-title">📄 当前实时预览效果（该分类下前 5 条）</div>
+                <div id="categoryPreview">
+                  <div class="preview-item">
+                    <span class="preview-item-order">1</span>
+                    <span class="preview-item-title">如何成为OTC商家</span>
+                    <span class="preview-item-id">ID: 1062</span>
+                    <span class="preview-item-badge">置顶</span>
+                  </div>
+                  <div class="preview-item">
+                    <span class="preview-item-order">2</span>
+                    <span class="preview-item-title">什么是OTC交易</span>
+                    <span class="preview-item-id">ID: 1061</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 文章模式 -->
+            <div class="strategy-content" id="tabArticle">
+              <div class="article-table-wrap">
+                <table class="article-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">排序</th>
+                      <th style="width: 100px;">文章 ID</th>
+                      <th>文章标题</th>
+                      <th style="width: 140px;">所属分类</th>
+                      <th style="width: 80px;">状态</th>
+                      <th style="width: 100px;">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="articleTableBody">
+                    <tr draggable="true">
+                      <td><span class="drag-handle">⋮⋮</span></td>
+                      <td>1062</td>
+                      <td><a href="#" class="article-link">如何成为OTC商家</a></td>
+                      <td>常见问题 › C2C</td>
+                      <td><span class="status-tag success">已发布</span></td>
+                      <td>
+                        <span class="op-link">置顶</span>
+                        <span class="op-link danger">移除</span>
+                      </td>
+                    </tr>
+                    <tr draggable="true">
+                      <td><span class="drag-handle">⋮⋮</span></td>
+                      <td>1061</td>
+                      <td><a href="#" class="article-link">什么是OTC交易</a></td>
+                      <td>常见问题 › C2C</td>
+                      <td><span class="status-tag success">已发布</span></td>
+                      <td>
+                        <span class="op-link">置顶</span>
+                        <span class="op-link danger">移除</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="add-article-bar">
+                  <button class="btn btn-primary" onclick="showAddArticleModal()">+ 关联文章</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 高级设置 -->
+          <div class="strategy-section">
+            <div class="section-title">高级投放控制（可选）</div>
+            <div class="advanced-section">
+              <div class="advanced-row">
+                <span class="advanced-label">生效时间</span>
+                <div class="time-range">
+                  <input type="datetime-local" class="time-input" placeholder="开始时间">
+                  <span>—</span>
+                  <input type="datetime-local" class="time-input" placeholder="结束时间">
+                </div>
+                <span style="font-size: 12px; color: #999;">留空表示长期有效</span>
+              </div>
+              <div class="advanced-row">
+                <span class="advanced-label">多语言</span>
+                <select class="category-select" style="width: 150px;">
+                  <option>中文简体</option>
+                  <option>English</option>
+                  <option>中文繁体</option>
+                </select>
+                <span style="font-size: 12px; color: #999;">切换语言查看不同版本绑定</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 添加文章弹窗 -->
+  <div class="modal-overlay" id="addArticleModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">关联文章</span>
+        <button class="modal-close" onclick="hideModal('addArticle')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="search-row">
+          <input type="text" class="search-input" placeholder="输入文章标题或文章编码搜索">
+          <button class="btn btn-primary">查询</button>
+          <button class="btn btn-default">重置</button>
+        </div>
+        <div class="select-table-wrap">
+          <table class="select-table">
+            <thead>
+              <tr>
+                <th style="width: 40px;"><input type="checkbox" id="articleSelectAll"></th>
+                <th style="width: 80px;">文章 ID</th>
+                <th>文章标题</th>
+                <th style="width: 120px;">所属分类</th>
+                <th style="width: 80px;">状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" class="article-cb"></td>
+                <td>1065</td>
+                <td>C2C 交易手续费说明</td>
+                <td>常见问题 › C2C</td>
+                <td><span class="status-tag success">已发布</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="article-cb"></td>
+                <td>1064</td>
+                <td>如何进行C2C买币</td>
+                <td>常见问题 › C2C</td>
+                <td><span class="status-tag success">已发布</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="article-cb"></td>
+                <td>1063</td>
+                <td>商家保证金规则说明</td>
+                <td>常见问题 › C2C</td>
+                <td><span class="status-tag success">已发布</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="article-cb"></td>
+                <td>1060</td>
+                <td>C2C 交易限额说明</td>
+                <td>常见问题 › C2C</td>
+                <td><span class="status-tag success">已发布</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="article-cb"></td>
+                <td>1059</td>
+                <td>如何申诉订单</td>
+                <td>常见问题 › C2C</td>
+                <td><span class="status-tag success">已发布</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span style="flex: 1; font-size: 13px; color: #1890ff;">已选择 0 篇文章</span>
+        <button class="btn btn-default" onclick="hideModal('addArticle')">取消</button>
+        <button class="btn btn-primary" onclick="confirmAddArticle()">确认关联</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">保存成功</div>
+
+  <script>
+    // 展位数据
+    const placements = {
+      'c2c_module': {
+        name: 'C2C 模块',
+        icon: '💰',
+        items: [
+          { key: 'c2c', name: 'C2C 行情页底部 FAQ', page: 'C2C 交易页', type: '折叠列表', category: '常见问题 › C2C交易' },
+          { key: 'Transfer', name: '内部划转页说明', page: '划转页', type: '单条显示', category: '划转' }
+        ]
+      },
+      'home_module': {
+        name: '首页模块',
+        icon: '🏠',
+        items: [
+          { key: 'home_faqs', name: '首页底部 FAQ', page: '首页', type: '折叠列表', category: '首页常见问题' },
+          { key: 'notice_new', name: '首页公告轮播', page: '首页/个人中心', type: '轮播图', category: '公告中心 › 最新' }
+        ]
+      },
+      'rwa_module': {
+        name: 'RWA 模块',
+        icon: '🪙',
+        items: [
+          { key: 'RWA_FAQS', name: 'RWA 页 FAQ', page: 'RWA 页', type: '折叠列表', category: 'RWA 常见问题' }
+        ]
+      },
+      'notice_module': {
+        name: '公告模块',
+        icon: '📢',
+        items: [
+          { key: 'notice_activity', name: '积分商城活动公告', page: '积分商城', type: '列表', category: '公告中心 › 活动' },
+          { key: 'notice_market', name: '行情页行情公告', page: '行情页', type: '列表', category: '公告中心 › 行情' }
+        ]
+      },
+      'other_module': {
+        name: '其他模块',
+        icon: '📋',
+        items: [
+          { key: 'invite_friend', name: '邀请链接页说明', page: '邀请好友页', type: '单条显示', category: '邀请好友' },
+          { key: 'api_document', name: 'API 文档页', page: 'API 文档', type: '多级目录', category: '接口文档' }
+        ]
+      }
+    };
+
+    // 当前选中的展位
+    let currentPlacement = null;
+
+    // 渲染展位树
+    function renderPlacementTree() {
+      const tree = document.getElementById('placementTree');
+      let html = '';
+
+      for (const [groupKey, group] of Object.entries(placements)) {
+        html += `
+          <div class="tree-group open" data-group="${groupKey}">
+            <div class="tree-group-header" onclick="toggleGroup(this)">
+              <span class="tree-group-icon">${group.icon}</span>
+              <span>${group.name}</span>
+              <span class="tree-group-arrow">›</span>
+            </div>
+            <div class="tree-group-items">
+        `;
+
+        group.items.forEach((item, idx) => {
+          const isActive = idx === 0 && groupKey === 'c2c_module';
+          html += `
+            <div class="tree-item ${isActive ? 'active' : ''}" data-key="${item.key}" onclick="selectPlacement('${groupKey}', ${idx})">
+              <span class="tree-item-icon">📄</span>
+              <span>${item.name}</span>
+              <span class="tree-item-key">${item.key}</span>
+            </div>
+          `;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      }
+
+      tree.innerHTML = html;
+
+      // 默认选中第一个
+      selectPlacement('c2c_module', 0);
+    }
+
+    // 切换分组展开
+    function toggleGroup(header) {
+      const group = header.closest('.tree-group');
+      group.classList.toggle('open');
+    }
+
+    // 选择展位
+    function selectPlacement(groupKey, idx) {
+      // 更新选中状态
+      document.querySelectorAll('.tree-item').forEach(item => item.classList.remove('active'));
+      const items = document.querySelectorAll(`.tree-group[data-group="${groupKey}"] .tree-item`);
+      if (items[idx]) {
+        items[idx].classList.add('active');
+      }
+
+      // 获取展位数据
+      const placement = placements[groupKey].items[idx];
+      currentPlacement = placement;
+
+      // 更新详情区
+      document.getElementById('detailTitle').textContent = placement.name;
+      document.getElementById('infoName').textContent = placement.name;
+      document.getElementById('infoCode').innerHTML = `${placement.key} <span class="copy-btn" onclick="copyCode()">📋</span>`;
+      document.getElementById('infoPage').textContent = placement.page;
+      document.getElementById('infoType').textContent = placement.type;
+
+      // 更新分类选择
+      const categorySelect = document.getElementById('categorySelect');
+      for (let i = 0; i < categorySelect.options.length; i++) {
+        if (categorySelect.options[i].value === placement.key) {
+          categorySelect.selectedIndex = i;
+          break;
+        }
+      }
+    }
+
+    // Tab 切换
+    function switchTab(tabName) {
+      document.querySelectorAll('.strategy-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.tab === tabName);
+      });
+      document.querySelectorAll('.strategy-content').forEach(content => {
+        content.classList.toggle('active', content.id === 'tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+      });
+    }
+
+    // 复制编码
+    function copyCode() {
+      if (currentPlacement) {
+        navigator.clipboard.writeText(currentPlacement.key);
+        showToast('编码已复制到剪贴板');
+      }
+    }
+
+    // 显示 Toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // 保存
+    function savePlacement() {
+      showToast('保存成功');
+    }
+
+    // 预览
+    function previewPlacement() {
+      showToast('预览功能开发中...');
+    }
+
+    // 显示添加文章弹窗
+    function showAddArticleModal() {
+      document.getElementById('addArticleModal').classList.add('show');
+    }
+
+    // 隐藏弹窗
+    function hideModal(name) {
+      document.getElementById(name + 'Modal').classList.remove('show');
+    }
+
+    // 确认关联文章
+    function confirmAddArticle() {
+      hideModal('addArticle');
+      showToast('文章关联成功');
+    }
+
+    // 点击遮罩关闭
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.classList.remove('show');
+        }
+      });
+    });
+
+    // 初始化
+    renderPlacementTree();
+  </script>
+
+</body>
+</html>
