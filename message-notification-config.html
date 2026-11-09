@@ -455,6 +455,13 @@
   /* ===== 邮件分类配置 ===== */
   var EMAIL_CATS = [
     {
+      key: 'email-security',
+      name: '安全推送',
+      items: [
+        { key: 'email-security-account', name: '账户安全', desc: '异地/新设备/新 IP 登录提醒' }
+      ]
+    },
+    {
       key: 'email-reward',
       name: '奖励推送',
       items: [
@@ -501,6 +508,7 @@
   };
 
   var EMAIL_STATE = {
+    'email-security': [1],
     'email-reward':  [1],
     'email-activity':[1],
     'email-rwa': [1, 1, 1, 1],
