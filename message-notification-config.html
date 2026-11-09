@@ -49,6 +49,41 @@
   }
   .close-btn:hover { background: #222; color: #ccc; }
 
+  /* ===== Tab 切换 ===== */
+  .tab-section {
+    padding: 16px 20px 0;
+  }
+  .tab-bar {
+    display: flex;
+    gap: 24px;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .tab-item {
+    padding: 12px 0;
+    font-size: 15px;
+    color: #888;
+    cursor: pointer;
+    position: relative;
+    transition: color .2s;
+  }
+  .tab-item:hover { color: #ccc; }
+  .tab-item.active { color: #fff; }
+  .tab-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #fff;
+  }
+  .tab-content {
+    display: none;
+  }
+  .tab-content.active {
+    display: block;
+  }
+
   /* ===== 模式选择 ===== */
   .mode-section {
     padding: 16px 20px;
@@ -130,7 +165,7 @@
     overflow: hidden;
     transition: max-height .3s ease;
   }
-  .detail-body.open { max-height: 2000px; }
+  .detail-body.open { max-height: 3000px; }
 
   /* ===== 分类列表 ===== */
   .cat {
@@ -190,7 +225,7 @@
     transition: max-height .28s ease;
     background: #131313;
   }
-  .cat.open .cat-body { max-height: 600px; }
+  .cat.open .cat-body { max-height: 800px; }
 
   .sub {
     display: flex;
@@ -277,7 +312,7 @@
 </head>
 <body>
 
-<div class="page-title">消息通知配置 · 站内信</div>
+<div class="page-title">消息通知配置 · 站内信 / 邮件</div>
 
 <div class="panel">
   <div class="panel-head">
@@ -285,49 +320,92 @@
     <button class="close-btn" aria-label="关闭">✕</button>
   </div>
 
-  <div class="mode-section">
-    <div class="mode-row active" data-mode="all">
-      <div class="mode-radio"></div>
-      <div class="mode-text">
-        <div class="mode-title">全部</div>
-        <div class="mode-desc">接受站内全部消息通知</div>
-      </div>
-      <div class="mode-check">✓</div>
-    </div>
-    <div class="mode-row" data-mode="basic">
-      <div class="mode-radio"></div>
-      <div class="mode-text">
-        <div class="mode-title">基础</div>
-        <div class="mode-desc">仅接收奖励到账、账号安全等重要通知</div>
-      </div>
-      <div class="mode-check">✓</div>
+  <!-- Tab 切换 -->
+  <div class="tab-section">
+    <div class="tab-bar">
+      <div class="tab-item active" data-tab="inbox">站内信</div>
+      <div class="tab-item" data-tab="email">邮件</div>
     </div>
   </div>
 
-  <div class="detail-toggle">
-    <span class="detail-toggle-text">详细配置</span>
-    <span class="detail-toggle-arrow">▾</span>
+  <!-- 站内信 Tab -->
+  <div class="tab-content active" id="tab-inbox">
+    <div class="mode-section">
+      <div class="mode-row active" data-mode="all">
+        <div class="mode-radio"></div>
+        <div class="mode-text">
+          <div class="mode-title">全部</div>
+          <div class="mode-desc">接受站内全部消息通知</div>
+        </div>
+        <div class="mode-check">✓</div>
+      </div>
+      <div class="mode-row" data-mode="custom">
+        <div class="mode-radio"></div>
+        <div class="mode-text">
+          <div class="mode-title">自定义</div>
+          <div class="mode-desc">自定义选择要接收的消息通知</div>
+        </div>
+        <div class="mode-check">✓</div>
+      </div>
+    </div>
+
+    <div class="detail-toggle" id="inbox-detail-toggle">
+      <span class="detail-toggle-text">详细配置</span>
+      <span class="detail-toggle-arrow">▾</span>
+    </div>
+
+    <div class="detail-body" id="inbox-detail-body">
+      <div id="inbox-list"></div>
+    </div>
   </div>
 
-  <div class="detail-body">
-    <div id="list"></div>
+  <!-- 邮件 Tab -->
+  <div class="tab-content" id="tab-email">
+    <div class="mode-section">
+      <div class="mode-row active" data-mode="all" data-type="email">
+        <div class="mode-radio"></div>
+        <div class="mode-text">
+          <div class="mode-title">全部</div>
+          <div class="mode-desc">接受全部邮件通知</div>
+        </div>
+        <div class="mode-check">✓</div>
+      </div>
+      <div class="mode-row" data-mode="custom" data-type="email">
+        <div class="mode-radio"></div>
+        <div class="mode-text">
+          <div class="mode-title">自定义</div>
+          <div class="mode-desc">自定义选择要接收的邮件通知</div>
+        </div>
+        <div class="mode-check">✓</div>
+      </div>
+    </div>
+
+    <div class="detail-toggle" id="email-detail-toggle">
+      <span class="detail-toggle-text">详细配置</span>
+      <span class="detail-toggle-arrow">▾</span>
+    </div>
+
+    <div class="detail-body" id="email-detail-body">
+      <div id="email-list"></div>
+    </div>
   </div>
 </div>
 
 <div class="notes">
   <h3>📐 设计说明</h3>
   <ul>
-    <li><b>模式快捷切换</b>：顶部提供"全部/基础"两档快捷选择；选"全部"全开，选"基础"只保留奖励到账和账号安全相关</li>
-    <li><b>详细配置折叠</b>：默认收起，点开可逐项调整；手动改动后不影响快捷模式选中态（预设仍可一键切回）</li>
-    <li><b>两级结构</b>：一级分类控制整组，二级分类逐个控制；二级右侧小字列出该组包含的消息项，不再单独做第三层</li>
-    <li><b>父级开关三态</b>：全开=亮色、部分开启=黄色横杠半选、全关=灰；点一下按"全开 ⇄ 全关"切换</li>
+    <li><b>Tab 切换</b>：站内信 / 邮件两个独立配置面板，互不影响</li>
+    <li><b>模式快捷切换</b>：顶部提供"全部/自定义"两档快捷选择</li>
+    <li><b>详细配置折叠</b>：默认收起，点开可逐项调整</li>
+    <li><b>两级结构</b>：一级分类控制整组，二级分类逐个控制；二级右侧小字列出该组包含的消息项</li>
+    <li><b>父级开关三态</b>：全开=亮色、部分开启=黄色横杠半选、全关=灰</li>
     <li><b>父级显示 x/y</b>：不用展开也能看出这组开了几项</li>
-    <li><b>默认展开</b>：使用频率高的组（奖励、社区）默认打开，低频组（行情、活动推送）默认收起</li>
   </ul>
 </div>
 
 <script>
-  var CATS = [
+  /* ===== 站内信分类配置 ===== */
+  var INBOX_CATS = [
     {
       key: 'market',
       name: '行情推送',
@@ -361,43 +439,101 @@
         { key: 'c-audit', name: '内容审核通知', desc: '帖子违规删除 / 下架、评论敏感行为' },
         { key: 'c-punish', name: '账号处罚通知', desc: '违规禁言、违规封禁' }
       ]
+    },
+    {
+      key: 'rwa',
+      name: 'RWA 推送',
+      items: [
+        { key: 'rwa-subscribe', name: 'RWA申购', desc: '申购订单提交、申购成功、申购失败、申购成功与质押成功' },
+        { key: 'rwa-reward', name: 'RWA奖励', desc: '奖励已到账' },
+        { key: 'rwa-recycle', name: 'RWA回收', desc: '回收订单提交、回收成功、回收失败' },
+        { key: 'rwa-pledge', name: 'RWA质押', desc: '质押成功、解除质押' }
+      ]
+    }
+  ];
+
+  /* ===== 邮件分类配置 ===== */
+  var EMAIL_CATS = [
+    {
+      key: 'email-reward',
+      name: '奖励推送',
+      items: [
+        { key: 'email-reward-center', name: '活动中心', desc: '活动卡券、Token 奖励到账提醒' }
+      ]
+    },
+    {
+      key: 'email-activity',
+      name: '活动推送',
+      items: [
+        { key: 'email-act-center', name: '活动中心', desc: '活动奖励未领取、到期提醒' }
+      ]
+    },
+    {
+      key: 'email-rwa',
+      name: 'RWA 推送',
+      items: [
+        { key: 'email-rwa-subscribe', name: 'RWA申购', desc: '申购提交、申购成功/失败提醒' },
+        { key: 'email-rwa-reward', name: 'RWA奖励', desc: '奖励待发放、已发放通知' },
+        { key: 'email-rwa-recycle', name: 'RWA回收', desc: '发起回收、回收到账提醒' },
+        { key: 'email-rwa-lock', name: 'RWA锁仓', desc: '锁仓、解除锁仓提醒' }
+      ]
+    },
+    {
+      key: 'email-otc',
+      name: 'OTC 推送',
+      items: [
+        { key: 'email-otc-ongoing', name: '交易进行中', desc: '订单待付款、已付款待确认、催促放币提醒' },
+        { key: 'email-otc-final', name: '交易终态', desc: '订单完成（资产/法币到账）、订单取消通知' },
+        { key: 'email-otc-timeout', name: '超时与纠纷', desc: '付款/放币超时提醒、订单恢复及申诉进度通知' },
+        { key: 'email-otc-merchant', name: '商家服务', desc: '商家申请及撤销资格审核结果通知' },
+        { key: 'email-otc-ads', name: '广告管理', desc: '币种/法币/支付方式变更导致的广告下架提醒' }
+      ]
     }
   ];
 
   /* 每个分类的开关状态 */
-  var STATE = {
+  var INBOX_STATE = {
     market:  [1],
-    reward:  [1, 1, 0],
+    reward:  [1, 1, 1],
     activity:[0, 0],
-    community:[1, 1, 1, 1]
+    community:[1, 1, 1, 1],
+    rwa: [1, 1, 1, 1]
+  };
+
+  var EMAIL_STATE = {
+    'email-reward':  [1],
+    'email-activity':[1],
+    'email-rwa': [1, 1, 1, 1],
+    'email-otc': [1, 1, 1, 1, 1]
   };
 
   /* 默认展开的分类 */
-  var OPEN = ['reward', 'community'];
+  var INBOX_OPEN = ['reward', 'rwa'];
+  var EMAIL_OPEN = ['email-rwa', 'email-otc'];
 
-  function render() {
-    var list = document.getElementById('list');
+  function renderList(cats, state, openList, containerId) {
+    var list = document.getElementById(containerId);
     var html = '';
 
-    CATS.forEach(function (cat) {
-      var isOpen = OPEN.indexOf(cat.key) >= 0;
+    cats.forEach(function (cat) {
+      var isOpen = openList.indexOf(cat.key) >= 0;
       html += '<div class="cat' + (isOpen ? ' open' : '') + '" data-cat="' + cat.key + '">';
       html += '  <div class="cat-head">';
       html += '    <span class="cat-name">' + cat.name + '</span>';
       html += '    <span class="cat-meta"></span>';
       html += '    <span class="chev"></span>';
-      html += '    <button class="switch master-switch" role="switch" aria-label="' + cat.name + ' 全部开关"></button>';
+      html += '    <button class="switch master-switch" role="switch" aria-label="' + cat.name + ' 全部开关"><span class="knob"></span></button>';
       html += '  </div>';
       html += '  <div class="cat-body">';
 
       cat.items.forEach(function (item, i) {
-        var on = STATE[cat.key][i] === 1;
+        var on = state[cat.key][i] === 1;
         html += '    <div class="sub' + (on ? '' : ' off') + '" data-idx="' + i + '">';
         html += '      <div class="sub-text">';
         html += '        <div class="sub-name">' + item.name + '</div>';
         html += '        <div class="sub-desc">' + item.desc + '</div>';
         html += '      </div>';
-        html += '      <button class="switch sub-switch' + (on ? ' on' : '') + '" role="switch" aria-checked="' + on + '"></button>';
+        html += '      <button class="switch sub-switch' + (on ? ' on' : '') + '" role="switch" aria-checked="' + on + '"><span class="knob"></span></button>';
         html += '    </div>';
       });
 
@@ -406,18 +542,16 @@
     });
 
     list.innerHTML = html;
-    hydrate();
   }
 
-  function countOn(catKey) {
-    return STATE[catKey].reduce(function (a, b) { return a + b; }, 0);
+  function countOn(state, catKey) {
+    return state[catKey].reduce(function (a, b) { return a + b; }, 0);
   }
 
-  /* 刷新每个分类的 master 状态和 x/y 文案 */
-  function syncCat(catEl) {
+  function syncCat(catEl, state) {
     var catKey = catEl.dataset.cat;
-    var arr = STATE[catKey];
-    var on = countOn(catKey);
+    var arr = state[catKey];
+    var on = countOn(state, catKey);
     var total = arr.length;
 
     var master = catEl.querySelector('.master-switch');
@@ -427,105 +561,101 @@
     catEl.querySelector('.cat-meta').textContent = on + '/' + total;
   }
 
-  function hydrate() {
-    document.querySelectorAll('.cat').forEach(function (catEl) {
-      syncCat(catEl);
+  function hydrateList(containerId, state, openList) {
+    var container = document.getElementById(containerId);
+    container.querySelectorAll('.cat').forEach(function (catEl) {
+      syncCat(catEl, state);
 
-      /* 展开 / 收起：点整行 */
       catEl.querySelector('.cat-head').addEventListener('click', function () {
         var isOpen = catEl.classList.toggle('open');
-        var idx = OPEN.indexOf(catEl.dataset.cat);
-        if (isOpen && idx < 0) OPEN.push(catEl.dataset.cat);
-        if (!isOpen && idx >= 0) OPEN.splice(idx, 1);
+        var idx = openList.indexOf(catEl.dataset.cat);
+        if (isOpen && idx < 0) openList.push(catEl.dataset.cat);
+        if (!isOpen && idx >= 0) openList.splice(idx, 1);
       });
 
-      /* 一级开关：全开 / 全关，不触发展开 */
       catEl.querySelector('.master-switch').addEventListener('click', function (e) {
         e.stopPropagation();
         var catKey = catEl.dataset.cat;
-        var arr = STATE[catKey];
+        var arr = state[catKey];
         var allOn = arr.every(function (v) { return v === 1; });
         var next = allOn ? 0 : 1;
         arr.forEach(function (_, i) { arr[i] = next; });
-        repaintCat(catEl);
+        repaintCat(catEl, state);
       });
 
-      /* 二级开关 */
       catEl.querySelectorAll('.sub-switch').forEach(function (sw) {
         sw.addEventListener('click', function (e) {
           e.stopPropagation();
           var i = +sw.closest('.sub').dataset.idx;
           var catKey = catEl.dataset.cat;
-          STATE[catKey][i] = STATE[catKey][i] ? 0 : 1;
-          repaintCat(catEl);
+          state[catKey][i] = state[catKey][i] ? 0 : 1;
+          repaintCat(catEl, state);
         });
       });
     });
   }
 
-  /* 局部重绘，保留展开动画 */
-  function repaintCat(catEl) {
+  function repaintCat(catEl, state) {
     var catKey = catEl.dataset.cat;
     catEl.querySelectorAll('.sub').forEach(function (sub) {
       var i = +sub.dataset.idx;
-      var on = STATE[catKey][i] === 1;
+      var on = state[catKey][i] === 1;
       sub.classList.toggle('off', !on);
       var sw = sub.querySelector('.sub-switch');
       sw.classList.toggle('on', on);
       sw.setAttribute('aria-checked', String(on));
     });
-    syncCat(catEl);
+    syncCat(catEl, state);
   }
 
-  /* 预设模式 */
-  var PRESETS = {
-    all: {
-      market:  [1],
-      reward:  [1, 1, 1],
-      activity:[1, 1],
-      community:[1, 1, 1, 1]
-    },
-    basic: {
-      market:  [1],
-      reward:  [1, 1, 1],
-      activity:[0, 0],
-      community:[0, 0, 1, 1]
-    }
-  };
-
-  function applyPreset(mode) {
-    var preset = PRESETS[mode];
-    for (var k in preset) {
-      STATE[k] = preset[k].slice();
-    }
-    document.querySelectorAll('.cat').forEach(function (catEl) {
-      repaintCat(catEl);
+  /* Tab 切换 */
+  document.querySelectorAll('.tab-item').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.tab-item').forEach(function (t) { t.classList.remove('active'); });
+      document.querySelectorAll('.tab-content').forEach(function (c) { c.classList.remove('active'); });
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
     });
-  }
+  });
 
-  function setMode(mode) {
-    document.querySelectorAll('.mode-row').forEach(function (row) {
-      row.classList.toggle('active', row.dataset.mode === mode);
-    });
-    applyPreset(mode);
-  }
+  /* 详细配置展开 - 站内信 */
+  var inboxDetailToggle = document.getElementById('inbox-detail-toggle');
+  var inboxDetailBody = document.getElementById('inbox-detail-body');
+  inboxDetailToggle.addEventListener('click', function () {
+    inboxDetailToggle.classList.toggle('open');
+    inboxDetailBody.classList.toggle('open');
+  });
 
-  /* 模式点击 */
-  document.querySelectorAll('.mode-row').forEach(function (row) {
+  /* 详细配置展开 - 邮件 */
+  var emailDetailToggle = document.getElementById('email-detail-toggle');
+  var emailDetailBody = document.getElementById('email-detail-body');
+  emailDetailToggle.addEventListener('click', function () {
+    emailDetailToggle.classList.toggle('open');
+    emailDetailBody.classList.toggle('open');
+  });
+
+  /* 模式选择 - 站内信 */
+  document.querySelectorAll('#tab-inbox .mode-row').forEach(function (row) {
     row.addEventListener('click', function () {
-      setMode(row.dataset.mode);
+      document.querySelectorAll('#tab-inbox .mode-row').forEach(function (r) { r.classList.remove('active'); });
+      row.classList.add('active');
     });
   });
 
-  /* 详细配置展开 */
-  var detailToggle = document.querySelector('.detail-toggle');
-  var detailBody = document.querySelector('.detail-body');
-  detailToggle.addEventListener('click', function () {
-    detailToggle.classList.toggle('open');
-    detailBody.classList.toggle('open');
+  /* 模式选择 - 邮件 */
+  document.querySelectorAll('#tab-email .mode-row').forEach(function (row) {
+    row.addEventListener('click', function () {
+      document.querySelectorAll('#tab-email .mode-row').forEach(function (r) { r.classList.remove('active'); });
+      row.classList.add('active');
+    });
   });
 
-  render();
+  /* 初始化 */
+  renderList(INBOX_CATS, INBOX_STATE, INBOX_OPEN, 'inbox-list');
+  hydrateList('inbox-list', INBOX_STATE, INBOX_OPEN);
+
+  renderList(EMAIL_CATS, EMAIL_STATE, EMAIL_OPEN, 'email-list');
+  hydrateList('email-list', EMAIL_STATE, EMAIL_OPEN);
 </script>
 </body>
 </html>
