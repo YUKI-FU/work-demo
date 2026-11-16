@@ -823,7 +823,7 @@
               <th>单价</th>
               <th>总金额</th>
               <th>申诉状态</th>
-              <th>操作</th>
+              <th>聊天记录</th>
               <th>支付图片</th>
               <th>订单状态</th>
               <th>创建时间</th>
@@ -961,7 +961,7 @@
       html += '<td>' + item.price + '</td>';
       html += '<td>' + item.amount + '</td>';
       html += '<td><span class="tag tag-orange">' + item.appealStatus + '</span></td>';
-      html += '<td><span class="link" onclick="openModal(\'' + item.tradeId + '\', \'chat\')">聊天记录</span> / <span class="link" onclick="openModal(\'' + item.tradeId + '\', \'record\')">查看记录</span></td>';
+      html += '<td>聊天记录 / <span class="link" onclick="openModal(\'' + item.tradeId + '\')">查看记录</span></td>';
       html += '<td>' + (item.payImg === '查看图片' ? '<span class="link">查看图片</span>' : item.payImg) + '</td>';
       html += '<td><span class="tag tag-red">' + item.orderStatus + '</span></td>';
       html += '<td>' + item.time + '</td>';
@@ -971,11 +971,9 @@
     tbody.innerHTML = html;
   }
 
-  function openModal(tradeId, type) {
+  function openModal(tradeId) {
     document.getElementById('chatModal').classList.add('show');
     document.getElementById('modalTradeId').innerHTML = tradeId + ' <span class="copy-icon">📋</span>';
-    // 更新弹窗标题
-    document.querySelector('.modal-title').textContent = type === 'chat' ? '聊天记录' : '查看记录';
     // 重置状态
     isJoined = false;
     updateJoinState();
