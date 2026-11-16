@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>申诉处理工作台 - OTC系统 - ETZ Admin</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    background: #f0f2f5;
+    color: #333;
+    min-height: 100vh;
+  }
+
+  /* 顶部导航 */
+  .top-nav {
+    background: #fff;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    border-bottom: 1px solid #e8e8e8;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover {
+    background: #f5f5f5;
+    color: #1890ff;
+  }
+
+  .page-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-left: 20px;
+    color: #333;
+  }
+
+  .page-title span {
+    color: #999;
+    font-weight: 400;
+    margin-left: 12px;
+    font-size: 13px;
+  }
+
+  .nav-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 12px;
+  }
+
+  .nav-actions .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-default {
+    background: #fff;
+    border: 1px solid #d9d9d9;
+    color: #666;
+  }
+
+  .btn-default:hover {
+    border-color: #1890ff;
+    color: #1890ff;
+  }
+
+  /* 三栏布局 */
+  .workspace {
+    display: flex;
+    height: calc(100vh - 56px);
+  }
+
+  /* 左栏：订单信息 */
+  .left-panel {
+    width: 320px;
+    background: #fff;
+    border-right: 1px solid #e8e8e8;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .panel-header .icon {
+    font-size: 16px;
+  }
+
+  .panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+  }
+
+  /* 订单信息样式 */
+  .order-section {
+    margin-bottom: 20px;
+  }
+
+  .order-section-title {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .order-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+
+  .order-label {
+    color: #666;
+    flex-shrink: 0;
+    width: 80px;
+  }
+
+  .order-value {
+    color: #333;
+    text-align: right;
+    flex: 1;
+    word-break: break-all;
+  }
+
+  .order-value.mono {
+    font-family: "SF Mono", Monaco, monospace;
+    font-size: 12px;
+  }
+
+  .order-value .copy-btn {
+    margin-left: 6px;
+    color: #1890ff;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .order-value .link {
+    color: #1890ff;
+    cursor: pointer;
+  }
+
+  .order-value .link:hover {
+    text-decoration: underline;
+  }
+
+  .order-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .tag-sell {
+    background: #fff1f0;
+    color: #f5222d;
+  }
+
+  .tag-buy {
+    background: #e6f7ff;
+    color: #1890ff;
+  }
+
+  .tag-appeal {
+    background: #fff7e6;
+    color: #fa8c16;
+  }
+
+  .order-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 1px solid #e8e8e8;
+  }
+
+  /* 中栏：聊天室 */
+  .center-panel {
+    flex: 1;
+    background: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    min-width: 400px;
+  }
+
+  .chat-header {
+    background: #fff;
+    padding: 12px 20px;
+    border-bottom: 1px solid #e8e8e8;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .chat-filter-tabs {
+    display: flex;
+    gap: 8px;
+  }
+
+  .chat-filter-tab {
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 13px;
+    cursor: pointer;
+    background: #f5f5f5;
+    color: #666;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+
+  .chat-filter-tab:hover {
+    background: #e6f7ff;
+    color: #1890ff;
+  }
+
+  .chat-filter-tab.active {
+    background: #1890ff;
+    color: #fff;
+  }
+
+  .chat-status {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status-dot.online {
+    background: #52c41a;
+  }
+
+  .status-dot.offline {
+    background: #d9d9d9;
+  }
+
+  .status-text {
+    font-size: 12px;
+    color: #999;
+  }
+
+  .join-btn {
+    padding: 6px 16px;
+    background: #52c41a;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .join-btn:hover {
+    background: #73d13d;
+  }
+
+  .join-btn.joined {
+    background: #ff4d4f;
+  }
+
+  .join-btn.joined:hover {
+    background: #ff7875;
+  }
+
+  /* 聊天消息区 */
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .chat-system {
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    padding: 8px 16px;
+    background: #f0f0f0;
+    border-radius: 16px;
+    margin: 8px auto;
+    max-width: 300px;
+  }
+
+  .chat-msg {
+    display: flex;
+    gap: 12px;
+    max-width: 75%;
+  }
+
+  .chat-msg.buyer {
+    align-self: flex-start;
+  }
+
+  .chat-msg.seller {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+
+  .chat-msg.staff {
+    align-self: center;
+    max-width: 85%;
+  }
+
+  .chat-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #e6f7ff;
+    color: #1890ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .chat-msg.seller .chat-avatar {
+    background: #fff7e6;
+    color: #fa8c16;
+  }
+
+  .chat-msg.staff .chat-avatar {
+    background: #f6ffed;
+    color: #52c41a;
+  }
+
+  .chat-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .chat-msg.seller .chat-content {
+    align-items: flex-end;
+  }
+
+  .chat-meta {
+    font-size: 11px;
+    color: #999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chat-name {
+    font-weight: 500;
+    color: #666;
+  }
+
+  .chat-bubble {
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 100%;
+    word-break: break-word;
+  }
+
+  .chat-msg.buyer .chat-bubble {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-top-left-radius: 4px;
+  }
+
+  .chat-msg.seller .chat-bubble {
+    background: #fff7e6;
+    border: 1px solid #ffd591;
+    border-top-right-radius: 4px;
+  }
+
+  .chat-msg.staff .chat-bubble {
+    background: #f6ffed;
+    border: 1px solid #b7eb8f;
+  }
+
+  /* 私聊样式 */
+  .chat-bubble.private {
+    background: #fffbe6 !important;
+    border: 1px dashed #fadb14 !important;
+  }
+
+  .chat-private-tag {
+    font-size: 10px;
+    background: #fff0f6;
+    color: #eb2f96;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .chat-target-tag {
+    font-size: 10px;
+    background: #e6f7ff;
+    color: #1890ff;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  /* 聊天输入区 */
+  .chat-input-area {
+    background: #fff;
+    border-top: 1px solid #e8e8e8;
+    padding: 16px 20px;
+    display: none;
+  }
+
+  .chat-input-area.show {
+    display: block;
+  }
+
+  .chat-send-target {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .send-target-label {
+    font-size: 13px;
+    color: #666;
+  }
+
+  .send-target-options {
+    display: flex;
+    gap: 8px;
+  }
+
+  .send-target-option {
+    padding: 4px 12px;
+    border-radius: 14px;
+    font-size: 12px;
+    cursor: pointer;
+    background: #f5f5f5;
+    color: #666;
+    border: 1px solid #d9d9d9;
+    transition: all 0.2s;
+  }
+
+  .send-target-option:hover {
+    border-color: #1890ff;
+    color: #1890ff;
+  }
+
+  .send-target-option.active {
+    background: #1890ff;
+    color: #fff;
+    border-color: #1890ff;
+  }
+
+  .chat-input-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .chat-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .chat-input:focus {
+    border-color: #1890ff;
+  }
+
+  .chat-send-btn {
+    padding: 10px 24px;
+    background: #1890ff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .chat-send-btn:hover {
+    background: #40a9ff;
+  }
+
+  .chat-tools {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+  }
+
+  .chat-tool {
+    font-size: 13px;
+    color: #999;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .chat-tool:hover {
+    color: #1890ff;
+  }
+
+  /* 右栏：申诉记录与处理 */
+  .right-panel {
+    width: 360px;
+    background: #fff;
+    border-left: 1px solid #e8e8e8;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .right-tabs {
+    display: flex;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .right-tab {
+    flex: 1;
+    padding: 14px;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .right-tab:hover {
+    color: #1890ff;
+  }
+
+  .right-tab.active {
+    color: #1890ff;
+    border-bottom-color: #1890ff;
+  }
+
+  .right-content {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .right-pane {
+    display: none;
+    padding: 16px 20px;
+  }
+
+  .right-pane.active {
+    display: block;
+  }
+
+  /* 申诉记录 */
+  .appeal-timeline {
+    position: relative;
+  }
+
+  .appeal-item {
+    position: relative;
+    padding-left: 24px;
+    padding-bottom: 20px;
+  }
+
+  .appeal-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .appeal-item::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 8px;
+    bottom: -12px;
+    width: 2px;
+    background: #f0f0f0;
+  }
+
+  .appeal-item:last-child::before {
+    display: none;
+  }
+
+  .appeal-dot {
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #faad14;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #faad14;
+  }
+
+  .appeal-dot.resolved {
+    background: #52c41a;
+    box-shadow: 0 0 0 2px #52c41a;
+  }
+
+  .appeal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .appeal-role {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .appeal-id {
+    font-size: 12px;
+    color: #999;
+    font-family: monospace;
+  }
+
+  .appeal-kyc {
+    font-size: 11px;
+    color: #1890ff;
+    cursor: pointer;
+  }
+
+  .appeal-time {
+    font-size: 12px;
+    color: #999;
+    margin-left: auto;
+  }
+
+  .appeal-action {
+    font-size: 13px;
+    color: #fa8c16;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .appeal-reason {
+    font-size: 13px;
+    color: #666;
+    background: #fafafa;
+    padding: 10px 12px;
+    border-radius: 6px;
+    line-height: 1.5;
+  }
+
+  .appeal-images {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .appeal-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 1px solid #e8e8e8;
+  }
+
+  /* 处理操作 */
+  .handle-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-label {
+    font-size: 13px;
+    color: #666;
+  }
+
+  .form-label .required {
+    color: #ff4d4f;
+    margin-right: 4px;
+  }
+
+  .form-select {
+    padding: 10px 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .form-select:focus {
+    border-color: #1890ff;
+  }
+
+  .form-textarea {
+    padding: 10px 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+  }
+
+  .form-textarea:focus {
+    border-color: #1890ff;
+  }
+
+  .form-hint {
+    font-size: 12px;
+    color: #999;
+    text-align: right;
+  }
+
+  .upload-area {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .upload-area:hover {
+    border-color: #1890ff;
+  }
+
+  .upload-icon {
+    font-size: 24px;
+    color: #d9d9d9;
+    margin-bottom: 8px;
+  }
+
+  .upload-text {
+    font-size: 13px;
+    color: #999;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .form-actions .btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: #1890ff;
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: #40a9ff;
+  }
+
+  .btn-success {
+    background: #52c41a;
+    color: #fff;
+  }
+
+  .btn-success:hover {
+    background: #73d13d;
+  }
+
+  .btn-danger {
+    background: #ff4d4f;
+    color: #fff;
+  }
+
+  .btn-danger:hover {
+    background: #ff7875;
+  }
+
+  /* 响应式 */
+  @media (max-width: 1200px) {
+    .left-panel {
+      width: 280px;
+    }
+    .right-panel {
+      width: 320px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<div class="top-nav">
+  <div class="back-btn" onclick="history.back()">
+    <span>←</span>
+    <span>返回列表</span>
+  </div>
+  <div class="page-title">
+    申诉处理工作台
+    <span>订单号: 355629100542826643</span>
+  </div>
+  <div class="nav-actions">
+    <button class="btn btn-default">刷新</button>
+  </div>
+</div>
+
+<!-- 三栏布局 -->
+<div class="workspace">
+  <!-- 左栏：订单信息 -->
+  <div class="left-panel">
+    <div class="panel-header">
+      <span class="icon">📋</span>
+      订单信息
+    </div>
+    <div class="panel-body">
+      <!-- 基本信息 -->
+      <div class="order-section">
+        <div class="order-section-title">基本信息</div>
+        <div class="order-row">
+          <span class="order-label">交易ID</span>
+          <span class="order-value mono">355629100542826643 <span class="copy-btn">📋</span></span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">广告ID</span>
+          <span class="order-value mono">347 <span class="copy-btn">📋</span></span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">交易类型</span>
+          <span class="order-value"><span class="order-tag tag-sell">卖出</span></span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">订单状态</span>
+          <span class="order-value">确认超时</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">申诉状态</span>
+          <span class="order-value"><span class="order-tag tag-appeal">申诉中</span></span>
+        </div>
+      </div>
+
+      <!-- 交易双方 -->
+      <div class="order-section">
+        <div class="order-section-title">交易双方</div>
+        <div class="order-row">
+          <span class="order-label">买家 UID</span>
+          <span class="order-value mono">1700126679 <span class="copy-btn">📋</span> <span class="link">查看KYC</span></span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">商家 UID</span>
+          <span class="order-value mono">1700593742 <span class="copy-btn">📋</span> <span class="link">查看KYC</span></span>
+        </div>
+      </div>
+
+      <!-- 交易详情 -->
+      <div class="order-section">
+        <div class="order-section-title">交易详情</div>
+        <div class="order-row">
+          <span class="order-label">交易数量</span>
+          <span class="order-value">1.375 (xz1010)</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">单价</span>
+          <span class="order-value">40 (xz1010)</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">总金额</span>
+          <span class="order-value" style="font-weight: 600; color: #1890ff;">55 (xz1010)</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">支付方式</span>
+          <span class="order-value">REVOLUT</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">法币币种</span>
+          <span class="order-value">USDT</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">虚拟币种</span>
+          <span class="order-value">xz1010</span>
+        </div>
+      </div>
+
+      <!-- 时间信息 -->
+      <div class="order-section">
+        <div class="order-section-title">时间信息</div>
+        <div class="order-row">
+          <span class="order-label">创建时间</span>
+          <span class="order-value">2026/11/13 12:50:48</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">付款时间</span>
+          <span class="order-value">2026/11/13 12:51:01</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">超时时间</span>
+          <span class="order-value" style="color: #ff4d4f;">2 分钟</span>
+        </div>
+      </div>
+
+      <!-- 支付凭证 -->
+      <div class="order-section">
+        <div class="order-section-title">支付凭证</div>
+        <div class="order-row">
+          <span class="order-label">支付图片</span>
+          <span class="order-value">
+            <img class="order-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect fill='%23f5f5f5' width='60' height='60'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='20' text-anchor='middle' dy='.3em'%3E💰%3C/text%3E%3C/svg%3E" alt="支付凭证">
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 中栏：聊天室 -->
+  <div class="center-panel">
+    <div class="chat-header">
+      <div class="chat-filter-tabs">
+        <div class="chat-filter-tab active" data-filter="all" onclick="filterMessages('all')">全部消息</div>
+        <div class="chat-filter-tab" data-filter="public" onclick="filterMessages('public')">公开对话</div>
+        <div class="chat-filter-tab" data-filter="buyer" onclick="filterMessages('buyer')">买家私聊 🔒</div>
+        <div class="chat-filter-tab" data-filter="seller" onclick="filterMessages('seller')">商家私聊 🔒</div>
+      </div>
+      <div class="chat-status">
+        <span class="status-dot online"></span>
+        <span class="status-text">双方在线</span>
+      </div>
+      <button class="join-btn" id="joinBtn" onclick="toggleJoin()">介入对话</button>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-system">对话开始于 2026/11/13 12:50:48</div>
+
+      <!-- 买家消息 - 公开 -->
+      <div class="chat-msg buyer" data-type="public" data-role="buyer">
+        <div class="chat-avatar">买</div>
+        <div class="chat-content">
+          <div class="chat-meta">
+            <span class="chat-name">买家 · 1700126679</span>
+            <span>12:51:05</span>
+          </div>
+          <div class="chat-bubble">你好，我已经付款了，请查收</div>
+        </div>
+      </div>
+
+      <!-- 卖家消息 - 公开 -->
+      <div class="chat-msg seller" data-type="public" data-role="seller">
+        <div class="chat-avatar">商</div>
+        <div class="chat-content">
+          <div class="chat-meta">
+            <span class="chat-name">商家 · 1700593742</span>
+            <span>12:52:30</span>
+          </div>
+          <div class="chat-bubble">稍等，我确认一下</div>
+        </div>
+      </div>
+
+      <!-- 买家消息 - 公开 -->
+      <div class="chat-msg buyer" data-type="public" data-role="buyer">
+        <div class="chat-avatar">买</div>
+        <div class="chat-content">
+          <div class="chat-meta">
+            <span class="chat-name">买家 · 1700126679</span>
+            <span>12:55:00</span>
+          </div>
+          <div class="chat-bubble">已经5分钟了，能不能快一点放币？</div>
+        </div>
+      </div>
+
+      <div class="chat-system">商家发起申诉 · 2026/11/13 14:37:02</div>
+
+      <!-- 商家私聊客服 -->
+      <div class="chat-msg seller" data-type="private" data-role="seller">
+        <div class="chat-avatar">商</div>
+        <div class="chat-content">
+          <div class="chat-meta">
+            <span class="chat-name">商家 · 1700593742</span>
+            <span class="chat-private-tag">🔒 仅客服可见</span>
+            <span>14:38:15</span>
+          </div>
+          <div class="chat-bubble private">客服你好，这个买家的付款信息有问题，名字对不上，我不敢放币</div>
+        </div>
+      </div>
+
+      <div class="chat-system" id="joinNotice" style="display: none;">客服已介入，您可以发送消息参与对话。</div>
+    </div>
+
+    <!-- 输入区域 -->
+    <div class="chat-input-area" id="chatInputArea">
+      <div class="chat-send-target" id="chatSendTarget">
+        <span class="send-target-label">发送至：</span>
+        <div class="send-target-options">
+          <div class="send-target-option active" onclick="setSendTarget('all', this)">所有人（公开）</div>
+          <div class="send-target-option" onclick="setSendTarget('buyer', this)">仅买家</div>
+          <div class="send-target-option" onclick="setSendTarget('seller', this)">仅商家</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" id="chatInput" placeholder="请输入消息..." onkeypress="if(event.keyCode==13)sendMessage()">
+        <button class="chat-send-btn" onclick="sendMessage()">发送</button>
+      </div>
+      <div class="chat-tools">
+        <span class="chat-tool">📷 图片</span>
+        <span class="chat-tool">🎬 视频</span>
+        <span class="chat-tool">📎 文件</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右栏：申诉记录与处理 -->
+  <div class="right-panel">
+    <div class="right-tabs">
+      <div class="right-tab active" onclick="switchRightTab('record', this)">申诉记录</div>
+      <div class="right-tab" onclick="switchRightTab('handle', this)">处理操作</div>
+    </div>
+    <div class="right-content">
+      <!-- 申诉记录 -->
+      <div class="right-pane active" id="pane-record">
+        <div class="appeal-timeline">
+          <div class="appeal-item">
+            <div class="appeal-dot"></div>
+            <div class="appeal-header">
+              <span class="appeal-role">商家 – ID: 1700593742</span>
+              <span class="appeal-kyc">查看KYC</span>
+              <span class="appeal-time">14:37:02</span>
+            </div>
+            <div class="appeal-action">发起申诉</div>
+            <div class="appeal-reason">
+              <strong>申诉原因：</strong>其他<br>
+              <strong>申诉内容：</strong>买家付款人名字和KYC信息不一致，无法确认是本人付款，请客服核实。
+            </div>
+            <div class="appeal-images">
+              <img class="appeal-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Crect fill='%23f5f5f5' width='50' height='50'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='14' text-anchor='middle' dy='.3em'%3E📄%3C/text%3E%3C/svg%3E" alt="证据1">
+              <img class="appeal-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Crect fill='%23f5f5f5' width='50' height='50'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='14' text-anchor='middle' dy='.3em'%3E📄%3C/text%3E%3C/svg%3E" alt="证据2">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 处理操作 -->
+      <div class="right-pane" id="pane-handle">
+        <div class="handle-form">
+          <div class="form-group">
+            <label class="form-label"><span class="required">*</span>过错方</label>
+            <select class="form-select">
+              <option value="">请选择过错方</option>
+              <option value="buyer">买家</option>
+              <option value="seller">商家</option>
+              <option value="both">双方都有责任</option>
+              <option value="none">无过错</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"><span class="required">*</span>处理结果</label>
+            <textarea class="form-textarea" placeholder="请输入处理结果和原因"></textarea>
+            <span class="form-hint">0 / 500</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">处理图片</label>
+            <div class="upload-area">
+              <div class="upload-icon">+</div>
+              <div class="upload-text">点击上传图片</div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-success">完成交易订单</button>
+            <button class="btn btn-danger">取消交易订单</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var isJoined = false;
+  var currentFilter = 'all';
+  var sendTarget = 'all';
+
+  function toggleJoin() {
+    var btn = document.getElementById('joinBtn');
+    var inputArea = document.getElementById('chatInputArea');
+    var notice = document.getElementById('joinNotice');
+
+    if (!isJoined) {
+      isJoined = true;
+      btn.textContent = '退出对话';
+      btn.classList.add('joined');
+      notice.style.display = 'block';
+
+      if (currentFilter !== 'all') {
+        inputArea.classList.add('show');
+      }
+    } else {
+      isJoined = false;
+      btn.textContent = '介入对话';
+      btn.classList.remove('joined');
+      inputArea.classList.remove('show');
+
+      var exitNotice = document.createElement('div');
+      exitNotice.className = 'chat-system';
+      exitNotice.textContent = '客服已退出对话。';
+      document.getElementById('chatMessages').appendChild(exitNotice);
+    }
+  }
+
+  function filterMessages(type) {
+    currentFilter = type;
+
+    document.querySelectorAll('.chat-filter-tab').forEach(function(tab) {
+      tab.classList.remove('active');
+    });
+    event.target.classList.add('active');
+
+    var messages = document.querySelectorAll('.chat-msg');
+    messages.forEach(function(msg) {
+      var msgType = msg.getAttribute('data-type');
+      var msgRole = msg.getAttribute('data-role');
+
+      if (type === 'all') {
+        msg.style.display = 'flex';
+      } else if (type === 'public') {
+        msg.style.display = msgType === 'public' ? 'flex' : 'none';
+      } else if (type === 'buyer') {
+        msg.style.display = (msgRole === 'buyer' || (msgType === 'staff-buyer')) ? 'flex' : 'none';
+      } else if (type === 'seller') {
+        msg.style.display = (msgRole === 'seller' || (msgType === 'staff-seller')) ? 'flex' : 'none';
+      }
+    });
+
+    // 显示/隐藏客服消息
+    document.querySelectorAll('.chat-msg.staff').forEach(function(msg) {
+      var staffType = msg.getAttribute('data-type');
+      if (type === 'all') {
+        msg.style.display = 'flex';
+      } else if (type === 'public') {
+        msg.style.display = staffType === 'staff-all' ? 'flex' : 'none';
+      } else if (type === 'buyer') {
+        msg.style.display = staffType === 'staff-buyer' ? 'flex' : 'none';
+      } else if (type === 'seller') {
+        msg.style.display = staffType === 'staff-seller' ? 'flex' : 'none';
+      }
+    });
+
+    // 控制输入区域显示
+    var inputArea = document.getElementById('chatInputArea');
+    if (type === 'all') {
+      inputArea.classList.remove('show');
+    } else if (isJoined) {
+      inputArea.classList.add('show');
+      // 自动定位发送目标
+      if (type === 'public') setSendTargetAuto('all');
+      else if (type === 'buyer') setSendTargetAuto('buyer');
+      else if (type === 'seller') setSendTargetAuto('seller');
+    }
+  }
+
+  function setSendTarget(target, el) {
+    sendTarget = target;
+    document.querySelectorAll('.send-target-option').forEach(function(opt) {
+      opt.classList.remove('active');
+    });
+    el.classList.add('active');
+
+    // 同步切换顶部筛选Tab
+    var filterType = target === 'all' ? 'public' : target;
+    switchFilterTab(filterType);
+  }
+
+  function setSendTargetAuto(target) {
+    sendTarget = target;
+    document.querySelectorAll('.send-target-option').forEach(function(opt) {
+      opt.classList.remove('active');
+      if ((target === 'all' && opt.textContent.includes('所有人')) ||
+          (target === 'buyer' && opt.textContent.includes('仅买家')) ||
+          (target === 'seller' && opt.textContent.includes('仅商家'))) {
+        opt.classList.add('active');
+      }
+    });
+  }
+
+  function switchFilterTab(type) {
+    currentFilter = type;
+    document.querySelectorAll('.chat-filter-tab').forEach(function(tab) {
+      tab.classList.remove('active');
+      if (tab.getAttribute('data-filter') === type) {
+        tab.classList.add('active');
+      }
+    });
+
+    // 筛选消息
+    var messages = document.querySelectorAll('.chat-msg');
+    messages.forEach(function(msg) {
+      var msgType = msg.getAttribute('data-type');
+      var msgRole = msg.getAttribute('data-role');
+
+      if (type === 'all') {
+        msg.style.display = 'flex';
+      } else if (type === 'public') {
+        msg.style.display = msgType === 'public' ? 'flex' : 'none';
+      } else if (type === 'buyer') {
+        msg.style.display = (msgRole === 'buyer' || msgType === 'staff-buyer') ? 'flex' : 'none';
+      } else if (type === 'seller') {
+        msg.style.display = (msgRole === 'seller' || msgType === 'staff-seller') ? 'flex' : 'none';
+      }
+    });
+
+    // 控制输入区域
+    var inputArea = document.getElementById('chatInputArea');
+    if (type === 'all') {
+      inputArea.classList.remove('show');
+    } else if (isJoined) {
+      inputArea.classList.add('show');
+    }
+  }
+
+  function sendMessage() {
+    var input = document.getElementById('chatInput');
+    var msg = input.value.trim();
+    if (!msg) return;
+
+    var chatMessages = document.getElementById('chatMessages');
+    var staffMsg = document.createElement('div');
+    staffMsg.className = 'chat-msg staff';
+    staffMsg.setAttribute('data-type', 'staff-' + sendTarget);
+    staffMsg.setAttribute('data-role', 'staff');
+
+    var now = new Date();
+    var timeStr = now.getHours().toString().padStart(2, '0') + ':' +
+                  now.getMinutes().toString().padStart(2, '0') + ':' +
+                  now.getSeconds().toString().padStart(2, '0');
+
+    var targetText = sendTarget === 'all' ? '→ 发送给 [所有人]' :
+                     sendTarget === 'buyer' ? '→ 仅发送给 [买家] 🔒' :
+                     '→ 仅发送给 [商家] 🔒';
+
+    var privateClass = sendTarget !== 'all' ? ' private' : '';
+    var privateTag = sendTarget !== 'all' ? '<span class="chat-private-tag">🔒 私聊</span>' : '';
+
+    staffMsg.innerHTML =
+      '<div class="chat-avatar">客</div>' +
+      '<div class="chat-content">' +
+        '<div class="chat-meta">' +
+          '<span class="chat-name">ETZ客服</span>' +
+          '<span class="chat-target-tag">' + targetText + '</span>' +
+          privateTag +
+          '<span>' + timeStr + '</span>' +
+        '</div>' +
+        '<div class="chat-bubble' + privateClass + '">' + msg + '</div>' +
+      '</div>';
+
+    chatMessages.appendChild(staffMsg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    input.value = '';
+  }
+
+  function switchRightTab(pane, el) {
+    document.querySelectorAll('.right-tab').forEach(function(tab) {
+      tab.classList.remove('active');
+    });
+    el.classList.add('active');
+
+    document.querySelectorAll('.right-pane').forEach(function(p) {
+      p.classList.remove('active');
+    });
+    document.getElementById('pane-' + pane).classList.add('active');
+  }
+</script>
+</body>
+</html>
