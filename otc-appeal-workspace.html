@@ -822,6 +822,296 @@
     background: #ff7875;
   }
 
+  /* 右侧新样式 */
+  .section-block {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+  }
+
+  .evidence-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .evidence-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #fafafa;
+    border-radius: 6px;
+  }
+
+  .evidence-role {
+    font-size: 13px;
+    color: #333;
+    min-width: 60px;
+  }
+
+  .evidence-status {
+    flex: 1;
+    font-size: 12px;
+  }
+
+  .evidence-status.submitted {
+    color: #52c41a;
+  }
+
+  .evidence-status.pending {
+    color: #fa8c16;
+  }
+
+  .evidence-action {
+    font-size: 12px;
+  }
+
+  .link {
+    color: #1890ff;
+    cursor: pointer;
+  }
+
+  .link:hover {
+    text-decoration: underline;
+  }
+
+  .action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .action-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #fafafa;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .action-item:hover {
+    background: #f0f7ff;
+  }
+
+  .action-icon {
+    font-size: 16px;
+  }
+
+  .action-text {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .action-arrow {
+    color: #999;
+    font-size: 16px;
+  }
+
+  .handle-timeline {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .handle-item {
+    display: flex;
+    gap: 12px;
+    padding-bottom: 16px;
+    position: relative;
+  }
+
+  .handle-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .handle-item::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 14px;
+    bottom: 0;
+    width: 2px;
+    background: #f0f0f0;
+  }
+
+  .handle-item:last-child::before {
+    display: none;
+  }
+
+  .handle-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #d9d9d9;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .handle-dot.active {
+    background: #1890ff;
+  }
+
+  .handle-content {
+    flex: 1;
+  }
+
+  .handle-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 4px;
+  }
+
+  .handle-meta {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 4px;
+  }
+
+  .handle-desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+  }
+
+  /* 弹窗样式 */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.show {
+    display: flex;
+  }
+
+  .modal-box {
+    background: #fff;
+    border-radius: 12px;
+    width: 420px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .modal-back {
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+    padding: 4px 8px;
+    margin: -4px -8px;
+    border-radius: 4px;
+  }
+
+  .modal-back:hover {
+    background: #f5f5f5;
+  }
+
+  .modal-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .modal-footer {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .modal-footer .btn {
+    flex: 1;
+    padding: 10px 16px;
+  }
+
+  .radio-group, .checkbox-group {
+    display: flex;
+    gap: 20px;
+  }
+
+  .radio-item, .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+  }
+
+  .radio-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .radio-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    background: #fafafa;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .radio-row:hover {
+    background: #f0f7ff;
+  }
+
+  .radio-row input {
+    margin-top: 2px;
+  }
+
+  .radio-content {
+    flex: 1;
+  }
+
+  .radio-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .radio-desc {
+    font-size: 12px;
+    color: #999;
+  }
+
   /* 响应式 */
   @media (max-width: 1200px) {
     .left-panel {
@@ -1051,68 +1341,239 @@
     </div>
   </div>
 
-  <!-- 右栏：申诉记录与处理 -->
+  <!-- 右栏：申诉处理 -->
   <div class="right-panel">
-    <div class="right-tabs">
-      <div class="right-tab active" onclick="switchRightTab('record', this)">申诉记录</div>
-      <div class="right-tab" onclick="switchRightTab('handle', this)">处理操作</div>
+    <div class="panel-header" style="border-bottom: 1px solid #f0f0f0;">
+      <span class="icon">⚖️</span>
+      申诉处理
     </div>
-    <div class="right-content">
-      <!-- 申诉记录 -->
-      <div class="right-pane active" id="pane-record">
-        <div class="appeal-timeline">
-          <div class="appeal-item">
-            <div class="appeal-dot"></div>
-            <div class="appeal-header">
-              <span class="appeal-role">商家 – ID: 1700593742</span>
-              <span class="appeal-kyc">查看KYC</span>
-              <span class="appeal-time">14:37:02</span>
-            </div>
-            <div class="appeal-action">发起申诉</div>
-            <div class="appeal-reason">
-              <strong>申诉原因：</strong>其他<br>
-              <strong>申诉内容：</strong>买家付款人名字和KYC信息不一致，无法确认是本人付款，请客服核实。
-            </div>
-            <div class="appeal-images">
-              <img class="appeal-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Crect fill='%23f5f5f5' width='50' height='50'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='14' text-anchor='middle' dy='.3em'%3E📄%3C/text%3E%3C/svg%3E" alt="证据1">
-              <img class="appeal-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Crect fill='%23f5f5f5' width='50' height='50'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='14' text-anchor='middle' dy='.3em'%3E📄%3C/text%3E%3C/svg%3E" alt="证据2">
-            </div>
+    <div class="right-content" style="padding: 0;">
+      <!-- 举证情况 -->
+      <div class="section-block">
+        <div class="section-title">举证情况</div>
+        <div class="evidence-list">
+          <div class="evidence-row">
+            <span class="evidence-role">👤 买方</span>
+            <span class="evidence-status submitted">✓ 已提交（1个附件）</span>
+            <span class="evidence-action link">查看</span>
+          </div>
+          <div class="evidence-row">
+            <span class="evidence-role">👤 卖方</span>
+            <span class="evidence-status pending">● 待提交</span>
+            <span class="evidence-action link" onclick="openModal('remind')">催办</span>
           </div>
         </div>
       </div>
 
       <!-- 处理操作 -->
-      <div class="right-pane" id="pane-handle">
-        <div class="handle-form">
-          <div class="form-group">
-            <label class="form-label"><span class="required">*</span>过错方</label>
-            <select class="form-select">
-              <option value="">请选择过错方</option>
-              <option value="buyer">买家 – ID: 1700126679</option>
-              <option value="seller">商家 – ID: 1700593742</option>
-            </select>
+      <div class="section-block">
+        <div class="section-title">处理操作</div>
+        <div class="action-list">
+          <div class="action-item" onclick="openModal('evidence')">
+            <span class="action-icon">📋</span>
+            <span class="action-text">要求补充证据</span>
+            <span class="action-arrow">›</span>
           </div>
-
-          <div class="form-group">
-            <label class="form-label"><span class="required">*</span>处理结果</label>
-            <textarea class="form-textarea" placeholder="请输入处理结果和原因"></textarea>
-            <span class="form-hint">0 / 500</span>
+          <div class="action-item" onclick="openModal('remind')">
+            <span class="action-icon">🔔</span>
+            <span class="action-text">发送催办通知</span>
+            <span class="action-arrow">›</span>
           </div>
+          <div class="action-item" onclick="openModal('extend')">
+            <span class="action-icon">⏰</span>
+            <span class="action-text">延长处理时限</span>
+            <span class="action-arrow">›</span>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="openModal('verdict')">提交裁决</button>
+      </div>
 
-          <div class="form-group">
-            <label class="form-label">处理图片</label>
-            <div class="upload-area">
-              <div class="upload-icon">+</div>
-              <div class="upload-text">点击上传图片</div>
+      <!-- 处理记录 -->
+      <div class="section-block">
+        <div class="section-title">处理记录</div>
+        <div class="handle-timeline">
+          <div class="handle-item">
+            <div class="handle-dot active"></div>
+            <div class="handle-content">
+              <div class="handle-title">客服介入处理</div>
+              <div class="handle-meta">客服002 · 2026-11-16 12:50:16</div>
+              <div class="handle-desc">平台客服已介入，开始处理申诉。</div>
             </div>
           </div>
-
-          <div class="form-actions">
-            <button class="btn btn-success">完成交易订单</button>
-            <button class="btn btn-danger">取消交易订单</button>
+          <div class="handle-item">
+            <div class="handle-dot"></div>
+            <div class="handle-content">
+              <div class="handle-title">买方提交举证</div>
+              <div class="handle-meta">2026-11-16 12:56:28</div>
+              <div class="handle-desc">提交了 1 个附件：付款证明.mp4</div>
+            </div>
+          </div>
+          <div class="handle-item">
+            <div class="handle-dot"></div>
+            <div class="handle-content">
+              <div class="handle-title">商家发起申诉</div>
+              <div class="handle-meta">2026-11-16 14:37:02</div>
+              <div class="handle-desc">申诉原因：买家付款人名字和KYC信息不一致</div>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：要求补充证据 -->
+<div class="modal-overlay" id="modal-evidence" onclick="closeModal('evidence')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-back" onclick="closeModal('evidence')">‹</span>
+      <span class="modal-title">要求补充证据</span>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>要求对象</label>
+        <div class="radio-group">
+          <label class="radio-item"><input type="radio" name="evidence-target" checked> 买方</label>
+          <label class="radio-item"><input type="radio" name="evidence-target"> 卖方</label>
+          <label class="radio-item"><input type="radio" name="evidence-target"> 双方</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>举证内容</label>
+        <textarea class="form-textarea" placeholder="请说明需要补充的证据，例如：支付凭证、转账流水、资金来源证明等..."></textarea>
+        <span class="form-hint">0 / 500</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>提交截止时间</label>
+        <select class="form-select">
+          <option value="24">24 小时</option>
+          <option value="48">48 小时</option>
+          <option value="72">72 小时</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeModal('evidence')">取消</button>
+      <button class="btn btn-primary" onclick="closeModal('evidence')">发送请求</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：发送催办通知 -->
+<div class="modal-overlay" id="modal-remind" onclick="closeModal('remind')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-back" onclick="closeModal('remind')">‹</span>
+      <span class="modal-title">发送催办通知</span>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>通知对象</label>
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input type="checkbox" checked> 买方</label>
+          <label class="checkbox-item"><input type="checkbox" checked> 卖方</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>提醒内容</label>
+        <textarea class="form-textarea">您好，请您尽快补充相关证据，以便平台及时处理订单。</textarea>
+        <span class="form-hint">30 / 500</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeModal('remind')">取消</button>
+      <button class="btn btn-primary" onclick="closeModal('remind')">发送通知</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：延长处理时限 -->
+<div class="modal-overlay" id="modal-extend" onclick="closeModal('extend')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-back" onclick="closeModal('extend')">‹</span>
+      <span class="modal-title">延长处理时限</span>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>延长对象</label>
+        <div class="radio-group">
+          <label class="radio-item"><input type="radio" name="extend-target" checked> 买方</label>
+          <label class="radio-item"><input type="radio" name="extend-target"> 卖方</label>
+          <label class="radio-item"><input type="radio" name="extend-target"> 双方</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>新的截止时间</label>
+        <select class="form-select">
+          <option value="24">24 小时</option>
+          <option value="48">48 小时</option>
+          <option value="72">72 小时</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>延长原因</label>
+        <textarea class="form-textarea" placeholder="请说明延长原因..."></textarea>
+        <span class="form-hint">0 / 500</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeModal('extend')">取消</button>
+      <button class="btn btn-primary" onclick="closeModal('extend')">确认延长</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：提交裁决 -->
+<div class="modal-overlay" id="modal-verdict" onclick="closeModal('verdict')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-back" onclick="closeModal('verdict')">‹</span>
+      <span class="modal-title">提交裁决</span>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>处理结果</label>
+        <div class="radio-list">
+          <label class="radio-row">
+            <input type="radio" name="verdict-result" checked>
+            <div class="radio-content">
+              <span class="radio-title">强制放币</span>
+              <span class="radio-desc">（订单完成，资产划转给买方）</span>
+            </div>
+          </label>
+          <label class="radio-row">
+            <input type="radio" name="verdict-result">
+            <div class="radio-content">
+              <span class="radio-title">取消订单</span>
+              <span class="radio-desc">（原路退回资金）</span>
+            </div>
+          </label>
+          <label class="radio-row">
+            <input type="radio" name="verdict-result">
+            <div class="radio-content">
+              <span class="radio-title">驳回申诉</span>
+              <span class="radio-desc">（维持原订单状态）</span>
+            </div>
+          </label>
+          <label class="radio-row">
+            <input type="radio" name="verdict-result">
+            <div class="radio-content">
+              <span class="radio-title">其他处理</span>
+              <span class="radio-desc">（人工备注）</span>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>裁决说明</label>
+        <textarea class="form-textarea" placeholder="请填写裁决依据与处理说明..."></textarea>
+        <span class="form-hint">0 / 500</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeModal('verdict')">取消</button>
+      <button class="btn btn-primary" onclick="closeModal('verdict')">确认裁决</button>
     </div>
   </div>
 </div>
@@ -1299,16 +1760,12 @@
     input.value = '';
   }
 
-  function switchRightTab(pane, el) {
-    document.querySelectorAll('.right-tab').forEach(function(tab) {
-      tab.classList.remove('active');
-    });
-    el.classList.add('active');
+  function openModal(type) {
+    document.getElementById('modal-' + type).classList.add('show');
+  }
 
-    document.querySelectorAll('.right-pane').forEach(function(p) {
-      p.classList.remove('active');
-    });
-    document.getElementById('pane-' + pane).classList.add('active');
+  function closeModal(type) {
+    document.getElementById('modal-' + type).classList.remove('show');
   }
 </script>
 </body>
