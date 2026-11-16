@@ -703,6 +703,208 @@
   .detail-collapse-body.open {
     max-height: 500px;
   }
+
+  /* ===== 消息中心页 ===== */
+  .msg-page {
+    background: #0d0d0d;
+  }
+
+  .msg-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    padding: 0 16px;
+    background: #0d0d0d;
+    border-bottom: 1px solid #1f1f1f;
+  }
+
+  .msg-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .msg-mark-read {
+    font-size: 14px;
+    color: #52c41a;
+    cursor: pointer;
+  }
+
+  .msg-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 70px;
+  }
+
+  .msg-list {
+    padding: 0;
+  }
+
+  .msg-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    background: #161616;
+    border-bottom: 1px solid #1f1f1f;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .msg-item:hover {
+    background: #1a1a1a;
+  }
+
+  .msg-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #faad14;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .msg-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .msg-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .msg-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .msg-time {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .msg-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .msg-status {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .msg-status.cancelled {
+    background: rgba(102, 102, 102, 0.2);
+    color: #888;
+  }
+
+  .msg-status.pending {
+    background: rgba(250, 173, 20, 0.2);
+    color: #faad14;
+  }
+
+  .msg-status.appeal {
+    background: rgba(255, 77, 79, 0.2);
+    color: #ff4d4f;
+  }
+
+  .msg-status.ongoing {
+    background: rgba(24, 144, 255, 0.2);
+    color: #1890ff;
+  }
+
+  .msg-status.completed {
+    background: rgba(82, 196, 26, 0.2);
+    color: #52c41a;
+  }
+
+  .msg-order-id {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .msg-preview {
+    font-size: 13px;
+    color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .msg-badge {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background: #ff4d4f;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Tab角标 */
+  .tab-item {
+    position: relative;
+  }
+
+  .tab-badge {
+    position: absolute;
+    top: 4px;
+    right: 50%;
+    transform: translateX(100%);
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    background: #ff4d4f;
+    border-radius: 8px;
+    font-size: 10px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 消息页Tab样式 */
+  .msg-tab-bar {
+    display: flex;
+    height: 56px;
+    background: #161616;
+    border-top: 1px solid #1f1f1f;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 414px;
+    z-index: 100;
+  }
+
+  .msg-tab-bar .tab-item {
+    color: #666;
+  }
+
+  .msg-tab-bar .tab-item.active {
+    color: #52c41a;
+  }
 </style>
 </head>
 <body>
@@ -750,6 +952,50 @@
     <div class="tab-item active">
       <span class="tab-icon">📋</span>
       <span class="tab-label">订单</span>
+    </div>
+    <div class="tab-item" onclick="openMsgPage()">
+      <span class="tab-icon">💬</span>
+      <span class="tab-label">消息</span>
+      <span class="tab-badge" id="tabBadge">3</span>
+    </div>
+    <div class="tab-item">
+      <span class="tab-icon">📢</span>
+      <span class="tab-label">广告</span>
+    </div>
+    <div class="tab-item">
+      <span class="tab-icon">👤</span>
+      <span class="tab-label">我的</span>
+    </div>
+  </div>
+</div>
+
+<!-- 消息中心页 -->
+<div class="page msg-page" id="msgPage">
+  <div class="msg-navbar">
+    <span class="msg-title">消息中心</span>
+    <span class="msg-mark-read" onclick="markAllRead()">全部标记已读</span>
+  </div>
+
+  <div class="msg-content">
+    <div class="msg-list" id="msgList">
+      <!-- 动态渲染 -->
+    </div>
+  </div>
+
+  <!-- 底部Tab -->
+  <div class="msg-tab-bar">
+    <div class="tab-item" onclick="closeMsgPage()">
+      <span class="tab-icon">🔄</span>
+      <span class="tab-label">C2C</span>
+    </div>
+    <div class="tab-item" onclick="closeMsgPage()">
+      <span class="tab-icon">📋</span>
+      <span class="tab-label">订单</span>
+    </div>
+    <div class="tab-item active">
+      <span class="tab-icon">💬</span>
+      <span class="tab-label">消息</span>
+      <span class="tab-badge" id="tabBadge2">3</span>
     </div>
     <div class="tab-item">
       <span class="tab-icon">📢</span>
@@ -1026,6 +1272,155 @@
 
   // 初始化
   renderOrders();
+
+  // 消息数据
+  var messages = [
+    {
+      id: 1,
+      avatar: '👩',
+      name: 'C2',
+      status: 'cancelled',
+      statusText: '已取消',
+      orderId: '3553936830524086208',
+      preview: '订单已取消，如有需要，请再次下单。',
+      time: '11/07 00:56',
+      unread: 1
+    },
+    {
+      id: 2,
+      avatar: '👩',
+      name: '小明商家',
+      status: 'pending',
+      statusText: '待付款',
+      orderId: '3553936830524086156',
+      preview: '请在40分钟内完成付款，避免订单超时。',
+      time: '11/06 23:45',
+      unread: 2
+    },
+    {
+      id: 3,
+      avatar: '👨‍💼',
+      name: '优选商家A',
+      status: 'appeal',
+      statusText: '已申诉',
+      orderId: '3553936830524085999',
+      preview: '您的申诉已提交，客服正在处理中...',
+      time: '11/06 18:30',
+      unread: 0
+    },
+    {
+      id: 4,
+      avatar: '👨',
+      name: '快速交易员',
+      status: 'ongoing',
+      statusText: '进行中',
+      orderId: '3553936830524085888',
+      preview: '我已确认收款，正在放币中...',
+      time: '11/06 15:22',
+      unread: 0
+    },
+    {
+      id: 5,
+      avatar: '👩‍🦰',
+      name: '信誉商家B',
+      status: 'completed',
+      statusText: '已完成',
+      orderId: '3553936830524085777',
+      preview: '感谢您的交易，欢迎下次光临！',
+      time: '11/05 20:15',
+      unread: 0
+    }
+  ];
+
+  var fromMsgPage = false;
+
+  function renderMessages() {
+    var list = document.getElementById('msgList');
+    var html = '';
+
+    messages.forEach(function(msg) {
+      html += '<div class="msg-item" onclick="openChatFromMsg(' + msg.id + ')">';
+      html += '  <div class="msg-avatar">' + msg.avatar + '</div>';
+      html += '  <div class="msg-body">';
+      html += '    <div class="msg-header">';
+      html += '      <span class="msg-name">' + msg.name + '</span>';
+      html += '      <span class="msg-time">' + msg.time + '</span>';
+      html += '    </div>';
+      html += '    <div class="msg-meta">';
+      html += '      <span class="msg-status ' + msg.status + '">' + msg.statusText + '</span>';
+      html += '      <span class="msg-order-id">订单号: ' + msg.orderId.slice(0, 4) + '...' + msg.orderId.slice(-2) + '</span>';
+      html += '    </div>';
+      html += '    <div class="msg-preview">' + msg.preview + '</div>';
+      if (msg.unread > 0) {
+        html += '    <span class="msg-badge">' + msg.unread + '</span>';
+      }
+      html += '  </div>';
+      html += '</div>';
+    });
+
+    list.innerHTML = html;
+    updateBadge();
+  }
+
+  function updateBadge() {
+    var total = messages.reduce(function(sum, m) { return sum + m.unread; }, 0);
+    var badge1 = document.getElementById('tabBadge');
+    var badge2 = document.getElementById('tabBadge2');
+    if (total > 0) {
+      badge1.style.display = 'flex';
+      badge1.textContent = total;
+      badge2.style.display = 'flex';
+      badge2.textContent = total;
+    } else {
+      badge1.style.display = 'none';
+      badge2.style.display = 'none';
+    }
+  }
+
+  function openMsgPage() {
+    document.getElementById('orderPage').classList.remove('active');
+    document.getElementById('msgPage').classList.add('active');
+    renderMessages();
+  }
+
+  function closeMsgPage() {
+    document.getElementById('msgPage').classList.remove('active');
+    document.getElementById('orderPage').classList.add('active');
+  }
+
+  function openChatFromMsg(msgId) {
+    var msg = messages.find(function(m) { return m.id === msgId; });
+    if (msg) {
+      msg.unread = 0;
+      document.getElementById('chatUserName').textContent = msg.name;
+      document.getElementById('chatOrderId').textContent = '订单: ' + msg.orderId;
+      document.getElementById('chatStatusText').textContent = msg.statusText;
+      document.getElementById('chatQty').textContent = '数量: 7.38 USDT';
+      document.getElementById('chatAvatar').innerHTML = msg.avatar + '<div class="chat-user-verified">✓</div>';
+    }
+    fromMsgPage = true;
+    document.getElementById('msgPage').classList.remove('active');
+    document.getElementById('chatPage').classList.add('active');
+    updateBadge();
+  }
+
+  function markAllRead() {
+    messages.forEach(function(m) { m.unread = 0; });
+    renderMessages();
+  }
+
+  // 修改closeChatPage函数
+  var originalCloseChatPage = closeChatPage;
+  closeChatPage = function() {
+    document.getElementById('chatPage').classList.remove('active');
+    if (fromMsgPage) {
+      document.getElementById('msgPage').classList.add('active');
+      fromMsgPage = false;
+      renderMessages();
+    } else {
+      document.getElementById('orderPage').classList.add('active');
+    }
+  };
 </script>
 </body>
 </html>
