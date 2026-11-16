@@ -166,6 +166,56 @@
     gap: 16px;
   }
 
+  /* 导航红点 */
+  .nav-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: #ff4d4f;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+    margin-left: 6px;
+    animation: pulse 2s infinite;
+  }
+
+  .nav-badge.hidden { display: none; }
+
+  /* 页面视图 */
+  .page-view {
+    min-height: calc(100vh - 104px);
+  }
+
+  /* 消息列表页面 */
+  .messages-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .messages-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .messages-title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .messages-list {
+    background: #161616;
+    border: 1px solid #262626;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
   /* ===== 页面主体内容（模拟） ===== */
   .page-content {
     padding: 40px 24px;
@@ -900,14 +950,6 @@
     </div>
   </div>
   <div class="nav-right">
-    <!-- 消息入口 -->
-    <div class="msg-trigger" id="msgTrigger" onclick="openDrawer()">
-      <svg viewBox="0 0 24 24">
-        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/>
-        <path d="M7 9h10v2H7zm0-3h10v2H7z"/>
-      </svg>
-      <span class="badge" id="globalBadge">3</span>
-    </div>
     <div class="user-avatar">👤</div>
   </div>
 </nav>
@@ -915,53 +957,52 @@
 <!-- 二级导航 -->
 <div class="sub-nav">
   <div class="sub-nav-left">
-    <div class="sub-nav-item">快捷买币</div>
-    <div class="sub-nav-item active">C2C交易</div>
+    <div class="sub-nav-item" onclick="switchView('home')">快捷买币</div>
+    <div class="sub-nav-item" onclick="switchView('home')">C2C交易</div>
   </div>
   <div class="sub-nav-right">
-    <div class="sub-nav-item">消息</div>
-    <div class="sub-nav-item">订单</div>
+    <div class="sub-nav-item" id="msgNavItem" onclick="switchView('messages')">
+      消息
+      <span class="nav-badge" id="navBadge">3</span>
+    </div>
+    <div class="sub-nav-item" onclick="switchView('home')">订单</div>
     <div class="sub-nav-item">发布广告</div>
     <div class="sub-nav-item">更多 ∨</div>
   </div>
 </div>
 
-<!-- 页面内容占位 -->
-<div class="page-content">
-  <div class="placeholder-card">
-    <h2>💬 C2C 消息通知功能原型</h2>
-    <p>点击右上角的消息图标，打开消息抽屉查看效果</p>
-    <p style="margin-top: 12px; color: #c8ff00;">当前有 <span id="unreadCount">3</span> 条未读消息</p>
-    <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-      <button onclick="simulateNewMessage()" style="padding: 10px 20px; background: #c8ff00; color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">📩 模拟收到新消息</button>
-      <button onclick="clearAllMessages()" style="padding: 10px 20px; background: #333; color: #fff; border: none; border-radius: 8px; cursor: pointer;">🗑 清空消息（测试空状态）</button>
-      <button onclick="restoreMessages()" style="padding: 10px 20px; background: #333; color: #fff; border: none; border-radius: 8px; cursor: pointer;">↻ 恢复消息</button>
+<!-- 主页面内容 -->
+<div class="page-view" id="homeView">
+  <div class="page-content">
+    <div class="placeholder-card">
+      <h2>💬 C2C 消息通知功能原型</h2>
+      <p>点击二级导航的"消息"查看消息列表</p>
+      <p style="margin-top: 12px; color: #c8ff00;">当前有 <span id="unreadCount">3</span> 条未读消息</p>
+      <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <button onclick="simulateNewMessage()" style="padding: 10px 20px; background: #c8ff00; color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">📩 模拟收到新消息</button>
+        <button onclick="clearAllMessages()" style="padding: 10px 20px; background: #333; color: #fff; border: none; border-radius: 8px; cursor: pointer;">🗑 清空消息（测试空状态）</button>
+        <button onclick="restoreMessages()" style="padding: 10px 20px; background: #333; color: #fff; border: none; border-radius: 8px; cursor: pointer;">↻ 恢复消息</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 消息列表页面 -->
+<div class="page-view" id="messagesView" style="display: none;">
+  <div class="messages-page">
+    <div class="messages-header">
+      <h2 class="messages-title">消息中心</h2>
+      <span class="mark-read-btn" onclick="markAllRead()">全部标记已读</span>
+    </div>
+    <div class="messages-list" id="msgList">
+      <!-- 消息列表动态渲染 -->
     </div>
   </div>
 </div>
 
 <!-- 新消息提示 Toast -->
-<div class="new-msg-toast" id="newMsgToast" onclick="openDrawer()">
+<div class="new-msg-toast" id="newMsgToast" onclick="switchView('messages')">
   💬 收到新消息，点击查看
-</div>
-
-<!-- 遮罩层 -->
-<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
-
-<!-- 消息抽屉 -->
-<div class="drawer" id="drawer">
-  <div class="drawer-header">
-    <div class="drawer-title">消息中心</div>
-    <div class="drawer-actions">
-      <span class="mark-read-btn" onclick="markAllRead()">全部标记已读</span>
-      <span class="drawer-close" onclick="closeDrawer()">✕</span>
-    </div>
-  </div>
-  <div class="drawer-body">
-    <div class="msg-list" id="msgList">
-      <!-- 消息列表动态渲染 -->
-    </div>
-  </div>
 </div>
 
 <!-- 聊天详情页 -->
@@ -1064,14 +1105,14 @@
 <div class="notes">
   <h3>📐 设计说明</h3>
   <ul>
-    <li><b>全局入口</b>：顶部导航栏消息图标 + 未读红点角标，数字显示未读总数（超过99显示99+）</li>
-    <li><b>侧边抽屉</b>：点击入口从右侧滑出，背景加半透明遮罩，点击遮罩或 X 关闭</li>
+    <li><b>入口位置</b>：二级导航栏"消息" + 未读红点角标，数字显示未读总数（超过99显示99+）</li>
+    <li><b>消息列表页</b>：点击"消息"进入消息列表页面，直接展示所有订单消息</li>
     <li><b>消息卡片</b>：包含头像、昵称、<span class="highlight">订单状态标签</span>（进行中/待付款/已申诉/已取消）、订单号简写、最新消息预览、时间戳</li>
     <li><b>未读标记</b>：每条消息右侧显示该订单的未读数红点，已读则不显示</li>
     <li><b>快捷操作</b>："全部标记已读"按钮一键清除所有未读</li>
-    <li><b>点击跳转</b>：点击消息卡片 → 关闭抽屉 → 跳转订单详情页 → 自动标记已读</li>
+    <li><b>点击跳转</b>：点击消息卡片 → 进入聊天详情页（订单信息+聊天窗口）→ 自动标记已读</li>
     <li><b>实时推送</b>：WebSocket 推送新消息时，红点数字 +1 并闪烁，列表自动置顶新消息</li>
-    <li><b>新消息提示</b>：抽屉关闭时收到新消息，底部弹出 Toast 提示，点击可快速打开抽屉</li>
+    <li><b>新消息提示</b>：不在消息页面时收到新消息，底部弹出 Toast 提示，点击可快速进入</li>
     <li><b>空状态</b>：无消息时展示"暂无新消息，去查看订单吧" + 跳转按钮</li>
   </ul>
 </div>
@@ -1183,14 +1224,14 @@
 
   function updateGlobalBadge() {
     var total = messages.reduce(function(sum, msg) { return sum + msg.unread; }, 0);
-    var badge = document.getElementById('globalBadge');
+    var navBadge = document.getElementById('navBadge');
     var countEl = document.getElementById('unreadCount');
 
     if (total > 0) {
-      badge.textContent = total > 99 ? '99+' : total;
-      badge.classList.remove('hidden');
+      navBadge.textContent = total > 99 ? '99+' : total;
+      navBadge.classList.remove('hidden');
     } else {
-      badge.classList.add('hidden');
+      navBadge.classList.add('hidden');
     }
 
     if (countEl) {
@@ -1198,17 +1239,19 @@
     }
   }
 
-  function openDrawer() {
-    document.getElementById('drawer').classList.add('show');
-    document.getElementById('overlay').classList.add('show');
+  // 切换视图
+  function switchView(view) {
+    document.getElementById('homeView').style.display = view === 'home' ? 'block' : 'none';
+    document.getElementById('messagesView').style.display = view === 'messages' ? 'block' : 'none';
     document.getElementById('newMsgToast').classList.remove('show');
-    document.body.style.overflow = 'hidden';
-  }
 
-  function closeDrawer() {
-    document.getElementById('drawer').classList.remove('show');
-    document.getElementById('overlay').classList.remove('show');
-    document.body.style.overflow = '';
+    // 更新导航高亮
+    document.querySelectorAll('.sub-nav-item').forEach(function(item) {
+      item.classList.remove('active');
+    });
+    if (view === 'messages') {
+      document.getElementById('msgNavItem').classList.add('active');
+    }
   }
 
   function clickMessage(id) {
@@ -1220,7 +1263,6 @@
       }
     });
     renderMessages();
-    closeDrawer();
 
     // 打开聊天详情页
     if (currentMsg) {
@@ -1315,14 +1357,14 @@
     renderMessages(true);
 
     // 红点闪烁效果
-    var badge = document.getElementById('globalBadge');
+    var badge = document.getElementById('navBadge');
     badge.classList.add('flash');
     setTimeout(function() {
       badge.classList.remove('flash');
     }, 1500);
 
-    // 如果抽屉未打开，显示 Toast 提示
-    if (!document.getElementById('drawer').classList.contains('show')) {
+    // 如果不在消息页面，显示 Toast 提示
+    if (document.getElementById('messagesView').style.display === 'none') {
       var toast = document.getElementById('newMsgToast');
       toast.classList.add('show');
       setTimeout(function() {
