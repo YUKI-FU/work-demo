@@ -1298,10 +1298,17 @@
   function updateJoinState() {
     document.getElementById('joinBtn').style.display = isJoined ? 'none' : 'inline';
     document.getElementById('leaveBtn').style.display = isJoined ? 'inline' : 'none';
-    document.getElementById('chatInputArea').classList.toggle('show', isJoined);
-    document.getElementById('chatSendTarget').style.display = isJoined ? 'flex' : 'none';
+    // 全部消息Tab只支持查看，不显示发送区域
+    if (currentFilter === 'all') {
+      document.getElementById('chatInputArea').classList.remove('show');
+      document.getElementById('chatSendTarget').style.display = 'none';
+    } else {
+      document.getElementById('chatInputArea').classList.toggle('show', isJoined);
+      document.getElementById('chatSendTarget').style.display = isJoined ? 'flex' : 'none';
+    }
   }
 
+  var currentFilter = 'all';
   var sendTarget = 'all';
 
   function setSendTarget(target) {
@@ -1345,6 +1352,7 @@
 
   // 消息筛选
   function filterMessages(type) {
+    currentFilter = type;
     var tabs = document.querySelectorAll('.chat-filter-tab');
     tabs.forEach(function(tab) { tab.classList.remove('active'); });
     event.target.classList.add('active');
@@ -1362,6 +1370,36 @@
         msg.style.display = (msgRole === 'buyer' && msgType === 'private') || msgType === 'staff-buyer' ? 'flex' : 'none';
       } else if (type === 'seller') {
         msg.style.display = (msgRole === 'seller' && msgType === 'private') || msgType === 'staff-seller' ? 'flex' : 'none';
+      }
+    });
+
+    // 全部消息只支持查看，隐藏发送区域
+    if (type === 'all') {
+      document.getElementById('chatInputArea').classList.remove('show');
+      document.getElementById('chatSendTarget').style.display = 'none';
+    } else if (isJoined) {
+      document.getElementById('chatInputArea').classList.add('show');
+      document.getElementById('chatSendTarget').style.display = 'flex';
+      // 自动定位发送目标
+      if (type === 'public') {
+        setSendTargetAuto('all');
+      } else if (type === 'buyer') {
+        setSendTargetAuto('buyer');
+      } else if (type === 'seller') {
+        setSendTargetAuto('seller');
+      }
+    }
+  }
+
+  function setSendTargetAuto(target) {
+    sendTarget = target;
+    var options = document.querySelectorAll('.chat-send-option');
+    options.forEach(function(opt) {
+      opt.classList.remove('active');
+      if ((target === 'all' && opt.textContent.indexOf('所有人') >= 0) ||
+          (target === 'buyer' && opt.textContent.indexOf('仅买家') >= 0) ||
+          (target === 'seller' && opt.textContent.indexOf('仅商家') >= 0)) {
+        opt.classList.add('active');
       }
     });
   }
