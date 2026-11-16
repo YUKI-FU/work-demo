@@ -1318,6 +1318,41 @@
       opt.classList.remove('active');
     });
     event.target.classList.add('active');
+
+    // 同步切换顶部筛选Tab
+    var filterType = target === 'all' ? 'public' : target;
+    switchFilterTab(filterType);
+  }
+
+  function switchFilterTab(type) {
+    currentFilter = type;
+    var tabs = document.querySelectorAll('.chat-filter-tab');
+    tabs.forEach(function(tab, index) {
+      tab.classList.remove('active');
+      if ((type === 'all' && index === 0) ||
+          (type === 'public' && index === 1) ||
+          (type === 'buyer' && index === 2) ||
+          (type === 'seller' && index === 3)) {
+        tab.classList.add('active');
+      }
+    });
+
+    // 筛选消息
+    var messages = document.querySelectorAll('.chat-user-msg, .chat-staff');
+    messages.forEach(function(msg) {
+      var msgType = msg.getAttribute('data-type');
+      var msgRole = msg.getAttribute('data-role');
+
+      if (type === 'all') {
+        msg.style.display = 'flex';
+      } else if (type === 'public') {
+        msg.style.display = (msgType === 'public' || msgType === 'staff-all') ? 'flex' : 'none';
+      } else if (type === 'buyer') {
+        msg.style.display = (msgRole === 'buyer' && msgType === 'private') || msgType === 'staff-buyer' ? 'flex' : 'none';
+      } else if (type === 'seller') {
+        msg.style.display = (msgRole === 'seller' && msgType === 'private') || msgType === 'staff-seller' ? 'flex' : 'none';
+      }
+    });
   }
 
   function sendMessage() {
