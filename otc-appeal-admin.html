@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>申诉管理 - OTC系统 - ETZ Admin</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    background: #f5f7fa;
+    color: #333;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* 左侧导航 */
+  .sidebar {
+    width: 200px;
+    background: #fff;
+    border-right: 1px solid #e8e8e8;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+
+  .logo {
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1890ff;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-badge {
+    font-size: 10px;
+    background: #52c41a;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .nav-menu {
+    flex: 1;
+    padding: 8px 0;
+    overflow-y: auto;
+  }
+
+  .nav-group {
+    margin-bottom: 4px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: #666;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+
+  .nav-item:hover {
+    color: #1890ff;
+    background: #f0f7ff;
+  }
+
+  .nav-item .icon {
+    margin-right: 10px;
+    font-size: 14px;
+  }
+
+  .nav-item .arrow {
+    margin-left: auto;
+    font-size: 10px;
+    transition: transform 0.2s;
+  }
+
+  .nav-group.expanded .nav-item .arrow {
+    transform: rotate(90deg);
+  }
+
+  .nav-submenu {
+    display: none;
+  }
+
+  .nav-group.expanded .nav-submenu {
+    display: block;
+  }
+
+  .nav-subitem {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px 10px 44px;
+    color: #666;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+
+  .nav-subitem:hover {
+    color: #1890ff;
+    background: #f0f7ff;
+  }
+
+  .nav-subitem.active {
+    color: #1890ff;
+    background: #e6f7ff;
+    font-weight: 500;
+  }
+
+  /* 主内容区 */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* 顶部栏 */
+  .header {
+    height: 56px;
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    flex-shrink: 0;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .breadcrumb a {
+    color: #1890ff;
+    text-decoration: none;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .header-icon {
+    font-size: 18px;
+    color: #666;
+    cursor: pointer;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #1890ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+  }
+
+  /* 内容区 */
+  .content {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  /* 页面标签 */
+  .page-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .page-tab {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .page-tab.home {
+    background: #f5f5f5;
+    color: #666;
+  }
+
+  .page-tab.active {
+    background: #1890ff;
+    color: #fff;
+  }
+
+  /* 筛选区 */
+  .filter-section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .filter-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .filter-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .filter-label {
+    font-size: 14px;
+    color: #666;
+    white-space: nowrap;
+  }
+
+  .filter-input {
+    width: 180px;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .filter-input:focus {
+    border-color: #1890ff;
+  }
+
+  .filter-select {
+    width: 180px;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .filter-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .btn {
+    height: 32px;
+    padding: 0 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    color: #333;
+  }
+
+  .btn:hover {
+    border-color: #1890ff;
+    color: #1890ff;
+  }
+
+  .btn-primary {
+    background: #1890ff;
+    border-color: #1890ff;
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: #40a9ff;
+    border-color: #40a9ff;
+    color: #fff;
+  }
+
+  /* 表格 */
+  .table-section {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 1600px;
+  }
+
+  th {
+    background: #fafafa;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 1px solid #f0f0f0;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+  }
+
+  tr:hover td {
+    background: #fafafa;
+  }
+
+  .copy-icon {
+    cursor: pointer;
+    color: #999;
+    margin-left: 4px;
+  }
+
+  .copy-icon:hover {
+    color: #1890ff;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .tag-blue {
+    background: #e6f7ff;
+    color: #1890ff;
+  }
+
+  .tag-green {
+    background: #f6ffed;
+    color: #52c41a;
+  }
+
+  .tag-orange {
+    background: #fff7e6;
+    color: #fa8c16;
+  }
+
+  .tag-red {
+    background: #fff1f0;
+    color: #ff4d4f;
+  }
+
+  .link {
+    color: #1890ff;
+    cursor: pointer;
+  }
+
+  .link:hover {
+    text-decoration: underline;
+  }
+
+  /* 分页 */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 16px;
+    gap: 8px;
+  }
+
+  .pagination-info {
+    font-size: 14px;
+    color: #666;
+    margin-right: 16px;
+  }
+
+  .page-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .page-btn:hover {
+    border-color: #1890ff;
+    color: #1890ff;
+  }
+
+  .page-btn.active {
+    background: #1890ff;
+    border-color: #1890ff;
+    color: #fff;
+  }
+
+  .page-btn.disabled {
+    color: #d9d9d9;
+    cursor: not-allowed;
+  }
+
+  .page-input {
+    width: 50px;
+    height: 32px;
+    text-align: center;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+  }
+
+  /* 弹窗 */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 1000;
+    padding: 40px 20px;
+    overflow: auto;
+  }
+
+  .modal-overlay.show {
+    display: flex;
+  }
+
+  .modal {
+    background: #fff;
+    border-radius: 8px;
+    width: 900px;
+    max-width: 100%;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .modal-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 16px;
+  }
+
+  .modal-action {
+    font-size: 14px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 4px;
+  }
+
+  .modal-action.join {
+    color: #1890ff;
+  }
+
+  .modal-action.join:hover {
+    background: #e6f7ff;
+  }
+
+  .modal-action.leave {
+    color: #ff4d4f;
+  }
+
+  .modal-action.leave:hover {
+    background: #fff1f0;
+  }
+
+  .modal-close {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #999;
+    border-radius: 4px;
+  }
+
+  .modal-close:hover {
+    background: #f5f5f5;
+    color: #333;
+  }
+
+  .modal-body {
+    display: flex;
+    height: 500px;
+  }
+
+  /* 订单信息侧边栏 */
+  .order-sidebar {
+    width: 280px;
+    background: #fafafa;
+    border-right: 1px solid #f0f0f0;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .order-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 13px;
+  }
+
+  .order-info-row:last-child {
+    border-bottom: none;
+  }
+
+  .order-info-label {
+    color: #666;
+  }
+
+  .order-info-value {
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* 聊天区域 */
+  .chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #f5f5f5;
+  }
+
+  .chat-date {
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    margin: 16px 0;
+  }
+
+  .chat-bubble {
+    max-width: 70%;
+    margin: 0 auto 12px;
+    padding: 12px 16px;
+    background: #fff;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  .chat-time {
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+  }
+
+  .chat-system {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    margin: 16px 0;
+    padding: 8px 16px;
+    background: #fff7e6;
+    border-radius: 4px;
+    display: inline-block;
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* 对话框 */
+  .chat-input-area {
+    padding: 16px 20px;
+    border-top: 1px solid #f0f0f0;
+    background: #fff;
+    display: none;
+  }
+
+  .chat-input-area.show {
+    display: block;
+  }
+
+  .chat-input-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .chat-input-label {
+    font-size: 14px;
+    color: #ff4d4f;
+    white-space: nowrap;
+  }
+
+  .chat-input {
+    flex: 1;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .chat-input:focus {
+    border-color: #1890ff;
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #f0f0f0;
+  }
+</style>
+</head>
+<body>
+
+<!-- 左侧导航 -->
+<aside class="sidebar">
+  <div class="logo">
+    <span>⚡ ETZ Admin</span>
+    <span class="logo-badge">TEST</span>
+  </div>
+  <nav class="nav-menu">
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon">🏠</span> 首页</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon">👤</span> 会员管理 <span class="arrow">›</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon">🔌</span> API管理 <span class="arrow">›</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon">💰</span> 快捷买币 <span class="arrow">›</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon">📊</span> 渠道管理 <span class="arrow">›</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon">👑</span> VIP管理 <span class="arrow">›</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon">🪙</span> RWA管理 <span class="arrow">›</span></div>
+    </div>
+    <div class="nav-group expanded">
+      <div class="nav-item"><span class="icon">💱</span> OTC系统 <span class="arrow">›</span></div>
+      <div class="nav-submenu">
+        <div class="nav-subitem">💳 支付方式</div>
+        <div class="nav-subitem">🪙 币种管理</div>
+        <div class="nav-subitem">💵 法币管理</div>
+        <div class="nav-subitem">📋 订单管理</div>
+        <div class="nav-subitem">🏪 商家管理</div>
+        <div class="nav-subitem">📢 广告管理</div>
+        <div class="nav-subitem active">⚠️ 申诉管理</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon">📢</span> 广场管理 <span class="arrow">›</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon">📄</span> 合约管理 <span class="arrow">›</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-item"><span class="icon">⚙️</span> 运营管理 <span class="arrow">›</span></div>
+    </div>
+  </nav>
+</aside>
+
+<!-- 主内容 -->
+<main class="main-content">
+  <!-- 顶部栏 -->
+  <header class="header">
+    <div class="breadcrumb">
+      <span class="icon">💱</span>
+      <span>OTC系统</span>
+      <span>/</span>
+      <span>申诉管理</span>
+    </div>
+    <div class="header-right">
+      <span class="header-icon">🔔</span>
+      <div class="user-info">
+        <div class="avatar">👤</div>
+        <span>admin</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 内容区 -->
+  <div class="content">
+    <!-- 页面标签 -->
+    <div class="page-tabs">
+      <div class="page-tab home">🏠 首页</div>
+      <div class="page-tab active">申诉管理</div>
+    </div>
+
+    <!-- 筛选区 -->
+    <div class="filter-section">
+      <div class="filter-row">
+        <div class="filter-item">
+          <span class="filter-label">交易ID</span>
+          <input type="text" class="filter-input" placeholder="请输入交易ID">
+        </div>
+        <div class="filter-item">
+          <span class="filter-label">广告ID</span>
+          <input type="text" class="filter-input" placeholder="请输入广告ID">
+        </div>
+        <div class="filter-item">
+          <span class="filter-label">买家 UID</span>
+          <input type="text" class="filter-input" placeholder="请输入 UID">
+        </div>
+        <div class="filter-item">
+          <span class="filter-label">商家 UID</span>
+          <input type="text" class="filter-input" placeholder="请输入 UID">
+        </div>
+        <div class="filter-item">
+          <span class="filter-label">交易类型</span>
+          <select class="filter-select">
+            <option>请选择交易类型</option>
+            <option>买入</option>
+            <option>卖出</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <span class="filter-label">订单状态</span>
+          <select class="filter-select">
+            <option>请选择订单状态</option>
+            <option>待付款</option>
+            <option>已付款</option>
+            <option>已完成</option>
+            <option>已取消</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="filter-item">
+          <span class="filter-label">申诉状态</span>
+          <select class="filter-select">
+            <option>申诉中</option>
+            <option>已处理</option>
+            <option>已关闭</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <span class="filter-label">申诉时间</span>
+          <input type="text" class="filter-input" placeholder="开始时间">
+          <span>-</span>
+          <input type="text" class="filter-input" placeholder="结束时间">
+        </div>
+        <div class="filter-actions">
+          <button class="btn btn-primary">🔍 查询</button>
+          <button class="btn">↻ 重置</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 表格 -->
+    <div class="table-section">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>交易ID</th>
+              <th>广告ID</th>
+              <th>买家 UID</th>
+              <th>商家 UID</th>
+              <th>交易类型</th>
+              <th>支付方式</th>
+              <th>法币币种</th>
+              <th>虚拟币币种</th>
+              <th>交易数量</th>
+              <th>单价</th>
+              <th>总金额</th>
+              <th>申诉状态</th>
+              <th>支付图片</th>
+              <th>订单状态</th>
+              <th>创建时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- 动态渲染 -->
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <span class="pagination-info">共 62 条</span>
+        <select class="filter-select" style="width: 100px;">
+          <option>10条/页</option>
+          <option>20条/页</option>
+          <option>50条/页</option>
+        </select>
+        <button class="page-btn disabled">‹</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">4</button>
+        <button class="page-btn">5</button>
+        <button class="page-btn">6</button>
+        <button class="page-btn">7</button>
+        <button class="page-btn">›</button>
+        <span style="margin-left: 8px;">前往</span>
+        <input type="text" class="page-input" value="1">
+        <span>页</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 聊天记录弹窗 -->
+<div class="modal-overlay" id="chatModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">聊天记录</span>
+      <div class="modal-actions">
+        <span class="modal-action join" id="joinBtn" onclick="joinChat()">客服介入</span>
+        <span class="modal-action leave" id="leaveBtn" onclick="leaveChat()" style="display: none;">客服退出</span>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <!-- 订单信息 -->
+      <div class="order-sidebar">
+        <div class="order-info-row">
+          <span class="order-info-label">交易ID</span>
+          <span class="order-info-value" id="modalTradeId">3557377650978190784 <span class="copy-icon">📋</span></span>
+        </div>
+        <div class="order-info-row">
+          <span class="order-info-label">广告ID</span>
+          <span class="order-info-value">391 <span class="copy-icon">📋</span></span>
+        </div>
+        <div class="order-info-row">
+          <span class="order-info-label">买家 UID</span>
+          <span class="order-info-value">1700126679 <span class="copy-icon">📋</span> <span class="link">查看KYC</span></span>
+        </div>
+        <div class="order-info-row">
+          <span class="order-info-label">交易数量</span>
+          <span class="order-info-value">3 (xz1010)</span>
+        </div>
+        <div class="order-info-row">
+          <span class="order-info-label">单价</span>
+          <span class="order-info-value">53.9 (xz1010)</span>
+        </div>
+        <div class="order-info-row">
+          <span class="order-info-label">总金额</span>
+          <span class="order-info-value">161.7 (xz1010)</span>
+        </div>
+      </div>
+
+      <!-- 聊天区域 -->
+      <div class="chat-area">
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-date">2026-11-16</div>
+          <div class="chat-bubble">您已下单，请耐心等待买家完成付款。</div>
+          <div class="chat-time">12:48:44</div>
+          <div class="chat-bubble">买家已下单，请在2分钟内完成付款，避免订单超时。</div>
+          <div class="chat-time">12:48:44</div>
+          <div class="chat-system">该订单已进入平台申诉处理流程，请保留相关凭证等待平台沟通处理。</div>
+          <div class="chat-time">12:48:59</div>
+          <div class="chat-bubble">订单已进入申诉流程，平台将进行介入处理。</div>
+          <div class="chat-time">12:48:59</div>
+        </div>
+        <div class="chat-input-area" id="chatInputArea">
+          <div class="chat-input-row">
+            <span class="chat-input-label">对话框</span>
+            <input type="text" class="chat-input" placeholder="请输入消息..." id="chatInput">
+            <button class="btn btn-primary" onclick="sendMessage()">发送</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 模拟数据
+  var appeals = [
+    { tradeId: '3557377650978190784', adId: '391', buyerUid: '1700126679', merchantUid: '1700142791', type: '买入', payMethod: '虚拟币支付', fiat: 'USDT', crypto: 'xz1010', qty: '3', price: '53.9', amount: '161.7', appealStatus: '申诉中', payImg: '-', orderStatus: '待付款', time: '2026-11-16 12:48:45' },
+    { tradeId: '3557377309977081280', adId: '391', buyerUid: '1700126679', merchantUid: '1700142791', type: '买入', payMethod: '虚拟币支付', fiat: 'USDT', crypto: 'xz1010', qty: '4', price: '53.9', amount: '215.6', appealStatus: '申诉中', payImg: '-', orderStatus: '待付款', time: '2026-11-16 12:47:24' },
+    { tradeId: '3557377059510023616', adId: '390', buyerUid: '1700126679', merchantUid: '1700142791', type: '买入', payMethod: '虚拟币支付', fiat: 'USDT', crypto: 'xz1010', qty: '49', price: '1.0816', amount: '53', appealStatus: '申诉中', payImg: '-', orderStatus: '待付款', time: '2026-11-16 12:46:24' },
+    { tradeId: '3557376492922467776', adId: '390', buyerUid: '1700126679', merchantUid: '1700142791', type: '买入', payMethod: '虚拟币支付', fiat: 'USDT', crypto: 'xz1010', qty: '49', price: '1.0612', amount: '52', appealStatus: '申诉中', payImg: '-', orderStatus: '待付款', time: '2026-11-16 12:44:09' },
+    { tradeId: '3557365533051957696', adId: '351', buyerUid: '1700142791', merchantUid: '1700938086', type: '卖出', payMethod: '虚拟币支付', fiat: 'USDT', crypto: 'Tester', qty: '1.069', price: '1.87', amount: '2', appealStatus: '申诉中', payImg: '-', orderStatus: '待付款', time: '2026-11-16 12:00:36' },
+    { tradeId: '3557365226413749696', adId: '390', buyerUid: '1700126679', merchantUid: '1700142791', type: '买入', payMethod: '虚拟币支付', fiat: 'USDT', crypto: 'xz1010', qty: '49', price: '1.0102', amount: '49.5', appealStatus: '申诉中', payImg: '-', orderStatus: '付款超时', time: '2026-11-16 11:59:23' },
+    { tradeId: '3555923870486939712', adId: '350', buyerUid: '1700975393', merchantUid: '1700593742', type: '卖出', payMethod: 'REVOLUT', fiat: 'USDT', crypto: 'xz1010', qty: '1', price: '53.9', amount: '53.9', appealStatus: '申诉中', payImg: '-', orderStatus: '付款超时', time: '2026-11-12 12:31:57' },
+    { tradeId: '3555917742684293184', adId: '385', buyerUid: '1700975393', merchantUid: '1700593742', type: '卖出', payMethod: 'Skrill', fiat: 'USD', crypto: 'xz1010', qty: '1.064', price: '47.93', amount: '51', appealStatus: '申诉中', payImg: '查看图片', orderStatus: '确认超时', time: '2026-11-12 12:07:36' },
+    { tradeId: '3555907671795484736', adId: '385', buyerUid: '1700975393', merchantUid: '1700593742', type: '卖出', payMethod: 'Skrill', fiat: 'USD', crypto: 'xz1010', qty: '1.0431', price: '47.93', amount: '50', appealStatus: '申诉中', payImg: '查看图片', orderStatus: '确认超时', time: '2026-11-12 11:27:35' },
+    { tradeId: '3555897949780494400', adId: '386', buyerUid: '1700975393', merchantUid: '1700593742', type: '卖出', payMethod: '微信支付', fiat: 'HKD', crypto: 'xz1010', qty: '3', price: '375.74', amount: '1,127.22', appealStatus: '申诉中', payImg: '查看图片', orderStatus: '确认超时', time: '2026-11-12 10:48:57' }
+  ];
+
+  var isJoined = false;
+
+  function renderTable() {
+    var tbody = document.getElementById('tableBody');
+    var html = '';
+
+    appeals.forEach(function(item) {
+      html += '<tr>';
+      html += '<td>' + item.tradeId + ' <span class="copy-icon">📋</span></td>';
+      html += '<td>' + item.adId + ' <span class="copy-icon">📋</span></td>';
+      html += '<td>' + item.buyerUid + ' <span class="copy-icon">📋</span></td>';
+      html += '<td>' + item.merchantUid + ' <span class="copy-icon">📋</span></td>';
+      html += '<td><span class="tag tag-blue">' + item.type + '</span></td>';
+      html += '<td>' + item.payMethod + '</td>';
+      html += '<td>' + item.fiat + '</td>';
+      html += '<td>' + item.crypto + '</td>';
+      html += '<td>' + item.qty + '</td>';
+      html += '<td>' + item.price + '</td>';
+      html += '<td>' + item.amount + '</td>';
+      html += '<td><span class="tag tag-orange">' + item.appealStatus + '</span></td>';
+      html += '<td>' + (item.payImg === '查看图片' ? '<span class="link">查看图片</span>' : item.payImg) + '</td>';
+      html += '<td><span class="tag tag-red">' + item.orderStatus + '</span></td>';
+      html += '<td>' + item.time + '</td>';
+      html += '<td><span class="link" onclick="openModal(\'' + item.tradeId + '\')">详情</span></td>';
+      html += '</tr>';
+    });
+
+    tbody.innerHTML = html;
+  }
+
+  function openModal(tradeId) {
+    document.getElementById('chatModal').classList.add('show');
+    document.getElementById('modalTradeId').innerHTML = tradeId + ' <span class="copy-icon">📋</span>';
+    // 重置状态
+    isJoined = false;
+    updateJoinState();
+  }
+
+  function closeModal() {
+    document.getElementById('chatModal').classList.remove('show');
+  }
+
+  function joinChat() {
+    isJoined = true;
+    updateJoinState();
+    // 添加系统消息
+    var chatMessages = document.getElementById('chatMessages');
+    var systemMsg = document.createElement('div');
+    systemMsg.className = 'chat-system';
+    systemMsg.textContent = '客服已介入，您可以发送消息参与对话。';
+    chatMessages.appendChild(systemMsg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function leaveChat() {
+    isJoined = false;
+    updateJoinState();
+    // 添加系统消息
+    var chatMessages = document.getElementById('chatMessages');
+    var systemMsg = document.createElement('div');
+    systemMsg.className = 'chat-system';
+    systemMsg.textContent = '客服已退出对话。';
+    chatMessages.appendChild(systemMsg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function updateJoinState() {
+    document.getElementById('joinBtn').style.display = isJoined ? 'none' : 'inline';
+    document.getElementById('leaveBtn').style.display = isJoined ? 'inline' : 'none';
+    document.getElementById('chatInputArea').classList.toggle('show', isJoined);
+  }
+
+  function sendMessage() {
+    var input = document.getElementById('chatInput');
+    var msg = input.value.trim();
+    if (!msg) return;
+
+    var chatMessages = document.getElementById('chatMessages');
+
+    // 添加客服消息
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-bubble';
+    bubble.style.background = '#e6f7ff';
+    bubble.style.marginLeft = 'auto';
+    bubble.style.marginRight = '0';
+    bubble.textContent = '[客服] ' + msg;
+    chatMessages.appendChild(bubble);
+
+    var time = document.createElement('div');
+    time.className = 'chat-time';
+    var now = new Date();
+    time.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
+    chatMessages.appendChild(time);
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    input.value = '';
+  }
+
+  // 点击遮罩关闭
+  document.getElementById('chatModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeModal();
+    }
+  });
+
+  // 初始化
+  renderTable();
+</script>
+</body>
+</html>
