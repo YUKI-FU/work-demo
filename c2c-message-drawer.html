@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C2C 消息通知 · 交互原型</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d0d0d;
+    color: #eee;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* ===== 顶部导航 ===== */
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 56px;
+    background: #161616;
+    border-bottom: 1px solid #262626;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav-logo {
+    font-size: 18px;
+    font-weight: 600;
+    color: #c8ff00;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 24px;
+  }
+
+  .nav-tab {
+    font-size: 14px;
+    color: #888;
+    cursor: pointer;
+    padding: 16px 0;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+  }
+
+  .nav-tab:hover { color: #ccc; }
+  .nav-tab.active { color: #fff; border-bottom-color: #c8ff00; }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* 消息入口按钮 */
+  .msg-trigger {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background .2s;
+  }
+
+  .msg-trigger:hover { background: #262626; }
+
+  .msg-trigger svg {
+    width: 22px;
+    height: 22px;
+    fill: #888;
+    transition: fill .2s;
+  }
+
+  .msg-trigger:hover svg { fill: #ccc; }
+
+  /* 未读角标 */
+  .badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: #ff4d4f;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .badge.hidden { display: none; }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  /* ===== 二级导航 ===== */
+  .sub-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 48px;
+    background: #131313;
+    border-bottom: 1px solid #1f1f1f;
+  }
+
+  .sub-nav-left {
+    display: flex;
+    gap: 24px;
+  }
+
+  .sub-nav-item {
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    padding: 12px 0;
+    position: relative;
+  }
+
+  .sub-nav-item:hover { color: #999; }
+  .sub-nav-item.active { color: #c8ff00; }
+  .sub-nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #c8ff00;
+  }
+
+  .sub-nav-right {
+    display: flex;
+    gap: 16px;
+  }
+
+  /* ===== 页面主体内容（模拟） ===== */
+  .page-content {
+    padding: 40px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .placeholder-card {
+    background: #161616;
+    border: 1px solid #262626;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    color: #555;
+  }
+
+  .placeholder-card h2 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #888;
+  }
+
+  .placeholder-card p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ===== 遮罩层 ===== */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    visibility: hidden;
+    transition: all .3s ease;
+    z-index: 200;
+  }
+
+  .overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* ===== 侧边抽屉 ===== */
+  .drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 380px;
+    height: 100vh;
+    background: #161616;
+    border-left: 1px solid #262626;
+    transform: translateX(100%);
+    transition: transform .3s ease;
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .drawer.show {
+    transform: translateX(0);
+  }
+
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid #262626;
+    flex-shrink: 0;
+  }
+
+  .drawer-title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .drawer-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .mark-read-btn {
+    font-size: 13px;
+    color: #c8ff00;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background .2s;
+  }
+
+  .mark-read-btn:hover {
+    background: rgba(200, 255, 0, 0.1);
+  }
+
+  .drawer-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 6px;
+    color: #666;
+    font-size: 20px;
+    transition: all .2s;
+  }
+
+  .drawer-close:hover {
+    background: #262626;
+    color: #ccc;
+  }
+
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  /* ===== 消息列表 ===== */
+  .msg-list {
+    padding: 8px 0;
+  }
+
+  .msg-item {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: background .2s;
+    position: relative;
+  }
+
+  .msg-item:hover {
+    background: #1c1c1c;
+  }
+
+  .msg-item.unread {
+    background: rgba(200, 255, 0, 0.03);
+  }
+
+  .msg-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #333;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    overflow: hidden;
+  }
+
+  .msg-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .msg-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .msg-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .msg-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #eee;
+  }
+
+  .msg-time {
+    font-size: 12px;
+    color: #555;
+  }
+
+  .msg-middle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .msg-status {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .msg-status.ongoing {
+    background: rgba(24, 144, 255, 0.15);
+    color: #1890ff;
+  }
+
+  .msg-status.pending {
+    background: rgba(250, 173, 20, 0.15);
+    color: #faad14;
+  }
+
+  .msg-status.appeal {
+    background: rgba(255, 77, 79, 0.15);
+    color: #ff4d4f;
+  }
+
+  .msg-status.cancelled {
+    background: rgba(102, 102, 102, 0.15);
+    color: #888;
+  }
+
+  .msg-status.completed {
+    background: rgba(82, 196, 26, 0.15);
+    color: #52c41a;
+  }
+
+  .msg-order {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .msg-preview {
+    font-size: 13px;
+    color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .msg-item.unread .msg-preview {
+    color: #aaa;
+  }
+
+  /* 未读红点 */
+  .msg-badge {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background: #ff4d4f;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ===== 空状态 ===== */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 40px;
+    text-align: center;
+  }
+
+  .empty-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+
+  .empty-text {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .empty-btn {
+    margin-top: 20px;
+    padding: 10px 24px;
+    background: #c8ff00;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+
+  .empty-btn:hover {
+    opacity: 0.9;
+  }
+
+  /* ===== 设计说明 ===== */
+  .notes {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 24px;
+    background: #161616;
+    border: 1px dashed #333;
+    border-radius: 12px;
+  }
+
+  .notes h3 {
+    font-size: 16px;
+    margin-bottom: 16px;
+    color: #ccc;
+  }
+
+  .notes ul {
+    padding-left: 20px;
+  }
+
+  .notes li {
+    font-size: 13px;
+    color: #7d7d7d;
+    line-height: 1.8;
+    margin-bottom: 6px;
+  }
+
+  .notes li b {
+    color: #b0b0b0;
+    font-weight: 500;
+  }
+
+  .notes .highlight {
+    color: #c8ff00;
+  }
+
+  @media (max-width: 480px) {
+    .drawer {
+      width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<nav class="top-nav">
+  <div class="nav-left">
+    <div class="nav-logo">ETZ</div>
+    <div class="nav-tabs">
+      <div class="nav-tab">行情</div>
+      <div class="nav-tab active">C2C</div>
+      <div class="nav-tab">合约</div>
+      <div class="nav-tab">资产</div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <!-- 消息入口 -->
+    <div class="msg-trigger" id="msgTrigger" onclick="openDrawer()">
+      <svg viewBox="0 0 24 24">
+        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/>
+        <path d="M7 9h10v2H7zm0-3h10v2H7z"/>
+      </svg>
+      <span class="badge" id="globalBadge">3</span>
+    </div>
+    <div class="user-avatar">👤</div>
+  </div>
+</nav>
+
+<!-- 二级导航 -->
+<div class="sub-nav">
+  <div class="sub-nav-left">
+    <div class="sub-nav-item">快捷买币</div>
+    <div class="sub-nav-item active">C2C交易</div>
+  </div>
+  <div class="sub-nav-right">
+    <div class="sub-nav-item">消息</div>
+    <div class="sub-nav-item">订单</div>
+    <div class="sub-nav-item">发布广告</div>
+    <div class="sub-nav-item">更多 ∨</div>
+  </div>
+</div>
+
+<!-- 页面内容占位 -->
+<div class="page-content">
+  <div class="placeholder-card">
+    <h2>💬 C2C 消息通知功能原型</h2>
+    <p>点击右上角的消息图标，打开消息抽屉查看效果</p>
+    <p style="margin-top: 12px; color: #c8ff00;">当前有 3 条未读消息</p>
+  </div>
+</div>
+
+<!-- 遮罩层 -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+
+<!-- 消息抽屉 -->
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-title">消息中心</div>
+    <div class="drawer-actions">
+      <span class="mark-read-btn" onclick="markAllRead()">全部标记已读</span>
+      <span class="drawer-close" onclick="closeDrawer()">✕</span>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div class="msg-list" id="msgList">
+      <!-- 消息列表动态渲染 -->
+    </div>
+  </div>
+</div>
+
+<!-- 设计说明 -->
+<div class="notes">
+  <h3>📐 设计说明</h3>
+  <ul>
+    <li><b>全局入口</b>：顶部导航栏消息图标 + 未读红点角标，数字显示未读总数（超过99显示99+）</li>
+    <li><b>侧边抽屉</b>：点击入口从右侧滑出，背景加半透明遮罩，点击遮罩或 X 关闭</li>
+    <li><b>消息卡片</b>：包含头像、昵称、<span class="highlight">订单状态标签</span>（进行中/待付款/已申诉/已取消）、订单号简写、最新消息预览、时间戳</li>
+    <li><b>未读标记</b>：每条消息右侧显示该订单的未读数红点，已读则不显示</li>
+    <li><b>快捷操作</b>："全部标记已读"按钮一键清除所有未读</li>
+    <li><b>点击跳转</b>：点击消息卡片直接跳转对应订单详情页，自动标记已读</li>
+    <li><b>实时推送</b>：通过 WebSocket 实时更新未读数和消息列表</li>
+  </ul>
+</div>
+
+<script>
+  // 模拟消息数据
+  var messages = [
+    {
+      id: 1,
+      avatar: '🧑',
+      name: 'C2',
+      status: 'cancelled',
+      statusText: '已取消',
+      orderId: '3553936830524086208',
+      preview: '订单已取消，如有需要，请再次下单。',
+      time: '11/07 00:56',
+      unread: 1
+    },
+    {
+      id: 2,
+      avatar: '👩',
+      name: '小明商家',
+      status: 'pending',
+      statusText: '待付款',
+      orderId: '3553936830524086156',
+      preview: '请在40分钟内完成付款，避免订单超时。',
+      time: '11/06 23:45',
+      unread: 2
+    },
+    {
+      id: 3,
+      avatar: '🧑‍💼',
+      name: '优选商家A',
+      status: 'appeal',
+      statusText: '已申诉',
+      orderId: '3553936830524085999',
+      preview: '您的申诉已提交，客服正在处理中...',
+      time: '11/06 18:30',
+      unread: 0
+    },
+    {
+      id: 4,
+      avatar: '👨',
+      name: '快速交易员',
+      status: 'ongoing',
+      statusText: '进行中',
+      orderId: '3553936830524085888',
+      preview: '我已确认收款，正在放币中...',
+      time: '11/06 15:22',
+      unread: 0
+    },
+    {
+      id: 5,
+      avatar: '👩‍🦰',
+      name: '信誉商家B',
+      status: 'completed',
+      statusText: '已完成',
+      orderId: '3553936830524085777',
+      preview: '感谢您的交易，欢迎下次光临！',
+      time: '11/05 20:15',
+      unread: 0
+    }
+  ];
+
+  function renderMessages() {
+    var list = document.getElementById('msgList');
+    var html = '';
+
+    messages.forEach(function(msg) {
+      var orderShort = msg.orderId.slice(0, 4) + '...' + msg.orderId.slice(-2);
+      html += '<div class="msg-item' + (msg.unread > 0 ? ' unread' : '') + '" onclick="clickMessage(' + msg.id + ')">';
+      html += '  <div class="msg-avatar">' + msg.avatar + '</div>';
+      html += '  <div class="msg-content">';
+      html += '    <div class="msg-top">';
+      html += '      <span class="msg-name">' + msg.name + '</span>';
+      html += '      <span class="msg-time">' + msg.time + '</span>';
+      html += '    </div>';
+      html += '    <div class="msg-middle">';
+      html += '      <span class="msg-status ' + msg.status + '">' + msg.statusText + '</span>';
+      html += '      <span class="msg-order">订单号：' + orderShort + '</span>';
+      html += '    </div>';
+      html += '    <div class="msg-preview">' + msg.preview + '</div>';
+      html += '  </div>';
+      if (msg.unread > 0) {
+        html += '  <span class="msg-badge">' + msg.unread + '</span>';
+      }
+      html += '</div>';
+    });
+
+    list.innerHTML = html;
+    updateGlobalBadge();
+  }
+
+  function updateGlobalBadge() {
+    var total = messages.reduce(function(sum, msg) { return sum + msg.unread; }, 0);
+    var badge = document.getElementById('globalBadge');
+    if (total > 0) {
+      badge.textContent = total > 99 ? '99+' : total;
+      badge.classList.remove('hidden');
+    } else {
+      badge.classList.add('hidden');
+    }
+  }
+
+  function openDrawer() {
+    document.getElementById('drawer').classList.add('show');
+    document.getElementById('overlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    document.getElementById('drawer').classList.remove('show');
+    document.getElementById('overlay').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  function clickMessage(id) {
+    messages.forEach(function(msg) {
+      if (msg.id === id) {
+        msg.unread = 0;
+      }
+    });
+    renderMessages();
+    // 模拟跳转
+    alert('跳转到订单详情页：' + id);
+    closeDrawer();
+  }
+
+  function markAllRead() {
+    messages.forEach(function(msg) {
+      msg.unread = 0;
+    });
+    renderMessages();
+  }
+
+  // 初始化
+  renderMessages();
+
+  // 模拟新消息推送
+  setTimeout(function() {
+    // 可以在这里添加新消息推送的演示
+  }, 5000);
+</script>
+</body>
+</html>
