@@ -962,8 +962,8 @@
       <div class="chat-filter-tabs">
         <div class="chat-filter-tab active" data-filter="all" onclick="filterMessages('all')">全部消息</div>
         <div class="chat-filter-tab" data-filter="public" onclick="filterMessages('public')">公开对话</div>
-        <div class="chat-filter-tab" data-filter="buyer" onclick="filterMessages('buyer')">买家私聊 🔒</div>
-        <div class="chat-filter-tab" data-filter="seller" onclick="filterMessages('seller')">商家私聊 🔒</div>
+        <div class="chat-filter-tab" data-filter="buyer" onclick="filterMessages('buyer')">买方私聊 🔒</div>
+        <div class="chat-filter-tab" data-filter="seller" onclick="filterMessages('seller')">卖方私聊 🔒</div>
       </div>
       <div class="chat-status">
         <span class="status-dot online"></span>
@@ -980,7 +980,7 @@
         <div class="chat-avatar">买</div>
         <div class="chat-content">
           <div class="chat-meta">
-            <span class="chat-name">买家 · 1700126679</span>
+            <span class="chat-name">买方 · 1700126679</span>
             <span>12:51:05</span>
           </div>
           <div class="chat-bubble">你好，我已经付款了，请查收</div>
@@ -992,7 +992,7 @@
         <div class="chat-avatar">商</div>
         <div class="chat-content">
           <div class="chat-meta">
-            <span class="chat-name">商家 · 1700593742</span>
+            <span class="chat-name">卖方 · 1700593742</span>
             <span>12:52:30</span>
           </div>
           <div class="chat-bubble">稍等，我确认一下</div>
@@ -1004,7 +1004,7 @@
         <div class="chat-avatar">买</div>
         <div class="chat-content">
           <div class="chat-meta">
-            <span class="chat-name">买家 · 1700126679</span>
+            <span class="chat-name">买方 · 1700126679</span>
             <span>12:55:00</span>
           </div>
           <div class="chat-bubble">已经5分钟了，能不能快一点放币？</div>
@@ -1013,12 +1013,12 @@
 
       <div class="chat-system">商家发起申诉 · 2026/11/13 14:37:02</div>
 
-      <!-- 商家私聊客服 -->
+      <!-- 卖方私聊客服 -->
       <div class="chat-msg seller" data-type="private" data-role="seller">
         <div class="chat-avatar">商</div>
         <div class="chat-content">
           <div class="chat-meta">
-            <span class="chat-name">商家 · 1700593742</span>
+            <span class="chat-name">卖方 · 1700593742</span>
             <span class="chat-private-tag">🔒 仅客服可见</span>
             <span>14:38:15</span>
           </div>
@@ -1035,8 +1035,8 @@
         <span class="send-target-label">发送至：</span>
         <div class="send-target-options">
           <div class="send-target-option active" onclick="setSendTarget('all', this)">所有人（公开）</div>
-          <div class="send-target-option" onclick="setSendTarget('buyer', this)">仅买家</div>
-          <div class="send-target-option" onclick="setSendTarget('seller', this)">仅商家</div>
+          <div class="send-target-option" onclick="setSendTarget('buyer', this)">仅买方</div>
+          <div class="send-target-option" onclick="setSendTarget('seller', this)">仅卖方</div>
         </div>
       </div>
       <div class="chat-input-row">
@@ -1219,8 +1219,8 @@
     document.querySelectorAll('.send-target-option').forEach(function(opt) {
       opt.classList.remove('active');
       if ((target === 'all' && opt.textContent.includes('所有人')) ||
-          (target === 'buyer' && opt.textContent.includes('仅买家')) ||
-          (target === 'seller' && opt.textContent.includes('仅商家'))) {
+          (target === 'buyer' && opt.textContent.includes('仅买方')) ||
+          (target === 'seller' && opt.textContent.includes('仅卖方'))) {
         opt.classList.add('active');
       }
     });
