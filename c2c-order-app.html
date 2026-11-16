@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>C2C 订单 · APP原型</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #f5f5f5;
+    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    max-width: 414px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* ===== 页面容器 ===== */
+  .page {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #fff;
+  }
+  .page.active { display: flex; }
+
+  /* ===== 通用导航栏 ===== */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    padding: 0 16px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-back {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+  }
+
+  .nav-title {
+    font-size: 17px;
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+  }
+
+  .nav-right {
+    width: 60px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+  }
+
+  .nav-action {
+    font-size: 14px;
+    color: #52c41a;
+    cursor: pointer;
+  }
+
+  /* ===== 底部Tab导航 ===== */
+  .tab-bar {
+    display: flex;
+    height: 56px;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 414px;
+    z-index: 100;
+  }
+
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    color: #999;
+  }
+
+  .tab-item.active { color: #52c41a; }
+
+  .tab-icon {
+    font-size: 20px;
+  }
+
+  .tab-label {
+    font-size: 11px;
+  }
+
+  /* ===== 订单列表页 ===== */
+  .order-page-content {
+    flex: 1;
+    padding-bottom: 70px;
+    overflow-y: auto;
+  }
+
+  /* 顶部Tab */
+  .order-tabs {
+    display: flex;
+    padding: 0 16px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .order-tab {
+    padding: 14px 0;
+    margin-right: 24px;
+    font-size: 15px;
+    color: #666;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .order-tab.active {
+    color: #333;
+    font-weight: 600;
+  }
+
+  .order-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #333;
+  }
+
+  /* 筛选标签 */
+  .filter-tags {
+    display: flex;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #fff;
+    overflow-x: auto;
+  }
+
+  .filter-tag {
+    padding: 6px 14px;
+    background: #f5f5f5;
+    border-radius: 16px;
+    font-size: 13px;
+    color: #666;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .filter-tag.active {
+    background: #333;
+    color: #fff;
+  }
+
+  /* 订单卡片 */
+  .order-list {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #f5f5f5;
+  }
+
+  .order-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .order-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .order-type {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .order-type-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #ff4d4f;
+  }
+
+  .order-type-coin {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .order-status-tag {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(255, 77, 79, 0.1);
+    color: #ff4d4f;
+  }
+
+  .order-card-body {
+    margin-bottom: 12px;
+  }
+
+  .order-time {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 8px;
+  }
+
+  .order-info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .order-info-left {
+    font-size: 13px;
+    color: #666;
+  }
+
+  .order-amount {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .order-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid #f5f5f5;
+  }
+
+  .order-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .order-user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .order-user-name {
+    font-size: 13px;
+    color: #666;
+  }
+
+  .chat-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    font-size: 13px;
+    color: #666;
+    cursor: pointer;
+    background: #fff;
+  }
+
+  .chat-btn:hover {
+    background: #f9f9f9;
+  }
+
+  /* ===== 聊天页面 ===== */
+  .chat-page {
+    background: #f5f5f5;
+  }
+
+  .chat-navbar {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .chat-user-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 12px;
+  }
+
+  .chat-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    font-size: 16px;
+    color: #fff;
+  }
+
+  .chat-user-verified {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 14px;
+    height: 14px;
+    background: #52c41a;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: #fff;
+  }
+
+  .chat-user-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .chat-order-id {
+    font-size: 12px;
+    color: #999;
+  }
+
+  .chat-refresh {
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+  }
+
+  /* 订单状态卡片 */
+  .order-status-card {
+    margin: 12px 16px;
+    padding: 14px 16px;
+    background: #fff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+
+  .order-status-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .order-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff4d4f;
+  }
+
+  .order-status-text {
+    font-size: 14px;
+    color: #ff4d4f;
+    font-weight: 500;
+  }
+
+  .order-qty {
+    font-size: 13px;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  .order-status-arrow {
+    color: #ccc;
+    font-size: 16px;
+  }
+
+  /* 聊天区域 */
+  .chat-messages-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    padding-bottom: 80px;
+  }
+
+  .chat-system-notice {
+    background: #fff;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .chat-system-notice a {
+    color: #52c41a;
+  }
+
+  .chat-time-divider {
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    margin: 16px 0;
+  }
+
+  .chat-bubble {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+    max-width: 80%;
+  }
+
+  /* 聊天输入框 */
+  .chat-input-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 414px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .chat-input {
+    flex: 1;
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .chat-input:focus {
+    border-color: #52c41a;
+  }
+
+  .chat-action-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+  }
+
+  /* ===== 订单详情页 ===== */
+  .detail-page {
+    background: #f5f5f5;
+  }
+
+  .detail-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 80px;
+  }
+
+  /* 状态区域 */
+  .detail-status-section {
+    background: #fff;
+    padding: 20px 16px;
+  }
+
+  .detail-status-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .detail-status-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #ff4d4f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+  }
+
+  .detail-status-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .detail-status-desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  /* 用户卡片 */
+  .detail-user-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9f9f9;
+    padding: 14px 16px;
+    border-radius: 8px;
+  }
+
+  .detail-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .detail-user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #fff;
+  }
+
+  .detail-user-verified {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    background: #52c41a;
+    border-radius: 50%;
+    border: 2px solid #fff;
+  }
+
+  .detail-user-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .detail-user-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .detail-user-role {
+    font-size: 12px;
+    color: #999;
+  }
+
+  .detail-chat-btn {
+    padding: 8px 20px;
+    background: #52c41a;
+    color: #fff;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  /* 信息区块 */
+  .detail-section {
+    background: #fff;
+    margin-top: 12px;
+    padding: 16px;
+  }
+
+  .detail-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 16px;
+  }
+
+  .detail-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f5f5f5;
+  }
+
+  .detail-info-row:last-child {
+    border-bottom: none;
+  }
+
+  .detail-info-label {
+    font-size: 14px;
+    color: #666;
+  }
+
+  .detail-info-value {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+    text-align: right;
+  }
+
+  .detail-info-value.copy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .copy-icon {
+    color: #999;
+    cursor: pointer;
+  }
+
+  /* 底部按钮 */
+  .detail-footer {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 414px;
+    padding: 12px 16px;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .detail-action-btn {
+    width: 100%;
+    padding: 14px;
+    background: #52c41a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* 折叠区域 */
+  .detail-collapse-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    cursor: pointer;
+  }
+
+  .detail-collapse-arrow {
+    color: #999;
+    transition: transform .2s;
+  }
+
+  .detail-collapse-header.open .detail-collapse-arrow {
+    transform: rotate(180deg);
+  }
+
+  .detail-collapse-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s ease;
+  }
+
+  .detail-collapse-body.open {
+    max-height: 500px;
+  }
+</style>
+</head>
+<body>
+
+<!-- 订单列表页 -->
+<div class="page active" id="orderPage">
+  <div class="navbar">
+    <div class="nav-back" onclick="goBack()">‹</div>
+    <div class="nav-title">订单</div>
+    <div class="nav-right">
+      <span style="font-size: 18px; cursor: pointer;">🔍</span>
+      <span style="font-size: 18px; cursor: pointer;">⚙</span>
+    </div>
+  </div>
+
+  <div class="order-page-content">
+    <!-- 顶部Tab -->
+    <div class="order-tabs">
+      <div class="order-tab active">进行中</div>
+      <div class="order-tab">已完成</div>
+      <div class="order-tab">申诉中</div>
+    </div>
+
+    <!-- 筛选标签 -->
+    <div class="filter-tags">
+      <div class="filter-tag active">全部</div>
+      <div class="filter-tag">确认超时</div>
+      <div class="filter-tag">待付款</div>
+      <div class="filter-tag">待确认</div>
+      <div class="filter-tag">付款超时</div>
+    </div>
+
+    <!-- 订单列表 -->
+    <div class="order-list" id="orderList">
+      <!-- 动态渲染 -->
+    </div>
+  </div>
+
+  <!-- 底部Tab -->
+  <div class="tab-bar">
+    <div class="tab-item">
+      <span class="tab-icon">🔄</span>
+      <span class="tab-label">C2C</span>
+    </div>
+    <div class="tab-item active">
+      <span class="tab-icon">📋</span>
+      <span class="tab-label">订单</span>
+    </div>
+    <div class="tab-item">
+      <span class="tab-icon">📢</span>
+      <span class="tab-label">广告</span>
+    </div>
+    <div class="tab-item">
+      <span class="tab-icon">👤</span>
+      <span class="tab-label">我的</span>
+    </div>
+  </div>
+</div>
+
+<!-- 聊天页面 -->
+<div class="page chat-page" id="chatPage">
+  <div class="chat-navbar">
+    <div class="nav-back" onclick="closeChatPage()">‹</div>
+    <div class="chat-user-info">
+      <div class="chat-user-avatar" id="chatAvatar">
+        蟹
+        <div class="chat-user-verified">✓</div>
+      </div>
+      <div>
+        <div class="chat-user-name" id="chatUserName">蟹黄堡</div>
+        <div class="chat-order-id" id="chatOrderId">订单: 354368068272941456</div>
+      </div>
+    </div>
+    <div class="chat-refresh">⟳</div>
+  </div>
+
+  <!-- 订单状态卡片 -->
+  <div class="order-status-card" onclick="openDetailPage()">
+    <div class="order-status-left">
+      <div class="order-status-dot"></div>
+      <div>
+        <div class="order-status-text" id="chatStatusText">付款超时</div>
+        <div class="order-qty" id="chatQty">数量: 7.38 USDT</div>
+      </div>
+    </div>
+    <div class="order-status-arrow">›</div>
+  </div>
+
+  <!-- 聊天消息区域 -->
+  <div class="chat-messages-area" id="chatMessagesArea">
+    <div class="chat-system-notice">
+      系统提示：本聊天室组为私密安全空间。请务必核实所有信息，并避免发布敏感内容。请阅读我们的<a href="#">隐私政策</a>。请在交易时间内完成付款，过期将自动取消订单
+    </div>
+    <div class="chat-time-divider">10-09 17:41</div>
+    <div class="chat-bubble">您已下单，请耐心等待买家完成付款。</div>
+    <div class="chat-time-divider">10-09 18:41</div>
+    <div class="chat-bubble">当前订单买家付款已超时，请联系买家并恢复订单或点击申诉此订单。</div>
+  </div>
+
+  <!-- 聊天输入框 -->
+  <div class="chat-input-bar">
+    <input type="text" class="chat-input" placeholder="在此输入信息">
+    <div class="chat-action-icon">🖼</div>
+    <div class="chat-action-icon">▶</div>
+  </div>
+</div>
+
+<!-- 订单详情页 -->
+<div class="page detail-page" id="detailPage">
+  <div class="navbar">
+    <div class="nav-back" onclick="closeDetailPage()">‹</div>
+    <div class="nav-title">订单详情</div>
+    <div class="nav-right">
+      <span class="nav-action">申诉</span>
+    </div>
+  </div>
+
+  <div class="detail-content">
+    <!-- 状态区域 -->
+    <div class="detail-status-section">
+      <div class="detail-status-row">
+        <div class="detail-status-icon">✕</div>
+        <div class="detail-status-title">付款超时</div>
+      </div>
+      <div class="detail-status-desc">买家未在规定时间内付款，请核对账户是否到账；若未到账发起申诉取消订单。</div>
+
+      <!-- 用户卡片 -->
+      <div class="detail-user-card">
+        <div class="detail-user-info">
+          <div class="detail-user-avatar">
+            蟹
+            <div class="detail-user-verified"></div>
+          </div>
+          <div class="detail-user-meta">
+            <span class="detail-user-name">蟹黄堡</span>
+            <span class="detail-user-role">买家</span>
+          </div>
+        </div>
+        <div class="detail-chat-btn" onclick="openChatFromDetail()">聊天</div>
+      </div>
+    </div>
+
+    <!-- 支付信息 -->
+    <div class="detail-section">
+      <div class="detail-section-title">支付信息</div>
+      <div class="detail-info-row">
+        <span class="detail-info-label">支付金额</span>
+        <span class="detail-info-value">50.00 CNY</span>
+      </div>
+      <div class="detail-info-row">
+        <span class="detail-info-label">交易方式</span>
+        <span class="detail-info-value">支付宝</span>
+      </div>
+      <div class="detail-info-row">
+        <span class="detail-info-label">付款人姓名</span>
+        <span class="detail-info-value">11</span>
+      </div>
+    </div>
+
+    <!-- 卖出信息 -->
+    <div class="detail-section">
+      <div class="detail-section-title">卖出 USDT</div>
+      <div class="detail-info-row">
+        <span class="detail-info-label">单价</span>
+        <span class="detail-info-value">6.77 CNY</span>
+      </div>
+      <div class="detail-info-row">
+        <span class="detail-info-label">数量</span>
+        <span class="detail-info-value">7.38 USDT</span>
+      </div>
+      <div class="detail-info-row">
+        <span class="detail-info-label">总金额</span>
+        <span class="detail-info-value">50.00 CNY</span>
+      </div>
+    </div>
+
+    <!-- 订单信息 -->
+    <div class="detail-section">
+      <div class="detail-collapse-header" onclick="toggleDetailCollapse(this)">
+        <span class="detail-section-title" style="margin-bottom: 0;">订单信息</span>
+        <span class="detail-collapse-arrow">∨</span>
+      </div>
+      <div class="detail-collapse-body">
+        <div class="detail-info-row">
+          <span class="detail-info-label">单号</span>
+          <span class="detail-info-value copy">354368068272941456 <span class="copy-icon">📋</span></span>
+        </div>
+        <div class="detail-info-row">
+          <span class="detail-info-label">下单时间</span>
+          <span class="detail-info-value">2026-10-09 17:41:53</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部按钮 -->
+  <div class="detail-footer">
+    <button class="detail-action-btn">恢复订单</button>
+  </div>
+</div>
+
+<script>
+  // 订单数据
+  var orders = [
+    {
+      id: '354368068272941456',
+      type: '卖出',
+      coin: 'USDT',
+      status: '付款超时',
+      time: '2026-10-09 17:41',
+      price: '6.77 CNY',
+      qty: '7.38 USDT',
+      amount: '50.00 CNY',
+      user: '蟹黄堡',
+      avatar: '蟹'
+    },
+    {
+      id: '354368068272941123',
+      type: '卖出',
+      coin: 'USDT',
+      status: '付款超时',
+      time: '2026-10-09 17:30',
+      price: '6.77 CNY',
+      qty: '7.38 USDT',
+      amount: '50.00 CNY',
+      user: '蟹黄堡',
+      avatar: '蟹'
+    },
+    {
+      id: '354368068272941789',
+      type: '卖出',
+      coin: 'USDT',
+      status: '付款超时',
+      time: '2026-10-09 17:30',
+      price: '6.77 CNY',
+      qty: '10 USDT',
+      amount: '67.70 CNY',
+      user: '蟹黄堡',
+      avatar: '蟹'
+    }
+  ];
+
+  var currentOrder = null;
+
+  function renderOrders() {
+    var list = document.getElementById('orderList');
+    var html = '';
+
+    orders.forEach(function(order) {
+      html += '<div class="order-card">';
+      html += '  <div class="order-card-header">';
+      html += '    <div class="order-type">';
+      html += '      <span class="order-type-label">' + order.type + '</span>';
+      html += '      <span class="order-type-coin">' + order.coin + '</span>';
+      html += '    </div>';
+      html += '    <span class="order-status-tag">' + order.status + '</span>';
+      html += '  </div>';
+      html += '  <div class="order-card-body">';
+      html += '    <div class="order-time">' + order.time + '</div>';
+      html += '    <div class="order-info-row">';
+      html += '      <div class="order-info-left">';
+      html += '        <div>价格 ' + order.price + '</div>';
+      html += '        <div>数量 ' + order.qty + '</div>';
+      html += '      </div>';
+      html += '      <div class="order-amount">' + order.amount + '</div>';
+      html += '    </div>';
+      html += '  </div>';
+      html += '  <div class="order-card-footer">';
+      html += '    <div class="order-user">';
+      html += '      <div class="order-user-avatar">' + order.avatar + '</div>';
+      html += '      <span class="order-user-name">' + order.user + '</span>';
+      html += '    </div>';
+      html += '    <div class="chat-btn" onclick="openChatPage(\'' + order.id + '\')">💬 聊天</div>';
+      html += '  </div>';
+      html += '</div>';
+    });
+
+    list.innerHTML = html;
+  }
+
+  function openChatPage(orderId) {
+    currentOrder = orders.find(function(o) { return o.id === orderId; });
+    if (currentOrder) {
+      document.getElementById('chatUserName').textContent = currentOrder.user;
+      document.getElementById('chatOrderId').textContent = '订单: ' + currentOrder.id;
+      document.getElementById('chatStatusText').textContent = currentOrder.status;
+      document.getElementById('chatQty').textContent = '数量: ' + currentOrder.qty;
+    }
+    document.getElementById('orderPage').classList.remove('active');
+    document.getElementById('chatPage').classList.add('active');
+  }
+
+  function closeChatPage() {
+    document.getElementById('chatPage').classList.remove('active');
+    document.getElementById('orderPage').classList.add('active');
+  }
+
+  function openDetailPage() {
+    document.getElementById('chatPage').classList.remove('active');
+    document.getElementById('detailPage').classList.add('active');
+  }
+
+  function closeDetailPage() {
+    document.getElementById('detailPage').classList.remove('active');
+    document.getElementById('chatPage').classList.add('active');
+  }
+
+  function openChatFromDetail() {
+    document.getElementById('detailPage').classList.remove('active');
+    document.getElementById('chatPage').classList.add('active');
+  }
+
+  function goBack() {
+    alert('返回上一页');
+  }
+
+  function toggleDetailCollapse(el) {
+    el.classList.toggle('open');
+    el.nextElementSibling.classList.toggle('open');
+  }
+
+  // 初始化
+  renderOrders();
+</script>
+</body>
+</html>
