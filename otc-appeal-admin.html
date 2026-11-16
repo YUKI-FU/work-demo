@@ -571,6 +571,38 @@
     flex-direction: column;
   }
 
+  /* 筛选Tab */
+  .chat-filter-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #fafafa;
+    border-bottom: 1px solid #f0f0f0;
+    flex-wrap: wrap;
+  }
+
+  .chat-filter-tab {
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #666;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .chat-filter-tab:hover {
+    border-color: #1890ff;
+    color: #1890ff;
+  }
+
+  .chat-filter-tab.active {
+    background: #1890ff;
+    border-color: #1890ff;
+    color: #fff;
+  }
+
   .chat-messages {
     flex: 1;
     padding: 20px;
@@ -585,25 +617,7 @@
     margin: 16px 0;
   }
 
-  .chat-bubble {
-    max-width: 70%;
-    margin: 0 auto 12px;
-    padding: 12px 16px;
-    background: #fff;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #333;
-    line-height: 1.5;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
-
-  .chat-time {
-    text-align: center;
-    font-size: 12px;
-    color: #999;
-    margin-top: 4px;
-  }
-
+  /* 系统消息 */
   .chat-system {
     text-align: center;
     font-size: 13px;
@@ -615,6 +629,96 @@
     display: inline-block;
     margin-left: 50%;
     transform: translateX(-50%);
+  }
+
+  /* 用户消息（买家/商家） */
+  .chat-user-msg {
+    display: flex;
+    gap: 10px;
+    margin: 12px 0;
+  }
+
+  .chat-user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .chat-user-avatar.buyer {
+    background: linear-gradient(135deg, #52c41a, #389e0d);
+  }
+
+  .chat-user-avatar.seller {
+    background: linear-gradient(135deg, #fa8c16, #d46b08);
+  }
+
+  .chat-user-content {
+    max-width: 70%;
+  }
+
+  .chat-user-meta {
+    font-size: 11px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .chat-user-role {
+    font-weight: 600;
+  }
+
+  .chat-user-role.buyer {
+    color: #52c41a;
+  }
+
+  .chat-user-role.seller {
+    color: #fa8c16;
+  }
+
+  .chat-user-uid {
+    color: #999;
+  }
+
+  .chat-private-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 1px 6px;
+    background: #fff0f6;
+    color: #eb2f96;
+    border-radius: 4px;
+    font-size: 10px;
+  }
+
+  /* 公开消息气泡 */
+  .chat-user-bubble {
+    padding: 12px 16px;
+    background: #fff;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* 私密消息气泡 */
+  .chat-user-bubble.private {
+    background: #fffbe6;
+    border: 1px dashed #fadb14;
+  }
+
+  .chat-time {
+    font-size: 11px;
+    color: #999;
+    margin-top: 4px;
   }
 
   /* 客服消息 */
@@ -645,11 +749,15 @@
     order: 1;
   }
 
-  .chat-staff-name {
-    font-size: 12px;
+  .chat-staff-meta {
+    font-size: 11px;
     color: #1890ff;
     margin-bottom: 4px;
     text-align: right;
+  }
+
+  .chat-staff-target {
+    color: #999;
   }
 
   .chat-staff-bubble {
@@ -659,6 +767,48 @@
     font-size: 14px;
     color: #333;
     line-height: 1.5;
+  }
+
+  /* 客服发送目标选择器 */
+  .chat-send-target {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #f0f5ff;
+    border-bottom: 1px solid #d6e4ff;
+  }
+
+  .chat-send-label {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .chat-send-options {
+    display: flex;
+    gap: 6px;
+  }
+
+  .chat-send-option {
+    padding: 4px 10px;
+    font-size: 12px;
+    color: #666;
+    background: #fff;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .chat-send-option:hover {
+    border-color: #1890ff;
+    color: #1890ff;
+  }
+
+  .chat-send-option.active {
+    background: #1890ff;
+    border-color: #1890ff;
+    color: #fff;
   }
 
   /* 对话框 */
@@ -944,17 +1094,111 @@
 
       <!-- 聊天区域 -->
       <div class="chat-area">
+        <!-- 筛选Tab -->
+        <div class="chat-filter-tabs">
+          <div class="chat-filter-tab active" onclick="filterMessages('all')">全部消息</div>
+          <div class="chat-filter-tab" onclick="filterMessages('public')">公开对话</div>
+          <div class="chat-filter-tab" onclick="filterMessages('buyer')">买家私聊 🔒</div>
+          <div class="chat-filter-tab" onclick="filterMessages('seller')">商家私聊 🔒</div>
+        </div>
+
         <div class="chat-messages" id="chatMessages">
           <div class="chat-date">2026-11-16</div>
-          <div class="chat-bubble">您已下单，请耐心等待买家完成付款。</div>
-          <div class="chat-time">12:48:44</div>
-          <div class="chat-bubble">买家已下单，请在2分钟内完成付款，避免订单超时。</div>
-          <div class="chat-time">12:48:44</div>
+
+          <!-- 系统消息 -->
           <div class="chat-system">该订单已进入平台申诉处理流程，请保留相关凭证等待平台沟通处理。</div>
-          <div class="chat-time">12:48:59</div>
-          <div class="chat-bubble">订单已进入申诉流程，平台将进行介入处理。</div>
-          <div class="chat-time">12:48:59</div>
+
+          <!-- 买家公开消息 -->
+          <div class="chat-user-msg" data-type="public" data-role="buyer">
+            <div class="chat-user-avatar buyer">买</div>
+            <div class="chat-user-content">
+              <div class="chat-user-meta">
+                <span class="chat-user-role buyer">[买家]</span>
+                <span class="chat-user-uid">UID: 1700126679</span>
+              </div>
+              <div class="chat-user-bubble">我已经付款了，请确认收款</div>
+              <div class="chat-time">12:48:44</div>
+            </div>
+          </div>
+
+          <!-- 商家公开消息 -->
+          <div class="chat-user-msg" data-type="public" data-role="seller">
+            <div class="chat-user-avatar seller">商</div>
+            <div class="chat-user-content">
+              <div class="chat-user-meta">
+                <span class="chat-user-role seller">[商家]</span>
+                <span class="chat-user-uid">UID: 1700142791</span>
+              </div>
+              <div class="chat-user-bubble">我没有收到款项，请提供付款凭证</div>
+              <div class="chat-time">12:49:12</div>
+            </div>
+          </div>
+
+          <!-- 买家私密消息（仅客服可见） -->
+          <div class="chat-user-msg" data-type="private" data-role="buyer">
+            <div class="chat-user-avatar buyer">买</div>
+            <div class="chat-user-content">
+              <div class="chat-user-meta">
+                <span class="chat-user-role buyer">[买家]</span>
+                <span class="chat-user-uid">UID: 1700126679</span>
+                <span class="chat-private-tag">🔒 仅客服可见</span>
+              </div>
+              <div class="chat-user-bubble private">这是我的银行转账截图，请帮我核实</div>
+              <div class="chat-time">12:50:33</div>
+            </div>
+          </div>
+
+          <!-- 商家私密消息（仅客服可见） -->
+          <div class="chat-user-msg" data-type="private" data-role="seller">
+            <div class="chat-user-avatar seller">商</div>
+            <div class="chat-user-content">
+              <div class="chat-user-meta">
+                <span class="chat-user-role seller">[商家]</span>
+                <span class="chat-user-uid">UID: 1700142791</span>
+                <span class="chat-private-tag">🔒 仅客服可见</span>
+              </div>
+              <div class="chat-user-bubble private">我这边银行账户流水显示没有进账，附上流水截图</div>
+              <div class="chat-time">12:52:18</div>
+            </div>
+          </div>
+
+          <!-- 客服消息（发给所有人） -->
+          <div class="chat-staff" data-type="staff-all">
+            <div class="chat-staff-avatar">客</div>
+            <div class="chat-staff-content">
+              <div class="chat-staff-meta">
+                <span>ETZ客服</span>
+                <span class="chat-staff-target">→ 发送给 [所有人]</span>
+              </div>
+              <div class="chat-staff-bubble">您好，已收到双方的申诉材料，正在核实中，请双方耐心等待。</div>
+              <div class="chat-time">12:55:00</div>
+            </div>
+          </div>
+
+          <!-- 客服消息（仅发给买家） -->
+          <div class="chat-staff" data-type="staff-buyer">
+            <div class="chat-staff-avatar">客</div>
+            <div class="chat-staff-content">
+              <div class="chat-staff-meta">
+                <span>ETZ客服</span>
+                <span class="chat-staff-target">→ 仅发送给 [买家] 🔒</span>
+              </div>
+              <div class="chat-staff-bubble">请问您的转账时使用的是哪个银行？转账备注是什么？</div>
+              <div class="chat-time">12:56:22</div>
+            </div>
+          </div>
         </div>
+
+        <!-- 客服发送目标选择器 -->
+        <div class="chat-send-target" id="chatSendTarget" style="display: none;">
+          <span class="chat-send-label">发送至：</span>
+          <div class="chat-send-options">
+            <div class="chat-send-option active" onclick="setSendTarget('all')">所有人（公开）</div>
+            <div class="chat-send-option" onclick="setSendTarget('buyer')">仅买家</div>
+            <div class="chat-send-option" onclick="setSendTarget('seller')">仅商家</div>
+          </div>
+        </div>
+
         <div class="chat-input-area" id="chatInputArea">
           <div class="chat-input-row">
             <span class="chat-input-label">对话框</span>
@@ -1055,6 +1299,18 @@
     document.getElementById('joinBtn').style.display = isJoined ? 'none' : 'inline';
     document.getElementById('leaveBtn').style.display = isJoined ? 'inline' : 'none';
     document.getElementById('chatInputArea').classList.toggle('show', isJoined);
+    document.getElementById('chatSendTarget').style.display = isJoined ? 'flex' : 'none';
+  }
+
+  var sendTarget = 'all';
+
+  function setSendTarget(target) {
+    sendTarget = target;
+    var options = document.querySelectorAll('.chat-send-option');
+    options.forEach(function(opt) {
+      opt.classList.remove('active');
+    });
+    event.target.classList.add('active');
   }
 
   function sendMessage() {
@@ -1064,27 +1320,50 @@
 
     var chatMessages = document.getElementById('chatMessages');
 
-    // 添加客服消息（带头像和昵称）
     var staffMsg = document.createElement('div');
     staffMsg.className = 'chat-staff';
+    staffMsg.setAttribute('data-type', 'staff-' + sendTarget);
 
     var now = new Date();
     var timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
 
+    var targetText = sendTarget === 'all' ? '→ 发送给 [所有人]' :
+                     sendTarget === 'buyer' ? '→ 仅发送给 [买家] 🔒' :
+                     '→ 仅发送给 [商家] 🔒';
+
     staffMsg.innerHTML = '<div class="chat-staff-avatar">客</div>' +
       '<div class="chat-staff-content">' +
-      '<div class="chat-staff-name">ETZ客服</div>' +
+      '<div class="chat-staff-meta"><span>ETZ客服</span><span class="chat-staff-target">' + targetText + '</span></div>' +
       '<div class="chat-staff-bubble">' + msg + '</div>' +
+      '<div class="chat-time">' + timeStr + '</div>' +
       '</div>';
     chatMessages.appendChild(staffMsg);
 
-    var time = document.createElement('div');
-    time.className = 'chat-time';
-    time.textContent = timeStr;
-    chatMessages.appendChild(time);
-
     chatMessages.scrollTop = chatMessages.scrollHeight;
     input.value = '';
+  }
+
+  // 消息筛选
+  function filterMessages(type) {
+    var tabs = document.querySelectorAll('.chat-filter-tab');
+    tabs.forEach(function(tab) { tab.classList.remove('active'); });
+    event.target.classList.add('active');
+
+    var messages = document.querySelectorAll('.chat-user-msg, .chat-staff');
+    messages.forEach(function(msg) {
+      var msgType = msg.getAttribute('data-type');
+      var msgRole = msg.getAttribute('data-role');
+
+      if (type === 'all') {
+        msg.style.display = 'flex';
+      } else if (type === 'public') {
+        msg.style.display = (msgType === 'public' || msgType === 'staff-all') ? 'flex' : 'none';
+      } else if (type === 'buyer') {
+        msg.style.display = (msgRole === 'buyer' && msgType === 'private') || msgType === 'staff-buyer' ? 'flex' : 'none';
+      } else if (type === 'seller') {
+        msg.style.display = (msgRole === 'seller' && msgType === 'private') || msgType === 'staff-seller' ? 'flex' : 'none';
+      }
+    });
   }
 
   // 点击遮罩关闭
