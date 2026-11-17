@@ -332,124 +332,200 @@
   }
 
   /* 订单信息区 */
-  .chat-order-info {
-    background: #fff;
-    padding: 16px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .chat-order-header {
+  /* 聊天头部信息区 - 紧凑可折叠 */
+  .chat-info-bar {
     display: flex;
     align-items: center;
-    margin-bottom: 12px;
+    padding: 10px 16px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
   }
 
-  .chat-order-icon {
-    width: 40px;
-    height: 40px;
+  .chat-info-summary {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .chat-info-icon {
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: linear-gradient(135deg, #667eea, #764ba2);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    color: #fff;
-    margin-right: 12px;
+    font-size: 14px;
+    flex-shrink: 0;
   }
 
-  .chat-order-title {
+  .chat-info-text {
     flex: 1;
+    min-width: 0;
   }
 
-  .chat-order-type {
-    font-size: 16px;
-    font-weight: 600;
+  .chat-info-title {
+    font-size: 14px;
+    font-weight: 500;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
-  .chat-order-amount {
-    font-size: 13px;
+  .chat-info-title .amount {
+    font-size: 12px;
     color: #666;
+    font-weight: 400;
+  }
+
+  .chat-info-parties {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: #999;
     margin-top: 2px;
   }
 
-  .chat-order-status {
-    font-size: 13px;
-    color: #fa8c16;
-    font-weight: 500;
-  }
-
-  /* 交易双方 */
-  .chat-parties {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .chat-party-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .chat-party-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #e6f7ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: #1890ff;
-  }
-
-  .chat-party-name {
-    font-size: 14px;
-    color: #333;
-  }
-
-  .chat-party-uid {
-    font-size: 12px;
-    color: #999;
-  }
-
-  .chat-party-status {
-    margin-left: auto;
+  .chat-info-party {
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 12px;
   }
 
-  .status-online {
-    color: #52c41a;
-  }
-
-  .status-offline {
-    color: #999;
-  }
-
-  .status-dot {
+  .party-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
   }
 
-  .status-dot.online {
+  .party-dot.online {
     background: #52c41a;
   }
 
-  .status-dot.offline {
+  .party-dot.offline {
     background: #d9d9d9;
   }
 
-  /* 聊天模式Tab */
+  .chat-info-status {
+    font-size: 12px;
+    color: #fa8c16;
+    padding: 2px 8px;
+    background: rgba(250, 140, 22, 0.1);
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  .chat-info-toggle {
+    font-size: 12px;
+    color: #999;
+    margin-left: 8px;
+    transition: transform 0.2s;
+  }
+
+  .chat-info-bar.expanded .chat-info-toggle {
+    transform: rotate(180deg);
+  }
+
+  /* 展开详情 */
+  .chat-info-detail {
+    max-height: 0;
+    overflow: hidden;
+    background: #fafafa;
+    transition: max-height 0.3s;
+  }
+
+  .chat-info-detail.show {
+    max-height: 200px;
+  }
+
+  .chat-detail-content {
+    padding: 12px 16px;
+  }
+
+  .chat-detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .chat-detail-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .chat-detail-label {
+    color: #999;
+  }
+
+  .chat-detail-value {
+    color: #333;
+  }
+
+  .chat-detail-parties {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .chat-detail-party {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+  }
+
+  .chat-detail-party-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chat-detail-party-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #e6f7ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #1890ff;
+  }
+
+  .chat-detail-party-name {
+    font-size: 13px;
+    color: #333;
+  }
+
+  .chat-detail-party-uid {
+    font-size: 11px;
+    color: #999;
+  }
+
+  .chat-detail-party-status {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #52c41a;
+  }
+
+  .chat-detail-party-status.offline {
+    color: #999;
+  }
+
+  /* 聊天模式Tab - 紧凑版 */
   .chat-mode-tabs {
     display: flex;
-    padding: 12px 16px;
+    padding: 8px 16px;
     background: #fff;
-    gap: 12px;
+    gap: 8px;
+    border-bottom: 1px solid #f0f0f0;
   }
 
   .chat-mode-tab {
@@ -457,12 +533,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 10px 12px;
-    border-radius: 20px;
-    font-size: 13px;
+    gap: 4px;
+    padding: 8px 10px;
+    border-radius: 16px;
+    font-size: 12px;
     cursor: pointer;
-    border: 1.5px solid #e8e8e8;
+    border: 1px solid #e8e8e8;
     color: #666;
     transition: all 0.2s;
   }
@@ -481,10 +557,10 @@
   .chat-mode-notice {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 10px 16px;
+    gap: 4px;
+    padding: 6px 16px;
     background: #e6f7ff;
-    font-size: 12px;
+    font-size: 11px;
     color: #1890ff;
   }
 
@@ -1812,35 +1888,63 @@
     <div class="chat-nav-more">···</div>
   </div>
 
-  <!-- 订单信息 -->
-  <div class="chat-order-info">
-    <div class="chat-order-header" onclick="openDetailPage()">
-      <div class="chat-order-icon">💰</div>
-      <div class="chat-order-title">
-        <div class="chat-order-type">购买 USDT</div>
-        <div class="chat-order-amount">金额 1,000.00 USD ｜ 数量 1,000.00 USDT</div>
-      </div>
-      <div class="chat-order-status">申诉处理中 ›</div>
-    </div>
-
-    <!-- 交易双方 -->
-    <div class="chat-parties">
-      <div class="chat-party-row">
-        <div class="chat-party-avatar">👤</div>
-        <span class="chat-party-name">交易对方</span>
-        <span class="chat-party-uid">UID 1700142791</span>
-        <div class="chat-party-status status-online">
-          <span class="status-dot online"></span>
-          <span>在线</span>
+  <!-- 紧凑信息栏 -->
+  <div class="chat-info-bar" id="chatInfoBar" onclick="toggleChatInfo()">
+    <div class="chat-info-summary">
+      <div class="chat-info-icon">💰</div>
+      <div class="chat-info-text">
+        <div class="chat-info-title">
+          购买 USDT <span class="amount">¥1,000.00</span>
+        </div>
+        <div class="chat-info-parties">
+          <span class="chat-info-party"><span class="party-dot online"></span>交易对方</span>
+          <span class="chat-info-party"><span class="party-dot offline"></span>我</span>
         </div>
       </div>
-      <div class="chat-party-row">
-        <div class="chat-party-avatar">👤</div>
-        <span class="chat-party-name">我</span>
-        <span class="chat-party-uid">UID 1700126679</span>
-        <div class="chat-party-status status-offline">
-          <span class="status-dot offline"></span>
-          <span>离线 · 15分钟前活跃</span>
+    </div>
+    <div class="chat-info-status">申诉中</div>
+    <div class="chat-info-toggle">▼</div>
+  </div>
+
+  <!-- 展开详情 -->
+  <div class="chat-info-detail" id="chatInfoDetail">
+    <div class="chat-detail-content">
+      <div class="chat-detail-row">
+        <span class="chat-detail-label">订单号</span>
+        <span class="chat-detail-value">#202611160001</span>
+      </div>
+      <div class="chat-detail-row">
+        <span class="chat-detail-label">金额</span>
+        <span class="chat-detail-value">1,000.00 USD</span>
+      </div>
+      <div class="chat-detail-row">
+        <span class="chat-detail-label">数量</span>
+        <span class="chat-detail-value">1,000.00 USDT</span>
+      </div>
+      <div class="chat-detail-parties">
+        <div class="chat-detail-party">
+          <div class="chat-detail-party-left">
+            <div class="chat-detail-party-avatar">👤</div>
+            <div>
+              <div class="chat-detail-party-name">交易对方</div>
+              <div class="chat-detail-party-uid">UID 1700142791</div>
+            </div>
+          </div>
+          <div class="chat-detail-party-status">
+            <span class="party-dot online"></span> 在线
+          </div>
+        </div>
+        <div class="chat-detail-party">
+          <div class="chat-detail-party-left">
+            <div class="chat-detail-party-avatar">👤</div>
+            <div>
+              <div class="chat-detail-party-name">我</div>
+              <div class="chat-detail-party-uid">UID 1700126679</div>
+            </div>
+          </div>
+          <div class="chat-detail-party-status offline">
+            <span class="party-dot offline"></span> 离线
+          </div>
         </div>
       </div>
     </div>
@@ -1850,18 +1954,18 @@
   <div class="chat-mode-tabs">
     <div class="chat-mode-tab active" id="tabPublic" onclick="switchChatTab('public')">
       <span>👥</span>
-      <span>三方沟通（公开）</span>
+      <span>三方沟通</span>
     </div>
     <div class="chat-mode-tab private" id="tabPrivate" onclick="switchChatTab('private')">
-      <span>🎧</span>
-      <span>与平台客服沟通（仅我可见）</span>
+      <span>🔒</span>
+      <span>私聊客服</span>
     </div>
   </div>
 
   <!-- 模式提示 -->
   <div class="chat-mode-notice" id="chatModeNotice">
     <span>ℹ️</span>
-    <span>此为三方公开沟通，您、交易对方和平台客服均可见。</span>
+    <span>三方公开沟通，买卖双方与客服均可见</span>
   </div>
 
   <!-- 聊天消息区域 - 公开 -->
@@ -2474,6 +2578,13 @@
   // 聊天Tab切换
   var chatTabMode = 'public';
 
+  function toggleChatInfo() {
+    var bar = document.getElementById('chatInfoBar');
+    var detail = document.getElementById('chatInfoDetail');
+    bar.classList.toggle('expanded');
+    detail.classList.toggle('show');
+  }
+
   function switchChatTab(mode) {
     chatTabMode = mode;
 
@@ -2489,14 +2600,14 @@
 
     if (mode === 'public') {
       tabPublic.classList.add('active');
-      notice.innerHTML = '<span>ℹ️</span><span>此为三方公开沟通，您、交易对方和平台客服均可见。</span>';
+      notice.innerHTML = '<span>ℹ️</span><span>三方公开沟通，买卖双方与客服均可见</span>';
       notice.classList.remove('private');
       publicArea.style.display = 'block';
       privateArea.style.display = 'none';
       privateBar.classList.remove('show');
     } else {
       tabPrivate.classList.add('active');
-      notice.innerHTML = '<span>🔒</span><span>此为您与平台客服的私密沟通，交易对方不可见。</span>';
+      notice.innerHTML = '<span>🔒</span><span>私密沟通，仅您与客服可见</span>';
       notice.classList.add('private');
       publicArea.style.display = 'none';
       privateArea.style.display = 'block';
