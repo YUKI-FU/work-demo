@@ -1360,6 +1360,81 @@
     font-size: 32px;
     margin-bottom: 8px;
   }
+
+  /* 可见范围选择器 */
+  .appeal-visibility {
+    margin-bottom: 12px;
+  }
+
+  .appeal-visibility-label {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .appeal-visibility-options {
+    display: flex;
+    gap: 10px;
+  }
+
+  .appeal-visibility-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+    border: 2px solid #e8e8e8;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .appeal-visibility-option.active {
+    border-color: #52c41a;
+    background: #f6ffed;
+    color: #52c41a;
+  }
+
+  .appeal-visibility-option.active.private {
+    border-color: #1890ff;
+    background: #e6f7ff;
+    color: #1890ff;
+  }
+
+  .appeal-visibility-hint {
+    font-size: 12px;
+    color: #999;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #fafafa;
+    border-radius: 6px;
+    line-height: 1.5;
+  }
+
+  .appeal-visibility-hint.public {
+    background: #f6ffed;
+    color: #52c41a;
+  }
+
+  .appeal-visibility-hint.private {
+    background: #e6f7ff;
+    color: #1890ff;
+  }
+
+  /* 私密标签 */
+  .appeal-private-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 6px;
+    background: #e6f7ff;
+    color: #1890ff;
+    border-radius: 4px;
+    margin-left: 8px;
+  }
 </style>
 </head>
 <body>
@@ -1693,6 +1768,22 @@
   <div class="appeal-add-section" id="appealAddSection">
     <div class="appeal-add-title">添加申诉材料（被申诉方）</div>
     <div class="appeal-add-card">
+      <!-- 可见范围选择 -->
+      <div class="appeal-visibility">
+        <span class="appeal-visibility-label">选择可见范围：</span>
+        <div class="appeal-visibility-options">
+          <div class="appeal-visibility-option active" id="visPublic" onclick="setAppealVisibility('public')">
+            <span>👁</span>
+            <span>双方可见</span>
+          </div>
+          <div class="appeal-visibility-option private" id="visPrivate" onclick="setAppealVisibility('private')">
+            <span>🔒</span>
+            <span>仅客服可见</span>
+          </div>
+        </div>
+        <div class="appeal-visibility-hint public" id="visibilityHint">对方和客服都可以查看此材料</div>
+      </div>
+
       <textarea class="appeal-textarea" placeholder="请输入说明（必填）" id="appealInput"></textarea>
       <div class="appeal-upload-area">
         <div class="appeal-uploaded-item">
@@ -2013,6 +2104,27 @@
   var hasUrgent = true; // 是否有催办
   var countdownInterval = null;
   var remainingSeconds = 23 * 3600 + 45 * 60 + 30; // 23:45:30
+  var appealVisibility = 'public'; // 可见范围：public/private
+
+  function setAppealVisibility(mode) {
+    appealVisibility = mode;
+    var pubOpt = document.getElementById('visPublic');
+    var priOpt = document.getElementById('visPrivate');
+    var hint = document.getElementById('visibilityHint');
+
+    pubOpt.classList.remove('active');
+    priOpt.classList.remove('active');
+
+    if (mode === 'public') {
+      pubOpt.classList.add('active');
+      hint.textContent = '对方和客服都可以查看此材料';
+      hint.className = 'appeal-visibility-hint public';
+    } else {
+      priOpt.classList.add('active');
+      hint.textContent = '仅客服可以查看此材料，对方不可见';
+      hint.className = 'appeal-visibility-hint private';
+    }
+  }
 
   function openAppealPage() {
     document.getElementById('detailPage').classList.remove('active');
@@ -2076,22 +2188,28 @@
     }
 
     // 模拟提交成功
-    alert('提交成功！已添加到申诉进度');
+    var visText = appealVisibility === 'public' ? '双方可见' : '仅客服可见';
+    alert('提交成功！\n可见范围：' + visText);
 
     // 添加到进度列表
     var section = document.querySelector('.appeal-section');
     var newCard = document.createElement('div');
     newCard.className = 'appeal-card my-response-card';
+
+    var privateTag = appealVisibility === 'private' ?
+      '<span class="appeal-private-tag">🔒 仅客服可见</span>' : '';
+
     newCard.innerHTML =
       '<div class="appeal-card-header">' +
-        '<span class="appeal-card-title">补充材料（第3次）</span>' +
+        '<span class="appeal-card-title">补充材料（第3次）' + privateTag + '</span>' +
         '<span class="appeal-card-time">' + Date.now() + '</span>' +
       '</div>' +
       '<div class="appeal-card-content">' + content + '</div>';
     section.appendChild(newCard);
 
-    // 清空输入
+    // 清空输入，重置可见范围
     input.value = '';
+    setAppealVisibility('public');
 
     // 重置倒计时（模拟客服再次催办才能继续提交）
     hasUrgent = false;
