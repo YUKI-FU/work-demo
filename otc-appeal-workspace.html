@@ -255,12 +255,24 @@
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 16px;
+  }
+
+  .party-status {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #666;
+  }
+
+  .party-status.offline {
+    color: #999;
   }
 
   .status-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
   }
 
@@ -270,11 +282,6 @@
 
   .status-dot.offline {
     background: #d9d9d9;
-  }
-
-  .status-text {
-    font-size: 12px;
-    color: #999;
   }
 
   .join-btn {
@@ -1379,8 +1386,14 @@
         <div class="chat-filter-tab" data-filter="seller" onclick="filterMessages('seller')">卖方私聊 🔒</div>
       </div>
       <div class="chat-status">
-        <span class="status-dot online"></span>
-        <span class="status-text">双方在线</span>
+        <span class="party-status">
+          <span class="status-dot online"></span>
+          买方在线
+        </span>
+        <span class="party-status offline">
+          <span class="status-dot offline"></span>
+          卖方离线
+        </span>
       </div>
       <button class="join-btn" id="joinBtn" onclick="toggleJoin()">介入对话</button>
     </div>
