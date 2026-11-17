@@ -440,7 +440,7 @@
   .chat-input-area {
     background: #fff;
     border-top: 1px solid #e8e8e8;
-    padding: 16px 20px;
+    padding: 12px 20px;
     display: none;
   }
 
@@ -448,48 +448,42 @@
     display: block;
   }
 
-  .chat-send-target {
+  .chat-visibility-notice {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-
-  .send-target-label {
-    font-size: 13px;
-    color: #666;
-  }
-
-  .send-target-options {
-    display: flex;
-    gap: 8px;
-  }
-
-  .send-target-option {
-    padding: 4px 12px;
-    border-radius: 14px;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(114, 46, 209, 0.08);
+    border-radius: 6px;
+    margin-bottom: 10px;
     font-size: 12px;
-    cursor: pointer;
-    background: #f5f5f5;
-    color: #666;
-    border: 1px solid #d9d9d9;
-    transition: all 0.2s;
+    color: #722ed1;
   }
 
-  .send-target-option:hover {
-    border-color: #1890ff;
-    color: #1890ff;
-  }
-
-  .send-target-option.active {
-    background: #1890ff;
-    color: #fff;
-    border-color: #1890ff;
+  .chat-visibility-notice .notice-icon {
+    font-size: 14px;
   }
 
   .chat-input-row {
     display: flex;
-    gap: 12px;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .chat-tools-inline {
+    display: flex;
+    gap: 8px;
+    color: #999;
+    font-size: 18px;
+  }
+
+  .chat-tools-inline span {
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .chat-tools-inline span:hover {
+    color: #666;
   }
 
   .chat-input {
@@ -1450,22 +1444,18 @@
 
     <!-- 输入区域 -->
     <div class="chat-input-area" id="chatInputArea">
-      <div class="chat-send-target" id="chatSendTarget">
-        <span class="send-target-label">发送至：</span>
-        <div class="send-target-options">
-          <div class="send-target-option active" onclick="setSendTarget('all', this)">所有人（公开）</div>
-          <div class="send-target-option" onclick="setSendTarget('buyer', this)">仅买方</div>
-          <div class="send-target-option" onclick="setSendTarget('seller', this)">仅卖方</div>
-        </div>
+      <div class="chat-visibility-notice" id="chatVisibilityNotice">
+        <span class="notice-icon">🔒</span>
+        <span id="visibilityText">当前消息所有人可见</span>
       </div>
       <div class="chat-input-row">
+        <div class="chat-tools-inline">
+          <span title="表情">😊</span>
+          <span title="图片">🖼️</span>
+          <span title="附件">📎</span>
+        </div>
         <input type="text" class="chat-input" id="chatInput" placeholder="请输入消息..." onkeypress="if(event.keyCode==13)sendMessage()">
-        <button class="chat-send-btn" onclick="sendMessage()">发送</button>
-      </div>
-      <div class="chat-tools">
-        <span class="chat-tool">📷 图片</span>
-        <span class="chat-tool">🎬 视频</span>
-        <span class="chat-tool">📎 文件</span>
+        <button class="chat-send-btn" onclick="sendMessage()">✈ 发送</button>
       </div>
     </div>
   </div>
@@ -1828,35 +1818,29 @@
       inputArea.classList.remove('show');
     } else if (isJoined) {
       inputArea.classList.add('show');
-      // 自动定位发送目标
-      if (type === 'public') setSendTargetAuto('all');
-      else if (type === 'buyer') setSendTargetAuto('buyer');
-      else if (type === 'seller') setSendTargetAuto('seller');
+      // 更新可见性提示
+      updateVisibilityNotice(type);
     }
   }
 
-  function setSendTarget(target, el) {
-    sendTarget = target;
-    document.querySelectorAll('.send-target-option').forEach(function(opt) {
-      opt.classList.remove('active');
-    });
-    el.classList.add('active');
+  function updateVisibilityNotice(type) {
+    var notice = document.getElementById('chatVisibilityNotice');
+    var text = document.getElementById('visibilityText');
 
-    // 同步切换顶部筛选Tab
-    var filterType = target === 'all' ? 'public' : target;
-    switchFilterTab(filterType);
-  }
-
-  function setSendTargetAuto(target) {
-    sendTarget = target;
-    document.querySelectorAll('.send-target-option').forEach(function(opt) {
-      opt.classList.remove('active');
-      if ((target === 'all' && opt.textContent.includes('所有人')) ||
-          (target === 'buyer' && opt.textContent.includes('仅买方')) ||
-          (target === 'seller' && opt.textContent.includes('仅卖方'))) {
-        opt.classList.add('active');
-      }
-    });
+    if (type === 'public') {
+      text.textContent = '当前消息所有人可见';
+      notice.style.background = 'rgba(24, 144, 255, 0.08)';
+      notice.style.color = '#1890ff';
+    } else if (type === 'buyer') {
+      text.textContent = '当前消息仅对客服与买方可见';
+      notice.style.background = 'rgba(114, 46, 209, 0.08)';
+      notice.style.color = '#722ed1';
+    } else if (type === 'seller') {
+      text.textContent = '当前消息仅对客服与卖方可见';
+      notice.style.background = 'rgba(114, 46, 209, 0.08)';
+      notice.style.color = '#722ed1';
+    }
+    sendTarget = type === 'public' ? 'all' : type;
   }
 
   function switchFilterTab(type) {
