@@ -2446,11 +2446,6 @@
     var msg = messages.find(function(m) { return m.id === msgId; });
     if (msg) {
       msg.unread = 0;
-      document.getElementById('chatUserName').textContent = msg.name;
-      document.getElementById('chatOrderId').textContent = '订单: ' + msg.orderId;
-      document.getElementById('chatStatusText').textContent = msg.statusText;
-      document.getElementById('chatQty').textContent = '数量: 7.38 USDT';
-      document.getElementById('chatAvatar').innerHTML = msg.avatar + '<div class="chat-user-verified">✓</div>';
     }
     fromMsgPage = true;
     document.getElementById('msgPage').classList.remove('active');
