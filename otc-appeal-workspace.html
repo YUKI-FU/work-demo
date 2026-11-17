@@ -1526,54 +1526,37 @@
 
 <!-- 弹窗：提交裁决 -->
 <div class="modal-overlay" id="modal-verdict" onclick="closeModal('verdict')">
-  <div class="modal-box" onclick="event.stopPropagation()">
+  <div class="modal-box" style="width: 520px;" onclick="event.stopPropagation()">
     <div class="modal-header">
       <span class="modal-back" onclick="closeModal('verdict')">‹</span>
-      <span class="modal-title">提交裁决</span>
+      <span class="modal-title">申诉处理操作</span>
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label class="form-label"><span class="required">*</span>处理结果</label>
-        <div class="radio-list">
-          <label class="radio-row">
-            <input type="radio" name="verdict-result" checked>
-            <div class="radio-content">
-              <span class="radio-title">强制放币</span>
-              <span class="radio-desc">（订单完成，资产划转给买方）</span>
-            </div>
-          </label>
-          <label class="radio-row">
-            <input type="radio" name="verdict-result">
-            <div class="radio-content">
-              <span class="radio-title">取消订单</span>
-              <span class="radio-desc">（原路退回资金）</span>
-            </div>
-          </label>
-          <label class="radio-row">
-            <input type="radio" name="verdict-result">
-            <div class="radio-content">
-              <span class="radio-title">驳回申诉</span>
-              <span class="radio-desc">（维持原订单状态）</span>
-            </div>
-          </label>
-          <label class="radio-row">
-            <input type="radio" name="verdict-result">
-            <div class="radio-content">
-              <span class="radio-title">其他处理</span>
-              <span class="radio-desc">（人工备注）</span>
-            </div>
-          </label>
-        </div>
+        <label class="form-label"><span class="required">*</span>过错方</label>
+        <select class="form-select">
+          <option value="">请选择过错方</option>
+          <option value="buyer">买家 – ID: 1700126679</option>
+          <option value="seller">商家 – ID: 1700593742</option>
+        </select>
       </div>
       <div class="form-group">
-        <label class="form-label"><span class="required">*</span>裁决说明</label>
-        <textarea class="form-textarea" placeholder="请填写裁决依据与处理说明..."></textarea>
+        <label class="form-label"><span class="required">*</span>处理结果</label>
+        <textarea class="form-textarea" placeholder="请输入处理结果和原因"></textarea>
         <span class="form-hint">0 / 500</span>
       </div>
+      <div class="form-group">
+        <label class="form-label">处理图片</label>
+        <div class="upload-area">
+          <div class="upload-icon">+</div>
+          <div class="upload-text">点击上传图片</div>
+        </div>
+      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-default" onclick="closeModal('verdict')">取消</button>
-      <button class="btn btn-primary" onclick="closeModal('verdict')">确认裁决</button>
+    <div class="modal-footer" style="justify-content: flex-end; gap: 12px;">
+      <button class="btn btn-success" onclick="closeModal('verdict')">完成交易订单</button>
+      <button class="btn btn-danger" onclick="closeModal('verdict')">取消交易订单</button>
+      <button class="btn btn-default" onclick="closeModal('verdict')">关闭窗口</button>
     </div>
   </div>
 </div>
