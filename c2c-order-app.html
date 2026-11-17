@@ -2291,12 +2291,6 @@
 
   function openChatPage(orderId) {
     currentOrder = orders.find(function(o) { return o.id === orderId; });
-    if (currentOrder) {
-      document.getElementById('chatUserName').textContent = currentOrder.user;
-      document.getElementById('chatOrderId').textContent = '订单: ' + currentOrder.id;
-      document.getElementById('chatStatusText').textContent = currentOrder.status;
-      document.getElementById('chatQty').textContent = '数量: ' + currentOrder.qty;
-    }
     document.getElementById('orderPage').classList.remove('active');
     document.getElementById('chatPage').classList.add('active');
   }
