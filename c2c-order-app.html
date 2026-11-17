@@ -1099,6 +1099,267 @@
     padding: 12px 16px;
     background: #fff;
   }
+
+  /* ===== 申诉进度页 ===== */
+  .appeal-page {
+    background: #f5f5f5;
+  }
+
+  .appeal-warning {
+    background: #fffbe6;
+    border-left: 4px solid #faad14;
+    margin: 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+  }
+
+  .appeal-warning-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #d48806;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .appeal-warning-desc {
+    font-size: 13px;
+    color: #8c6e00;
+    line-height: 1.5;
+  }
+
+  .appeal-section {
+    margin: 16px;
+  }
+
+  .appeal-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+  }
+
+  .appeal-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .appeal-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .appeal-card-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .appeal-card-time {
+    font-size: 12px;
+    color: #999;
+  }
+
+  .appeal-card-content {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  .appeal-card-files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .appeal-file-thumb {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .appeal-file-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* 催办倒计时 */
+  .appeal-countdown {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
+    margin: 16px;
+    padding: 16px;
+    border-radius: 12px;
+    color: #fff;
+  }
+
+  .countdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .countdown-title {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .countdown-timer {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: "SF Mono", Monaco, monospace;
+  }
+
+  .countdown-desc {
+    font-size: 12px;
+    opacity: 0.9;
+  }
+
+  /* 添加材料入口 */
+  .appeal-add-section {
+    margin: 16px;
+  }
+
+  .appeal-add-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+  }
+
+  .appeal-add-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .appeal-textarea {
+    width: 100%;
+    min-height: 100px;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+  }
+
+  .appeal-textarea:focus {
+    border-color: #52c41a;
+  }
+
+  .appeal-upload-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .appeal-upload-btn {
+    width: 80px;
+    height: 80px;
+    border: 1px dashed #d9d9d9;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #d9d9d9;
+    cursor: pointer;
+  }
+
+  .appeal-upload-btn:active {
+    background: #f5f5f5;
+  }
+
+  .appeal-uploaded-item {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .appeal-uploaded-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .appeal-uploaded-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+
+  .appeal-submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: #52c41a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 16px;
+    cursor: pointer;
+  }
+
+  .appeal-submit-btn:active {
+    background: #73d13d;
+  }
+
+  .appeal-submit-btn:disabled {
+    background: #d9d9d9;
+    cursor: not-allowed;
+  }
+
+  /* 我的回应列表 */
+  .my-response-card {
+    background: #f0fff4;
+    border: 1px solid #b7eb8f;
+  }
+
+  .my-response-card .appeal-card-title {
+    color: #52c41a;
+  }
+
+  /* 无法补充提示 */
+  .appeal-locked-hint {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+  }
+
+  .appeal-locked-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
 </style>
 </head>
 <body>
@@ -1272,7 +1533,7 @@
     <div class="nav-back" onclick="closeDetailPage()">‹</div>
     <div class="nav-title">订单详情</div>
     <div class="nav-right">
-      <span class="nav-action">申诉</span>
+      <span class="nav-action" onclick="openAppealPage()">申诉</span>
     </div>
   </div>
 
@@ -1357,6 +1618,100 @@
   <!-- 底部按钮 -->
   <div class="detail-footer">
     <button class="detail-action-btn">恢复订单</button>
+  </div>
+</div>
+
+<!-- ========== 申诉进度页 ========== -->
+<div class="page appeal-page" id="appealPage">
+  <div class="navbar">
+    <div class="nav-back" onclick="closeAppealPage()">‹</div>
+    <div class="nav-title">订单申诉</div>
+    <div class="nav-right"></div>
+  </div>
+
+  <!-- 警告提示 -->
+  <div class="appeal-warning">
+    <div class="appeal-warning-title">⚠️ 警告</div>
+    <div class="appeal-warning-desc">恶意申诉将面临封号处理，请如实填写申诉信息。</div>
+  </div>
+
+  <!-- 催办倒计时（有催办时显示） -->
+  <div class="appeal-countdown" id="appealCountdown">
+    <div class="countdown-header">
+      <span class="countdown-title">⏰ 请在截止时间前补充材料</span>
+      <span class="countdown-timer" id="countdownTimer">23:45:30</span>
+    </div>
+    <div class="countdown-desc">客服已催办，请尽快提交补充证据，逾期将影响申诉结果</div>
+  </div>
+
+  <!-- 申诉进度 -->
+  <div class="appeal-section">
+    <div class="appeal-section-title">申诉进度</div>
+
+    <!-- 对方申诉 -->
+    <div class="appeal-card">
+      <div class="appeal-card-header">
+        <span class="appeal-card-title">对方申诉</span>
+        <span class="appeal-card-time">1794892339000</span>
+      </div>
+      <div class="appeal-card-content">他人代名账户</div>
+    </div>
+
+    <!-- 我的回应列表 -->
+    <div class="appeal-card my-response-card">
+      <div class="appeal-card-header">
+        <span class="appeal-card-title">我的回应</span>
+        <span class="appeal-card-time">1794892475000</span>
+      </div>
+      <div class="appeal-card-content">ces</div>
+      <div class="appeal-card-files">
+        <div class="appeal-file-thumb">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23e8e8e8' width='80' height='80'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='12' text-anchor='middle' dy='.3em'%3E图片%3C/text%3E%3C/svg%3E" alt="证据">
+        </div>
+      </div>
+    </div>
+
+    <!-- 第二次补充 -->
+    <div class="appeal-card my-response-card">
+      <div class="appeal-card-header">
+        <span class="appeal-card-title">补充材料（第2次）</span>
+        <span class="appeal-card-time">1794893500000</span>
+      </div>
+      <div class="appeal-card-content">补充银行流水截图，证明付款人与本人一致</div>
+      <div class="appeal-card-files">
+        <div class="appeal-file-thumb">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23e8e8e8' width='80' height='80'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='12' text-anchor='middle' dy='.3em'%3E图片%3C/text%3E%3C/svg%3E" alt="证据">
+        </div>
+        <div class="appeal-file-thumb">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23e8e8e8' width='80' height='80'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='12' text-anchor='middle' dy='.3em'%3E图片%3C/text%3E%3C/svg%3E" alt="证据">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 添加申诉材料（有催办时显示） -->
+  <div class="appeal-add-section" id="appealAddSection">
+    <div class="appeal-add-title">添加申诉材料（被申诉方）</div>
+    <div class="appeal-add-card">
+      <textarea class="appeal-textarea" placeholder="请输入说明（必填）" id="appealInput"></textarea>
+      <div class="appeal-upload-area">
+        <div class="appeal-uploaded-item">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23e8e8e8' width='80' height='80'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='12' text-anchor='middle' dy='.3em'%3E图片%3C/text%3E%3C/svg%3E" alt="已上传">
+          <div class="appeal-uploaded-remove">✕</div>
+        </div>
+        <div class="appeal-upload-btn">+</div>
+      </div>
+      <button class="appeal-submit-btn" onclick="submitAppealMaterial()">提交材料</button>
+    </div>
+  </div>
+
+  <!-- 无催办时显示锁定提示 -->
+  <div class="appeal-add-section" id="appealLockedSection" style="display: none;">
+    <div class="appeal-add-title">添加申诉材料</div>
+    <div class="appeal-locked-hint">
+      <div class="appeal-locked-icon">🔒</div>
+      <div>当前无法补充材料，请等待客服催办后再提交</div>
+    </div>
   </div>
 </div>
 
@@ -1652,6 +2007,111 @@
       hint.textContent = '当前发送的消息仅客服可查看';
       hint.style.color = '#1890ff';
     }
+  }
+
+  // ========== 申诉页面 ==========
+  var hasUrgent = true; // 是否有催办
+  var countdownInterval = null;
+  var remainingSeconds = 23 * 3600 + 45 * 60 + 30; // 23:45:30
+
+  function openAppealPage() {
+    document.getElementById('detailPage').classList.remove('active');
+    document.getElementById('appealPage').classList.add('active');
+
+    // 根据是否有催办显示不同内容
+    if (hasUrgent) {
+      document.getElementById('appealCountdown').style.display = 'block';
+      document.getElementById('appealAddSection').style.display = 'block';
+      document.getElementById('appealLockedSection').style.display = 'none';
+      startCountdown();
+    } else {
+      document.getElementById('appealCountdown').style.display = 'none';
+      document.getElementById('appealAddSection').style.display = 'none';
+      document.getElementById('appealLockedSection').style.display = 'block';
+    }
+  }
+
+  function closeAppealPage() {
+    document.getElementById('appealPage').classList.remove('active');
+    document.getElementById('detailPage').classList.add('active');
+    if (countdownInterval) {
+      clearInterval(countdownInterval);
+      countdownInterval = null;
+    }
+  }
+
+  function startCountdown() {
+    updateCountdownDisplay();
+    countdownInterval = setInterval(function() {
+      remainingSeconds--;
+      if (remainingSeconds <= 0) {
+        clearInterval(countdownInterval);
+        remainingSeconds = 0;
+        // 超时后锁定
+        hasUrgent = false;
+        document.getElementById('appealCountdown').style.display = 'none';
+        document.getElementById('appealAddSection').style.display = 'none';
+        document.getElementById('appealLockedSection').style.display = 'block';
+      }
+      updateCountdownDisplay();
+    }, 1000);
+  }
+
+  function updateCountdownDisplay() {
+    var hours = Math.floor(remainingSeconds / 3600);
+    var minutes = Math.floor((remainingSeconds % 3600) / 60);
+    var seconds = remainingSeconds % 60;
+    var timeStr = String(hours).padStart(2, '0') + ':' +
+                  String(minutes).padStart(2, '0') + ':' +
+                  String(seconds).padStart(2, '0');
+    document.getElementById('countdownTimer').textContent = timeStr;
+  }
+
+  function submitAppealMaterial() {
+    var input = document.getElementById('appealInput');
+    var content = input.value.trim();
+    if (!content) {
+      alert('请输入说明');
+      return;
+    }
+
+    // 模拟提交成功
+    alert('提交成功！已添加到申诉进度');
+
+    // 添加到进度列表
+    var section = document.querySelector('.appeal-section');
+    var newCard = document.createElement('div');
+    newCard.className = 'appeal-card my-response-card';
+    newCard.innerHTML =
+      '<div class="appeal-card-header">' +
+        '<span class="appeal-card-title">补充材料（第3次）</span>' +
+        '<span class="appeal-card-time">' + Date.now() + '</span>' +
+      '</div>' +
+      '<div class="appeal-card-content">' + content + '</div>';
+    section.appendChild(newCard);
+
+    // 清空输入
+    input.value = '';
+
+    // 重置倒计时（模拟客服再次催办才能继续提交）
+    hasUrgent = false;
+    document.getElementById('appealCountdown').style.display = 'none';
+    document.getElementById('appealAddSection').style.display = 'none';
+    document.getElementById('appealLockedSection').style.display = 'block';
+    if (countdownInterval) {
+      clearInterval(countdownInterval);
+      countdownInterval = null;
+    }
+  }
+
+  // 模拟客服催办（用于演示）
+  function simulateUrgent() {
+    hasUrgent = true;
+    remainingSeconds = 24 * 3600; // 24小时
+    document.getElementById('appealCountdown').style.display = 'block';
+    document.getElementById('appealAddSection').style.display = 'block';
+    document.getElementById('appealLockedSection').style.display = 'none';
+    startCountdown();
   }
 </script>
 </body>
